@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from APIcopart import Copart
+import os
 
 app = Flask(__name__)
 
@@ -10,4 +11,5 @@ def search():
     return Copart(query)       # Retorna a resposta da função como JSON
 
 if __name__ == '__main__':
+    port = int(os.getenv("PORT", 5000))
     app.run(host='0.0.0.0', port=5000)
