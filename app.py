@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
+from APIcopart import Copart
 
 app = Flask(__name__)
 
-@app.route('/process_data', methods=['POST'])
-def process_data():
+@app.route('/search', methods=['POST'])
+def search():
     data = request.json
-    # Sua lógica de processamento
-    result = {"message": "Dados processados com sucesso!", "data": data}
-    return jsonify(result)
+    query = data.get('query')  # Recebe a query enviada pelo cliente
+    return Copart(query)       # Retorna a resposta da função como JSON
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
