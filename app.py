@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 from APIcopart import Copart
+from flask_cors import CORS
 import os
 
 app = Flask(__name__)
+CORS(app, origins=["https://www.arremataisolucoes.com.br"])
 
 @app.route('/search', methods=['POST'])
 def search():
