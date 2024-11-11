@@ -25,7 +25,7 @@ import os
 app = Flask(__name__)
 CORS(app, origins=["https://www.arremataisolucoes.com.br"])
 
-@app.route('_/search', methods=['POST'])
+@app.route('/search', methods=['POST'])
 def search():
     data = request.json
     query = data.get('query')
