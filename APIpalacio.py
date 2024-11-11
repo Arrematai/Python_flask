@@ -1,7 +1,5 @@
 import requests
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from bs4 import BeautifulSoup
 from flask import jsonify
 
 
@@ -39,39 +37,30 @@ def Palacio_dos_leiloes(query):
     lotes_html = response.text  # HTML da resposta
     # print(lotes_html)
 
-
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Executa o Chrome em modo headless
-    driver = webdriver.Chrome(options=chrome_options)
-
-
-    driver.get("data:text/html;charset=utf-8," + lotes_html)
-
-    # Encontra os elementos de lote e extrai informações
-    lotes = driver.find_elements(By.CSS_SELECTOR, "div.col-md-3")
-    resultados = []
+    soup = BeautifulSoup(lotes_html, 'html.parser')
+    lotes = soup.select("div.col-md-3")
 
 
     resultados = []
     for lote in lotes:
 
-        modelo_completo = lote.find_element(By.CSS_SELECTOR, ".quebraln").text
-        marca = modelo_completo.split(" ")[0]
-        modelo = " ".join(modelo_completo.split(" ")[1:])
+        modelo_completo = lote.select_one(".quebraln").text
+        marca = modelo_completo.split("/")[0]
+        modelo = " ".join(modelo_completo.split("/")[1:])
         resultado = {
-            "lote": lote.find_element(By.XPATH, ".//div[contains(text(), 'Lote')]/div").text,
+            "lote": lote.select_one(".inf:contains('Lote') .float-right").text if lote.select_one(".inf:contains('Lote') .float-right") else "N/A",
             "marca": marca,
             "modelo": modelo,
-            "monta": lote.find_element(By.CSS_SELECTOR, ".mt-0.small").text,
-            "ano": lote.find_element(By.CSS_SELECTOR, ".my-0.h6.mb-2").text,
-            "thumb": f"https://www.palaciodosleiloes.com.br/site/{lote.find_element(By.CSS_SELECTOR, 'img').get_attribute('src')}",
-            "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={lote.get_attribute('onclick').split('(')[-1].split(',')[0]}"
+            "monta": lote.select_one(".mt-0.small").text,
+            # .split("(")[1].split(")")[0]
+            "ano": lote.select_one(".my-0.h6.mb-2").text,
+            "thumb": f"https://www.palaciodosleiloes.com.br/site/{lote.select_one('img').get('src')}",
+            "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={lote.get('onclick').split('(')[-1].split(',')[0]}"
         }
         # Adiciona o dicionário à lista de resultados
         resultados.append(resultado)
 
-    # Exibe os resultados
-    driver.quit()
+
     print(resultados)
     # return jsonify(resultados)
     return resultados
