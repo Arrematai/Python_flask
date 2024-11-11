@@ -28,8 +28,8 @@ def search():
     query = data.get('query')
 
     # Realiza as duas consultas
-    re_copart = Copart(query)  # Chama Copart e extrai o JSON
-    re_sodre_santoro = SodreSantoro(query)  # Chama SodreSantoro e extrai o JSON
+    re_copart = Copart(query) or [] # Chama Copart e extrai o JSON
+    re_sodre_santoro = SodreSantoro(query) or []  # Chama SodreSantoro e extrai o JSON
 
     # Mescla os resultados
     re_mesclados = re_copart + re_sodre_santoro
