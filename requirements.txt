@@ -2,4 +2,4 @@ requests
 flask
 gunicorn
 flask_cors
-BeautifulSoup
+beautifulsoup4
