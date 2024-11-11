@@ -19,6 +19,7 @@
 from flask import Flask, request, jsonify
 from APIcopart import Copart
 from APIsodresantoro import SodreSantoro
+from flask_cors import CORS
 import os
 
 app = Flask(__name__)
