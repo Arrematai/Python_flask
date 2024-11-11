@@ -62,7 +62,7 @@ def Palacio_dos_leiloes(query):
             "lote": lote.find_element(By.XPATH, ".//div[contains(text(), 'Lote')]/div").text,
             "marca": marca,
             "modelo": modelo,
-            "monta": lote.find_element(By.CSS_SELECTOR, ".mt-0.small").text.split("(")[1].split(")")[0],
+            "monta": lote.find_element(By.CSS_SELECTOR, ".mt-0.small").text,
             "ano": lote.find_element(By.CSS_SELECTOR, ".my-0.h6.mb-2").text,
             "thumb": f"https://www.palaciodosleiloes.com.br/site/{lote.find_element(By.CSS_SELECTOR, 'img').get_attribute('src')}",
             "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={lote.get_attribute('onclick').split('(')[-1].split(',')[0]}"
