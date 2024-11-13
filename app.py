@@ -3,14 +3,13 @@ from APIjoaoemilio import Joao_Emilio
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["https://www.arremataisolucoes.com.br"], supports_credentials=True)
-
+CORS(app, resources={r"/*": {"origins": "https://www.arremataisolucoes.com.br"}})
 
 @app.route('/test_joao_emilio', methods=['POST', 'OPTIONS'])
 def test_joao_emilio():
+    # Se for uma requisição OPTIONS, responde com status 200 e os headers CORS apropriados
     if request.method == 'OPTIONS':
-        # Responde a requisições OPTIONS com status 200
-        response = jsonify({"status": "OK"})
+        response = app.make_response('', 200)
         response.headers.add("Access-Control-Allow-Origin", "https://www.arremataisolucoes.com.br")
         response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
         response.headers.add("Access-Control-Allow-Headers", "Content-Type")
