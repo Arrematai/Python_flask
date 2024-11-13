@@ -1,9 +1,31 @@
 from flask import Flask, request, jsonify
+from APIjoaoemilio import Joao_Emilio
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app, origins=["https://www.arremataisolucoes.com.br"])  # Mova esta linha para cá
+
+@app.route('/test_joao_emilio', methods=['POST'])
+def test_joao_emilio():
+    data = request.json
+    query = data.get('query')
+    re_joao_emilio = Joao_Emilio(query) or []
+    return jsonify(re_joao_emilio)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
+
+
+
+
+
+# from flask import Flask, request, jsonify
 # from APIcopart import Copart
 # from APIpalacio import Palacio_dos_leiloes
 # from APIsodresantoro import SodreSantoro
-from APIjoaoemilio import Joao_Emilio
-from flask_cors import CORS
+# from APIjoaoemilio import Joao_Emilio
+# from flask_cors import CORS
 
 # app = Flask(__name__)
 # CORS(app, origins=["https://www.arremataisolucoes.com.br"])
@@ -31,14 +53,3 @@ from flask_cors import CORS
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=5000)
 
-app = Flask(__name__)
-@app.route('/test_joao_emilio', methods=['POST'])
-CORS(app, origins=["https://www.arremataisolucoes.com.br"])
-def test_joao_emilio():
-    data = request.json
-    query = data.get('query')
-    re_joao_emilio = Joao_Emilio(query) or []
-    return jsonify(re_joao_emilio)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
