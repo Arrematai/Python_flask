@@ -1,6 +1,6 @@
 import requests
 import re
-import json
+
 
 def HTML_JL (query):
 
@@ -60,14 +60,15 @@ def Joao_Emilio(query):
         link_match = re.search(r'<a href="(https://www\.joaoemilio\.com\.br/item/\d+/detalhes\?page=\d+)"', lote_html)
         link = link_match.group(1) if link_match else "N/A"
 
+
         resultado = {
             "lote": lote,
             "marca": marca,
             "modelo": modelo,
             "monta": "Pequena Monta",  # Exemplo de valor padrão
-            "ano": ano_modelo if ano_modelo else "N/A",
+            "ano": ano_modelo if ano_modelo else "",
             "thumb": thumb,
-            "link": link if link else "N/A"
+            "link": link if link else ""
         }
         resultados.append(resultado)
     print(type(resultados))
