@@ -31,8 +31,9 @@ from flask_cors import CORS
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=5000)
 
+app = Flask(__name__)
 @app.route('/test_joao_emilio', methods=['POST'])
-# CORS(app, origins=["https://www.arremataisolucoes.com.br"])
+CORS(app, origins=["https://www.arremataisolucoes.com.br"])
 def test_joao_emilio():
     data = request.json
     query = data.get('query')
