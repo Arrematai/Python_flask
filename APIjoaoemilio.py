@@ -29,9 +29,6 @@ def HTML_JL (query):
 
 
     response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
-
-    print(response.text)
-
     return response.text
 
 def html_to_json(html_content):
