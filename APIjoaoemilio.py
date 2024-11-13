@@ -1,8 +1,11 @@
 import requests
 import re
+import json
 
 
-def HTML_JL (query):
+
+
+def Joao_Emilio (query):
 
     url = "https://www.joaoemilio.com.br/lotes/search"
 
@@ -29,19 +32,14 @@ def HTML_JL (query):
 
 
     response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
-    return response.text
 
-
-def Joao_Emilio(query):
-
-    html_content = HTML_JL(query)
+    html_content = response.text
 
     # Extraindo dados com expressões regulares ou buscas de string
     lotes = re.findall(r'<div class="lote ">.*?</div> <!-- ./card -->', html_content, re.DOTALL)
 
     resultados = []
     for lote_html in lotes:
-
         lote_match = re.search(r'<h4>Lote (\d+)</h4>', lote_html)
         lote = lote_match.group(1) if lote_match else "N/A"
 
@@ -60,16 +58,18 @@ def Joao_Emilio(query):
         link_match = re.search(r'<a href="(https://www\.joaoemilio\.com\.br/item/\d+/detalhes\?page=\d+)"', lote_html)
         link = link_match.group(1) if link_match else "N/A"
 
-
         resultado = {
             "lote": lote,
             "marca": marca,
             "modelo": modelo,
             "monta": "Pequena Monta",  # Exemplo de valor padrão
-            "ano": ano_modelo if ano_modelo else "",
+            "ano": ano_modelo if ano_modelo else "N/A",
             "thumb": thumb,
-            "link": link if link else ""
+            "link": link if link else "N/A"
         }
         resultados.append(resultado)
     print(type(resultados))
     return resultados
+
+
+
