@@ -67,7 +67,10 @@ def html_to_json(html_content):
         }
         resultados.append(resultado)
 
-    return json.dumps(resultados, indent=4, ensure_ascii=False)
+   json_result = json.dumps(resultados, indent=4, ensure_ascii=False)
+    json_result = json_result.replace('"', "'")  
+
+    return json_result
 
 def Joao_Emilio(query):
     query = f"{query}"  # Exemplo de consulta
