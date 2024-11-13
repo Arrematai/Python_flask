@@ -3,14 +3,26 @@ from APIjoaoemilio import Joao_Emilio
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["https://www.arremataisolucoes.com.br"])  # Mova esta linha para cá
+CORS(app, origins=["https://www.arremataisolucoes.com.br"], supports_credentials=True)
 
-@app.route('/test_joao_emilio', methods=['POST'])
+
+@app.route('/test_joao_emilio', methods=['POST', 'OPTIONS'])
 def test_joao_emilio():
+    if request.method == 'OPTIONS':
+        # Responde a requisições OPTIONS com status 200
+        response = jsonify({"status": "OK"})
+        response.headers.add("Access-Control-Allow-Origin", "https://www.arremataisolucoes.com.br")
+        response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+        return response
+
+    # Processa a requisição POST
     data = request.json
     query = data.get('query')
     re_joao_emilio = Joao_Emilio(query) or []
-    return jsonify(re_joao_emilio)
+    response = jsonify(re_joao_emilio)
+    response.headers.add("Access-Control-Allow-Origin", "https://www.arremataisolucoes.com.br")
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
