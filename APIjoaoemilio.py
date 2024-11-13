@@ -31,12 +31,16 @@ def HTML_JL (query):
     response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
     return response.text
 
-def html_to_json(html_content):
+
+def Joao_Emilio(query):
+
+    html_content = HTML_JL(query)
+
     # Extraindo dados com expressões regulares ou buscas de string
     lotes = re.findall(r'<div class="lote ">.*?</div> <!-- ./card -->', html_content, re.DOTALL)
 
     resultados = []
-    for lote_html in lotes:
+    for lote_html in lotes:.
 
         lote_match = re.search(r'<h4>Lote (\d+)</h4>', lote_html)
         lote = lote_match.group(1) if lote_match else "N/A"
@@ -66,15 +70,5 @@ def html_to_json(html_content):
             "link": link if link else "N/A"
         }
         resultados.append(resultado)
-
-   json_result = json.dumps(resultados, indent=4, ensure_ascii=False)
-    json_result = json_result.replace('"', "'")  
-
-    return json_result
-
-def Joao_Emilio(query):
-    query = f"{query}"  # Exemplo de consulta
-    html_content = HTML_JL(query)
-    json_result = html_to_json(html_content)
-    print(json_result)
-
+    print(type(resultados))
+    return resultados
