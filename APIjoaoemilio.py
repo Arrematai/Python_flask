@@ -40,7 +40,7 @@ def Joao_Emilio(query):
     lotes = re.findall(r'<div class="lote ">.*?</div> <!-- ./card -->', html_content, re.DOTALL)
 
     resultados = []
-    for lote_html in lotes:.
+    for lote_html in lotes:
 
         lote_match = re.search(r'<h4>Lote (\d+)</h4>', lote_html)
         lote = lote_match.group(1) if lote_match else "N/A"
