@@ -34,7 +34,7 @@ def Joao_Emilio (query):
     }
 
 
-    response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
+    response = requests.request("GET", url, data=payload, headers=headers, params=querystring,payload)
 
     html_content = response.text
 
