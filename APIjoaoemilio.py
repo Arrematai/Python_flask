@@ -68,7 +68,8 @@ def Joao_Emilio (query):
             "link": link if link else "N/A"
         }
         resultados.append(resultado)
-    print(type(resultados))
+    print(resultados)
+    print(html_content)
     return resultados
 
 
