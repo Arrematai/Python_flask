@@ -21,6 +21,7 @@ def search():
 
     # Mescla os resultados
     re_mesclados = re_copart + re_sodre_santoro + re_palacio_dos_leiloes + re_joao_emilio
+    print(re_joao_emilio)
 
     # Retorna o JSON combinado
     return jsonify(re_mesclados)
