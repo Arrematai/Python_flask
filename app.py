@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from APIcopart import Copart
-from APIsodresantoro import SodreSantoro
 from APIpalacio import Palacio_dos_leiloes
+from APIsodresantoro import SodreSantoro
 from APIjoaoemilio import Joao_Emilio
 from flask_cors import CORS
 
