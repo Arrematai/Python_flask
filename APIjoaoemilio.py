@@ -3,18 +3,21 @@ import re
 import json
 
 
-
-
 def Joao_Emilio (query):
 
 
       
 
-    url = "https://www.joaoemilio.com.br/lotes/search"
+    url = "https://api.scraperapi.com/"
 
     querystring = {"search":f"{query}"}
 
-    payload = { 'api_key': 'ea244fae842ba85e93fd4ee8f83b2672', 'url': 'https://www.joaoemilio.com.br/lotes/search', 'country_code': 'us', 'device_type': 'desktop' }
+     payload = {
+        'api_key': 'ea244fae842ba85e93fd4ee8f83b2672',
+        'url': f'https://www.joaoemilio.com.br/lotes/search?search={query}',
+        'country_code': 'us',
+        'device_type': 'desktop'
+    }
     headers = {
         "cookie": "modal-8137c1fdeba6872580fff3801a7a1e55=1; _hjSession_3327924=eyJpZCI6IjkyZWJlMWJmLWI3YTUtNGFmOS1hOGJjLTc5ZDg2NWJjYmYzYyIsImMiOjE3MzE0MzM1MzIxOTMsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0=; cf_clearance=VmV90m6JNFDi0RaeFMqV_kdUhU1T8ITaR5DEoEjmv3I-1731433532-1.2.1.1-VXe4y9ZWz5uHUCvKqaM7wx4SXtqC2faqMrbNrP6ZK63deFSzsL1WNb2vDw1QpVbEZOMGYhDT0Xb7FlmD8qd3UhLfXjlO5AwOVzCP8eegFPsOuSYa4ErGiW9fhffTgg0STOEJ1XwZjJFc8qwH1VjTHGHYWcwvP0ACTbpCxQzfgh5gj_yiPVPaMQwyLkJYNgSSx6iDjfEfnWWSoAzJhWMNmPoxfKMcwi6qehMUnkqPgUniIEbs.621uTRixBsj5IVx5rVwSknuGQFgyReK2zZCV8q.cg2EU.kJRrNXAq6pF4YrSzFH6H7bNy_65.8cNNkz1q7AIdUwJnPKUcg0Ob_SSGHnovM0CniRy1Gchhp0S69Q0roXhsuPebkRw_K0NFMSuFqWgjHqL55sa8rv5449yQ; _gcl_au=1.1.262518452.1731433532; _gid=GA1.3.571009262.1731433532; twk_idm_key=yAG_g0a_dB-nNpoQGtEua; _hjSessionUser_3327924=eyJpZCI6ImQ2MjVhOGEyLWQ1MzEtNWVhYS05M2I2LWI4MTk1NDllODM2ZSIsImNyZWF0ZWQiOjE3MzE0MzM1MzIxOTIsImV4aXN0aW5nIjp0cnVlfQ==; laravel_session=eyJpdiI6IkdnWm9NRTdlRVZQYUdVQ3hKU1VmTVE9PSIsInZhbHVlIjoicW4rR1dZMDREd0lhcDhJVGJmSGJEdWlicUcrNTdRV09rMjV1VVhMWmZORTRTXC9yWGFlcGEzZjVZM3BWbnkzdDBJUTdRMlJOMmhJZnVUT3VLUmhoTjRnPT0iLCJtYWMiOiI4ZDNlNGVkMWRiYTA3ZjI1MWE1ODA1YzEwZWI0OWE4NWQ2ZjgzOGM0NWFiZjk0M2FiYTY3NmI3YjU5MzE0MWQxIn0%3D; _ga_X334VRVJ87=GS1.1.1731433532.1.1.1731433603.0.0.0; _ga=GA1.3.521269643.1731433532; _gat_gtag_UA_61727303_1=1; TawkConnectionTime=0; _ga_T4ZP574MMC=GS1.1.1731433532.1.1.1731433628.0.0.0",
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -34,7 +37,7 @@ def Joao_Emilio (query):
     }
 
 
-    response = requests.request("GET", url, data=payload, headers=headers, params=querystring,payload)
+    response = requests.request("GET", url, headers=headers, params=payload)
 
     html_content = response.text
 
