@@ -5,14 +5,13 @@ import json
 
 def Joao_Emilio (query):
 
-
-      
+    
 
     url = "https://api.scraperapi.com/"
 
     querystring = {"search":f"{query}"}
 
-     payload = {
+    payload = {
         'api_key': 'ea244fae842ba85e93fd4ee8f83b2672',
         'url': f'https://www.joaoemilio.com.br/lotes/search?search={query}',
         'country_code': 'us',
