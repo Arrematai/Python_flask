@@ -18,7 +18,7 @@ from APIjoaoemilio import Joao_Emilio
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=[""https://arrematai-yrdl5ev0e0uq9lap.builder-preview.com/""], 
+CORS(app, origins=["https://arrematai-yrdl5ev0e0uq9lap.builder-preview.com/"], 
 supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type", "Authorization"])
 
 @app.route('/search', methods=['POST'])
