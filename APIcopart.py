@@ -33,7 +33,7 @@ def Copart(query):
             "modelo": item.get("lm"),
             "monta": item.get("damageClassification"),
             "ano": item.get("manufactureYear"),
-            "thumb": item.get("tims"),
+            "thumb": item.get("tims").replace("thumbnail","vga"),
             "link": "https://www.copart.com.br/lot/" + str(item.get("lotNumberStr"))
         }
         # Adiciona o dicionário à lista de resultados
