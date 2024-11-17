@@ -55,7 +55,8 @@ def Palacio_dos_leiloes(query):
             # .split("(")[1].split(")")[0]
             "ano": lote.select_one(".my-0.h6.mb-2").text,
             "thumb": f"https://www.palaciodosleiloes.com.br/site/{lote.select_one('img').get('src')}",
-            "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={lote.get('onclick').split('(')[-1].split(',')[0]}"
+            "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={lote.get('onclick').split('(')[-1].split(',')[0]}",
+            "leiloeiro":"Palácio dos Leilões"
         }
         # Adiciona o dicionário à lista de resultados
         resultados.append(resultado)

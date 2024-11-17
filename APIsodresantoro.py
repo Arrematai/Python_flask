@@ -108,7 +108,8 @@ def SodreSantoro(query):
             "monta": source.get("lot_sinister"),
             "ano": source.get("lot_year_manufacture"),
             "thumb": source.get("lot_pictures")[0] if source.get("lot_pictures") else None,
-            "link": f"https://leilao.sodresantoro.com.br/leilao/{source.get('auction_id')}/lote/{source.get('lot_id')}/?ref=v2"
+            "link": f"https://leilao.sodresantoro.com.br/leilao/{source.get('auction_id')}/lote/{source.get('lot_id')}/?ref=v2",
+            "leiloeiro":"Sodré Santoro"
 
         }# Adiciona o dicionário à lista de resultados
         resultados.append(resultado)

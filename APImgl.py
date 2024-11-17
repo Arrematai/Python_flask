@@ -88,7 +88,8 @@ def MGL():
             "monta": "No estado e condições que se encontra",
             "ano": extracao["ano"],
             "thumb": "https://www.mgl.com.br/imagens-center/350x282/" + item.get("Foto"),
-            "link": "https://www.mgl.com.br/" + str(item.get("URLlote"))
+            "link": "https://www.mgl.com.br/" + str(item.get("URLlote")),
+            "leiloeiro":"MGL"
         }
         # Adiciona o dicionário à lista de resultados
         resultados.append(resultado)

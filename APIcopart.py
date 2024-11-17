@@ -35,6 +35,7 @@ def Copart(query):
             "ano": item.get("manufactureYear"),
             "thumb": item.get("tims").replace("thumbnail","vga"),
             "link": "https://www.copart.com.br/lot/" + str(item.get("lotNumberStr"))
+            "leiloeiro":"COPART"
         }
         # Adiciona o dicionário à lista de resultados
         resultados.append(resultado)

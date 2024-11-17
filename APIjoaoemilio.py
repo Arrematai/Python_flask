@@ -70,7 +70,8 @@ def Joao_Emilio (query):
             "monta": "Pequena Monta",  # Exemplo de valor padrão
             "ano": ano_modelo if ano_modelo else "N/A",
             "thumb": thumb,
-            "link": link if link else "N/A"
+            "link": link if link else "N/A",
+            "leiloeiro":"João Emilio"
         }
         resultados.append(resultado)
     print(resultados)
