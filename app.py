@@ -16,6 +16,7 @@ from APIpalacio import Palacio_dos_leiloes
 from APIsodresantoro import SodreSantoro
 from APIjoaoemilio import Joao_Emilio
 from flask_cors import CORS
+import random
 
 app = Flask(__name__)
 CORS(app, origins=["https://mediumseagreen-louse-108692.hostingersite.com"],
@@ -33,6 +34,8 @@ def search():
 
     # # Mescla os resultados
     re_mesclados = re_copart + re_sodre_santoro + re_palacio_dos_leiloes + re_joao_emilio
+
+    random.shuffle(re_mesclados)
     
     # Retorna o JSON combinado
     return jsonify(re_mesclados)
