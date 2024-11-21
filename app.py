@@ -15,11 +15,12 @@ from APIcopart import Copart
 from APIpalacio import Palacio_dos_leiloes
 from APIsodresantoro import SodreSantoro
 from APIjoaoemilio import Joao_Emilio
+from APIsuperbird import SuperBid
 from flask_cors import CORS
 import random
 
 app = Flask(__name__)
-CORS(app, origins=["https://arremataisolucoes.com.br/"],
+CORS(app, origins=["https://arremataisolucoes.com.br"],
 supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type", "Authorization"])
 
 @app.route('/search', methods=['POST'])
@@ -31,9 +32,10 @@ def search():
     re_sodre_santoro = SodreSantoro(query) or []
     re_palacio_dos_leiloes = Palacio_dos_leiloes(query) or []# Chama SodreSantoro e extrai o JSON
     re_joao_emilio = Joao_Emilio(query) or []
+    re_SuperBid = SuperBid(query) or []
 
     # # Mescla os resultados
-    re_mesclados = re_copart + re_sodre_santoro + re_palacio_dos_leiloes + re_joao_emilio
+    re_mesclados = re_copart + re_sodre_santoro + re_palacio_dos_leiloes + re_joao_emilio + re_SuperBid
 
     random.shuffle(re_mesclados)
     

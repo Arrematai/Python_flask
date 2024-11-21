@@ -67,5 +67,4 @@ def SuperBid(query):
     print('Resultados:', resultados)
     return resultados
 
-SuperBid('ford ka')
 
