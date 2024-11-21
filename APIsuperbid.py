@@ -57,7 +57,7 @@ def SuperBid(query):
             "ano": ano,
             "thumb": item['product'].get('thumbnailUrl', 'Imagem não disponível'),
             "link": f"https://www.superbid.net/oferta/{item['id']}",
-            # "Descrição": item['product'].get('detailedDescription', 'Descrição não disponível')
+            "leiloeiro":"SuperBid"
         }
 
         print(resultado)
