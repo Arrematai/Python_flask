@@ -19,7 +19,7 @@ from flask_cors import CORS
 import random
 
 app = Flask(__name__)
-CORS(app, origins=["https://mediumseagreen-louse-108692.hostingersite.com"],
+CORS(app, origins=["https://arremataisolucoes.com.br/"],
 supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type", "Authorization"])
 
 @app.route('/search', methods=['POST'])
