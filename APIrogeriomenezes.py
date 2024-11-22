@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-def rogeriomenezes(query):
+def Rogeriomenezes(query):
 
     url = "https://www.rogeriomenezes.com.br/busca"
 
@@ -37,6 +37,3 @@ def rogeriomenezes(query):
     # Converter para JSON e exibir
     json_output = json.dumps(lotes, indent=4, ensure_ascii=False)
     print(json_output)
-
-
-rogeriomenezes("ford")
