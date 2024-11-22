@@ -74,8 +74,7 @@ def Joao_Emilio (query):
             "leiloeiro":"João Emilio"
         }
         resultados.append(resultado)
-    print(resultados)
-    print(html_content)
+    
     return resultados
 
 

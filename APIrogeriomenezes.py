@@ -36,4 +36,4 @@ def Rogeriomenezes(query):
 
     # Converter para JSON e exibir
     json_output = json.dumps(lotes, indent=4, ensure_ascii=False)
-    print(json_output)
+    
