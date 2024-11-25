@@ -15,11 +15,21 @@ def SaveML(resultados, arquivo_saida):
     for item in resultados:
         dado = {
             "json": json.dumps({
+                "lote":item.get("lote"),
                 "marca": item.get("marca"),
-                "modelo": item.get("modelo")
+                "modelo": item.get("modelo"),
+                "monta": item.get("monta"),
+                "ano": item.get("ano"),
+                "thumb": item.get("thumb"),
+                "link":item.get("link")
             }),
+            "lote":item.get("lote"),
             "marca": item.get("marca"),
-            "modelo": item.get("modelo")
+            "modelo": item.get("modelo"),
+            "monta": item.get("monta"),
+            "ano": item.get("ano"),
+            "thumb": item.get("thumb"),
+            "link":item.get("link")
         }
         # Evitar duplicatas
         if dado not in dados_existentes:
@@ -34,14 +44,3 @@ def SaveML(resultados, arquivo_saida):
 
     print(f"{len(novos_dados)} novos registros adicionados ao arquivo: {arquivo_saida}")
 
-# Exemplo de uso
-if __name__ == "__main__":
-    # Chamar a API com uma query de exemplo
-    query = "BMW"
-    resultados = Copart(query)
-
-    # Definir o nome do arquivo de saída
-    arquivo_saida = "dados_treinamento.json"
-
-    # Salvar os resultados no formato de treinamento
-    SaveML(resultados, arquivo_saida)
