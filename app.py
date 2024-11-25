@@ -9,6 +9,7 @@ from APIsodresantoro import SodreSantoro
 from APIjoaoemilio import Joao_Emilio
 from APIsuperbid import SuperBid
 from APIrogeriomenezes import Rogeriomenezes
+from DadosML import SaveML
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -33,7 +34,10 @@ def search():
     re_mesclados = re_copart + re_sodre_santoro + re_palacio_dos_leiloes + re_joao_emilio + re_superbid + re_rogerio_menezes
 
     random.shuffle(re_mesclados)
-    
+    SaveML(re_mesclados, "BDML.json")
+
+
+        
     # Retorna o JSON combinado
     return jsonify(re_mesclados)
 
