@@ -1,8 +1,4 @@
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
-
 from APIcopart import Copart
 from APIpalacio import Palacio_dos_leiloes
 from APIsodresantoro import SodreSantoro
@@ -11,7 +7,7 @@ from APIsuperbid import SuperBid
 from APIrogeriomenezes import Rogeriomenezes
 from DadosML import SaveML
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import random
 
@@ -41,6 +37,16 @@ def search():
     # Retorna o JSON combinado
     return jsonify(re_mesclados)
 
+@app.route('/download-dados', methods=['GET'])
+def download_dados():
+    """
+    Endpoint para download do arquivo de treinamento.
+    """
+    arquivo_saida = "BDML.json"  
+    try:
+        return send_file(arquivo_saida, as_attachment=True)
+    except FileNotFoundError:
+        return "Arquivo não encontrado", 404
 
 
 if __name__ == '__main__':
