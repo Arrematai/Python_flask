@@ -93,7 +93,9 @@ def rogeriomenezes(query):
                 "monta" : "",
                 "ano": ano,
                 "thumb": img_url,
-                "link": link
+                "link": link,
+                "leiloeiro":"Rogério Menezes"
+
             })
         except Exception as e:
             print(f"Erro ao processar um resultado: {e}")
