@@ -28,7 +28,7 @@ def search():
     re_superbid = SuperBid(query) or []
     re_rogerio_menezes = Rogeriomenezes(query) or []
     # # Mescla os resultados
-    re_mesclados = re_copart + re_sodre_santoro + re_palacio_dos_leiloes + re_joao_emilio
+    re_mesclados = re_copart + re_sodre_santoro + re_palacio_dos_leiloes + re_joao_emilio + re_rogerio_menezes
 
     random.shuffle(re_mesclados)
     SaveML(re_mesclados, "BDML.json")

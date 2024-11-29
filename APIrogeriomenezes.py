@@ -40,7 +40,7 @@ def extrair_detalhes(title, marcas):
     return marca, modelo, ano
 
 # Função principal para processar os lotes
-def rogeriomenezes(query):
+def Rogeriomenezes(query):
     url = "https://www.rogeriomenezes.com.br/busca"
     querystring = {"interesse": query}
 
