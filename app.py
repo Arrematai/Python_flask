@@ -36,7 +36,7 @@ def search():
         case "rogeriomenezes":
             resultado = rogeriomenezes(query) or []
         case _:
-            return jsonify({"message": "API inválida"}), 500
+            return jsonify({"message": "API inválida"}), 200
             
    
     SaveML(resultado, "BDML.json")
@@ -82,7 +82,7 @@ def teste_online():
 @app.route('/apis', methods=['GET'])
 def apis():
     
-    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes"]}), 500
+    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes"]}), 200
 
 
 if __name__ == '__main__':
