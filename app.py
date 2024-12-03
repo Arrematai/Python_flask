@@ -77,7 +77,7 @@ def teste_online():
 @app.route('/apis', methods=['GET'])
 def apis():
     
-    return jsonify({"message": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes"]}), 500
+    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes"]}), 500
 
 
 if __name__ == '__main__':
