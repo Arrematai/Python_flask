@@ -38,6 +38,7 @@ def search():
     # Retorna o JSON combinado
     return jsonify(re_mesclados)
 
+
 @app.route('/download', methods=['GET'])
 def download_dados():
     """
@@ -64,6 +65,12 @@ def delete_dados():
             return jsonify({"message": "Arquivo não encontrado."}), 404
     except Exception as e:
         return jsonify({"message": f"Erro ao deletar o arquivo: {str(e)}"}), 500
+
+@app.route('/online', methods=['GET'])
+def teste_online():
+    
+    return jsonify({"message": f"API ONLINE: {str(e)}"}), 500
+
 
 
 if __name__ == '__main__':
