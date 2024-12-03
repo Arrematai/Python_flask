@@ -20,6 +20,7 @@ supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE"], allow_heade
 def search():
     data = request.json
     query = data.get('query')
+    #colocar aqui paginação para carregamento mais rápido, modo assíncrono
 
     re_copart = Copart(query) or [] # Chama Copart e extrai o JSON
     re_sodre_santoro = SodreSantoro(query) or []
@@ -76,5 +77,5 @@ def teste_online():
 if __name__ == '__main__':
     
     context = ('fullchain.pem', 'privkey.pem')#certificate and key files
-    app.run(host='0.0.0.0', port=5000, ssl_context=context, debug=True)
+    app.run(host='0.0.0.0', port=5000, ssl_context=context)
 
