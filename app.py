@@ -22,24 +22,29 @@ def search():
     query = data.get('query')
     #colocar aqui paginação para carregamento mais rápido, modo assíncrono
     api = data.get('api')
-    if api=="Copart":
-        re_copart = Copart(query) or []
-
-    re_sodre_santoro = SodreSantoro(query) or []
-    re_palacio_dos_leiloes = Palacio_dos_leiloes(query) or []# Chama SodreSantoro e extrai o JSON
-    re_joao_emilio = Joao_Emilio(query) or []
-    re_superbid = SuperBid(query) or []
-    re_rogerio_menezes = rogeriomenezes(query) or []
-    # # Mescla os resultados
-    re_mesclados = re_copart + re_sodre_santoro + re_palacio_dos_leiloes + re_joao_emilio + re_rogerio_menezes
-
-    random.shuffle(re_mesclados)
-    SaveML(re_mesclados, "BDML.json")
+    match api:
+        case "copart":
+            resultado = Copart(query) or [] 
+        case "sodresantoro":
+            resultado = SodreSantoro(query) or []
+        case "palacio":
+            resultado = Palacio_dos_leiloes(query)
+        case "joaoemilio":
+            resultado = Joao_Emilio(query) or []
+        case "superbid":
+            resultado = SuperBid(query) or []
+        case "rogeriomenezes":
+            resultado = rogeriomenezes(query) or []
+        case _:
+            return jsonify({"message": "API inválida"}), 500
+            
+   
+    SaveML(resultado, "BDML.json")
 
 
         
     # Retorna o JSON combinado
-    return jsonify(re_mesclados)
+    return jsonify(resultado)
 
 
 @app.route('/download', methods=['GET'])
