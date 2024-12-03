@@ -21,8 +21,10 @@ def search():
     data = request.json
     query = data.get('query')
     #colocar aqui paginação para carregamento mais rápido, modo assíncrono
+    api = data.get('api')
+    if api=="Copart":
+        re_copart = Copart(query) or []
 
-    re_copart = Copart(query) or [] # Chama Copart e extrai o JSON
     re_sodre_santoro = SodreSantoro(query) or []
     re_palacio_dos_leiloes = Palacio_dos_leiloes(query) or []# Chama SodreSantoro e extrai o JSON
     re_joao_emilio = Joao_Emilio(query) or []
@@ -72,6 +74,10 @@ def teste_online():
     
     return jsonify({"message": "API ONLINE"}), 500
 
+@app.route('/apis', methods=['GET'])
+def apis():
+    
+    return jsonify({"message": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes"]}), 500
 
 
 if __name__ == '__main__':
