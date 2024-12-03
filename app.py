@@ -69,7 +69,7 @@ def delete_dados():
 @app.route('/online', methods=['GET'])
 def teste_online():
     
-    return jsonify({"message": f"API ONLINE: {str(e)}"}), 500
+    return jsonify({"message": "API ONLINE"}), 500
 
 
 
