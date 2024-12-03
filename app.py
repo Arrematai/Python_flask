@@ -74,5 +74,7 @@ def teste_online():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    
+    context = ('fullchain.pem', 'privkey.pem')#certificate and key files
+    app.run(host='0.0.0.0', port=5000, ssl_context=context, debug=True)
 
