@@ -161,5 +161,4 @@ def SuperBid(query):
 
     return resultados
 
-SuperBid('bmw')
 
