@@ -267,10 +267,7 @@
             cardsContainer.appendChild(card);
         });
 
-        // Adiciona o fade e a mensagem, se o usuário não estiver logado
-        if (!isUserLoggedIn && results.length > 5) {
-            // Adiciona os cards restantes como bloqueados
-            results.forEach(item => {
+                    results.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () =>{
@@ -294,16 +291,8 @@
                 cardsContainer.appendChild(card);
             });
 
-            // Adiciona a classe de fade ao container
-            cardsContainer.classList.add('fade');
-
-            // Adiciona a mensagem sobre o fade
-            const overlayMessage = document.createElement('div');
-            overlayMessage.className = 'overlay-message';
-            overlayMessage.textContent = "Cadastre-se para acessar mais resultados!";
-            cardsContainer.appendChild(overlayMessage);
         }
-    }
+    
 
     // Preenche os filtros dinamicamente
     function populateFilters(results) {
