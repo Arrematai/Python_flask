@@ -39,7 +39,7 @@ def search():
             return jsonify({"message": "API inválida"}), 200
             
    
-    SaveML(resultado, "BDML.json")
+    # SaveML(resultado, "BDML.json")
 
 
         
