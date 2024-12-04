@@ -38,41 +38,9 @@ def search():
         case _:
             return jsonify({"message": "API inválida"}), 200
             
-   
-    # SaveML(resultado, "BDML.json")
 
-
-        
-    # Retorna o JSON combinado
     return jsonify(resultado)
 
-
-# @app.route('/download', methods=['GET'])
-# def download_dados():
-#     """
-#     Endpoint para download do arquivo de treinamento.
-#     """
-#     arquivo_saida = "BDML.json"  
-#     try:
-#         return send_file(arquivo_saida, as_attachment=True)
-#     except FileNotFoundError:
-#         return "Arquivo não encontrado", 404
-
-
-# @app.route('/delete', methods=['DELETE'])
-# def delete_dados():
-#     """
-#     Endpoint para deletar o arquivo de treinamento.
-#     """
-#     arquivo_saida = "BDML.json"  # Nome do arquivo salvo
-#     try:
-#         if os.path.exists(arquivo_saida):
-#             os.remove(arquivo_saida)  # Remove o arquivo
-#             return jsonify({"message": "Arquivo de treinamento deletado com sucesso."}), 200
-#         else:
-#             return jsonify({"message": "Arquivo não encontrado."}), 404
-#     except Exception as e:
-#         return jsonify({"message": f"Erro ao deletar o arquivo: {str(e)}"}), 500
 
 @app.route('/online', methods=['GET'])
 def teste_online():
