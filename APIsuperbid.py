@@ -1,5 +1,3 @@
-from itertools import product
-
 import requests
 import re  # Para expressões regulares
 
@@ -59,7 +57,10 @@ def extrair_detalhes(title, marcas):
 def SuperBid(query):
     url = "https://api.sbwebservices.net/offer-query/seo/offers"
 
-    querystring = {"keyword":query,"locale":"pt_BR","orderBy":"score:desc","pageNumber":"1","pageSize":"30","portalId":"[2,15]","requestOrigin":"marketplace","searchType":"opened","timeZoneId":"America/Sao_Paulo","urlSeo":"https://www.superbid.net/busca/"}
+    querystring = {"keyword":query,"locale":"pt_BR","orderBy":"score:desc","pageNumber":"1","pageSize":"30",
+                   "portalId":"[2,15]","requestOrigin":"marketplace","searchType":"opened",
+                   "timeZoneId":"America/Sao_Paulo","urlSeo":"https://www.superbid.net/busca/"}
+                   # ,"filter":"product.subCategory.category.description:carros"}
 
     payload = ""
     headers = {
@@ -155,10 +156,8 @@ def SuperBid(query):
             "link": f"https://www.superbid.net/oferta/{item['id']}",
         }
 
-        print(resultado)
-
-        resultados.append(resultado)
+        if marca:
+            print(resultado)
+            resultados.append(resultado)
 
     return resultados
-
-
