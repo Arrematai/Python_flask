@@ -5,7 +5,7 @@ from APIsodresantoro import SodreSantoro
 from APIjoaoemilio import Joao_Emilio
 from APIsuperbid import SuperBid
 from APIrogeriomenezes import rogeriomenezes
-from DadosML import SaveML
+# from DadosML import SaveML
 
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
@@ -59,20 +59,20 @@ def search():
 #         return "Arquivo não encontrado", 404
 
 
-@app.route('/delete', methods=['DELETE'])
-def delete_dados():
-    """
-    Endpoint para deletar o arquivo de treinamento.
-    """
-    arquivo_saida = "BDML.json"  # Nome do arquivo salvo
-    try:
-        if os.path.exists(arquivo_saida):
-            os.remove(arquivo_saida)  # Remove o arquivo
-            return jsonify({"message": "Arquivo de treinamento deletado com sucesso."}), 200
-        else:
-            return jsonify({"message": "Arquivo não encontrado."}), 404
-    except Exception as e:
-        return jsonify({"message": f"Erro ao deletar o arquivo: {str(e)}"}), 500
+# @app.route('/delete', methods=['DELETE'])
+# def delete_dados():
+#     """
+#     Endpoint para deletar o arquivo de treinamento.
+#     """
+#     arquivo_saida = "BDML.json"  # Nome do arquivo salvo
+#     try:
+#         if os.path.exists(arquivo_saida):
+#             os.remove(arquivo_saida)  # Remove o arquivo
+#             return jsonify({"message": "Arquivo de treinamento deletado com sucesso."}), 200
+#         else:
+#             return jsonify({"message": "Arquivo não encontrado."}), 404
+#     except Exception as e:
+#         return jsonify({"message": f"Erro ao deletar o arquivo: {str(e)}"}), 500
 
 @app.route('/online', methods=['GET'])
 def teste_online():
