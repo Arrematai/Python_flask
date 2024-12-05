@@ -178,14 +178,11 @@
 
 <script>
     let allResults = []; // Guarda todos os resultados para permitir o filtro
-    const isUserLoggedIn = false; // Controle manual (alterar para true quando o usuário estiver logado)
+    
 
     async function fetchResults() {
         const cardsContainer = document.getElementById('resultsCards');
         cardsContainer.innerHTML = '';
-        cardsContainer.classList.remove('fade'); // Remove o fade, caso esteja aplicado
-        const overlayMessage = document.querySelector('.overlay-message');
-        if (overlayMessage) overlayMessage.remove(); // Remove mensagem antiga, se existir++
         const query = document.getElementById('queryInput').value;
         console.log("Query enviada:", query);
 
@@ -267,43 +264,8 @@
             cardsContainer.appendChild(card);
         });
 
-        // Adiciona o fade e a mensagem, se o usuário não estiver logado
-        if (!isUserLoggedIn && results.length > 5) {
-            // Adiciona os cards restantes como bloqueados
-            results.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () =>{
-                    window.open(item.link, '_blank');
-                }
-                card.innerHTML = `
-                    <img src="${item.thumb}" alt="Imagem">
-                    <div class="card-header">
-                        <p><strong>Lote:</strong> ${item.lote} <span class="card-owner">${item.leiloeiro}</span></p>
-                    </div>
-                    <div class="card-body">
-                        <p>${item.marca} ${item.modelo} - Ano ${item.ano}</p>
-                        <p>${item.monta}</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="card-status">
-                            ABERTO PARA LANCES
-                        </div>
-                    </div>
-                `;
-                cardsContainer.appendChild(card);
-            });
-
-            // Adiciona a classe de fade ao container
-            cardsContainer.classList.add('fade');
-
-            // Adiciona a mensagem sobre o fade
-            const overlayMessage = document.createElement('div');
-            overlayMessage.className = 'overlay-message';
-            overlayMessage.textContent = "Cadastre-se para acessar mais resultados!";
-            cardsContainer.appendChild(overlayMessage);
-        }
-    }
+         }
+    
 
     // Preenche os filtros dinamicamente
     function populateFilters(results) {
