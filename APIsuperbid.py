@@ -120,14 +120,14 @@ def SuperBid(query):
         descricao = item['product'].get('shortDesc', 'Descrição não disponível')
 
         # Verifica se há informção da monta na descrição do anuncio
-        if 'pequena monta' in descricao.lower():
+        if 'pequena' in descricao.lower():
             monta = 'Pequena Monta'
-        elif 'média monta' in descricao.lower():
+        elif 'media' in descricao.lower():
             monta = 'Média Monta'
-        elif 'grande monta' in descricao.lower():
+        elif 'grande' in descricao.lower():
             monta = 'Grande Monta'
         else:
-            monta = ''
+            monta = 'No estado que se encontra'
 
         # Extrair detalhes do título
         ret_marca, ret_modelo, ret_ano = extrair_detalhes(descricao, marcas)
