@@ -154,6 +154,7 @@ def SuperBid(query):
             "ano": ano,
             "thumb": item['product'].get('thumbnailUrl', 'Imagem não disponível'),
             "link": f"https://www.superbid.net/oferta/{item['id']}",
+            "leiloeiro":"SuperBid"
         }
 
         if marca:
