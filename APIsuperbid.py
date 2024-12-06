@@ -1,3 +1,5 @@
+from itertools import product
+
 import requests
 import re  # Para expressões regulares
 
@@ -8,7 +10,23 @@ def obter_marcas_fipe():
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            return response.json()
+            # return response.json()
+            lista_marcas = response.json()
+
+            substituicoes = {
+                "GM - Chevrolet": "Chevrolet",
+                "VW - VolksWagen": "Volkswagen",
+                "Mercedes-Benz": "Mercedes",
+                "Rolls-Royce": "Rolls",
+                "Caoa Chery/Chery": "Chery",
+                "Citroën": "Citroen"
+            }
+
+            for marca in lista_marcas:
+                if marca['nome'] in substituicoes:
+                    marca['nome'] = substituicoes[marca['nome']]
+
+            return lista_marcas
 
         else:
             print(f"Erro ao acessar a API FIPE: Status {response.status_code}")
@@ -23,7 +41,8 @@ def obter_modelos_fipe(codigo_marca):
         response = requests.get(url)
         if response.status_code == 200:
             # Retornar apenas os nomes dos modelos
-            return [modelo["nome"] for modelo in response.json()["modelos"]]
+            return [modelo["nome"].split()[0] for modelo in response.json()["modelos"]]
+
         else:
             print(f"Erro ao acessar a API FIPE: Status {response.status_code}")
             return []
@@ -47,6 +66,7 @@ def extrair_detalhes(title, marcas):
 
     if codigo_marca:
         modelos = obter_modelos_fipe(codigo_marca)
+
         modelo = next((m for m in modelos if m.lower() in title.lower()), None)
     else:
         modelo = None
@@ -57,10 +77,23 @@ def extrair_detalhes(title, marcas):
 def SuperBid(query):
     url = "https://api.sbwebservices.net/offer-query/seo/offers"
 
-    querystring = {"keyword":query,"locale":"pt_BR","orderBy":"score:desc","pageNumber":"1","pageSize":"30",
-                   "portalId":"[2,15]","requestOrigin":"marketplace","searchType":"opened",
-                   "timeZoneId":"America/Sao_Paulo","urlSeo":"https://www.superbid.net/busca/"}
-                   # ,"filter":"product.subCategory.category.description:carros"}
+    # querystring = {"keyword":query,"locale":"pt_BR","orderBy":"score:desc","pageNumber":"1","pageSize":"30",
+    #                "portalId":"[2,15]","requestOrigin":"marketplace","searchType":"opened",
+    #                "timeZoneId":"America/Sao_Paulo","urlSeo":"https://www.superbid.net/busca/"}
+    #                # ,"filter":"product.subCategory.category.description:carros"}
+
+    querystring = {
+        "keyword": query,
+        "locale": "pt_BR",
+        "orderBy": "score:desc",
+        "pageNumber": "1",
+        "pageSize": "30",
+        "portalId": "[2,15]",
+        "requestOrigin": "marketplace",
+        "searchType": "opened",
+        "timeZoneId": "America/Sao_Paulo",
+        "urlSeo": "https://www.superbid.net/busca/"
+    }
 
     payload = ""
     headers = {
@@ -118,17 +151,6 @@ def SuperBid(query):
             ano = ''
 
         descricao = item['product'].get('shortDesc', 'Descrição não disponível')
-
-        # Verifica se há informção da monta na descrição do anuncio
-        if 'pequena' in descricao.lower():
-            monta = 'Pequena Monta'
-        elif 'media' in descricao.lower():
-            monta = 'Média Monta'
-        elif 'grande' in descricao.lower():
-            monta = 'Grande Monta'
-        else:
-            monta = 'No estado que se encontra'
-
         # Extrair detalhes do título
         ret_marca, ret_modelo, ret_ano = extrair_detalhes(descricao, marcas)
 
@@ -143,8 +165,17 @@ def SuperBid(query):
         if not ano:
             ano = ret_ano
             if not ano:
-                ano = 'NÃO DISPONIVEL'
+                ano = ''
 
+        # Verifica se há informção da monta na descrição do anuncio
+        if 'pequena monta' in descricao.lower():
+            monta = 'Pequena Monta'
+        elif 'média monta' in descricao.lower():
+            monta = 'Média Monta'
+        elif 'grande monta' in descricao.lower():
+            monta = 'Grande Monta'
+        else:
+            monta = ''
 
         resultado = {
             "lote": item['lotNumber'],
@@ -154,11 +185,14 @@ def SuperBid(query):
             "ano": ano,
             "thumb": item['product'].get('thumbnailUrl', 'Imagem não disponível'),
             "link": f"https://www.superbid.net/oferta/{item['id']}",
-            "leiloeiro":"SuperBid"
+            "leiloeiro": "SuperBid"
         }
 
-        if marca:
+        if marca and modelo and ano:
             print(resultado)
             resultados.append(resultado)
 
     return resultados
+
+SuperBid('ranger')
+
