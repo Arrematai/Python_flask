@@ -12,7 +12,7 @@ def Freitas(query):
     url = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
 
     parametros = {
-        "Nome": "bmw",
+        "Nome": query,
         "Categoria": 1,
         "TipoLoteId": 0,
         "FaixaValor": 0,
@@ -75,14 +75,18 @@ def Freitas(query):
 
             # Extraindo a monta
             monta = None
-            detail_page_response = requests.get(link, headers=headers, verify=False)
-            if detail_page_response.status_code == 200:
-                detail_soup = BeautifulSoup(detail_page_response.text, "html.parser")
-                monta_tag = detail_soup.find("span", class_="fw-bold small")
-                if monta_tag:
-                    monta_text = monta_tag.get_text(strip=True)
-                    monta_match = re.search(r"(\w+)\s+MONTA", monta_text)
-                    monta = monta_match.group(0) if monta_match else None
+            if link
+                try:
+                    detail_page_response = requests.get(link, headers=headers, verify=False)
+                    if detail_page_response.status_code == 200:
+                        detail_soup = BeautifulSoup(detail_page_response.text, "html.parser")
+                        monta_tag = detail_soup.find("span", class_="fw-bold small")
+                        if monta_tag:
+                            monta_text = monta_tag.get_text(strip=True)
+                            monta_match = re.search(r"(\w+)\s+MONTA", monta_text)
+                            monta = monta_match.group(0) if monta_match else None
+                except Exception as e:
+                    print(f"Erro ao acessar página de detalhes: {e}")
 
             resultado = {
                 "ano": ano,
