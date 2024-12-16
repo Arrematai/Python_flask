@@ -90,7 +90,7 @@ def Freitas(modelo):
                 "monta": monta,
                 "ano": ano,
                 "thumb": thumb,
-                "link": link
+                "link": link,
                 "leiloeiro": "Freitas Leiloeiro"
             }
 
