@@ -99,6 +99,6 @@ def Freitas(query):
         page_number += 1
 
     # Imprimindo os resultados em formato JSON
-    print(json.dumps(resultados, indent=2, ensure_ascii=False))
+    
     return resultados
 
