@@ -6,6 +6,7 @@ from APIjoaoemilio import Joao_Emilio
 from APIsuperbid import SuperBid
 from APIrogeriomenezes import rogeriomenezes
 from APIfreitas import Freitas
+from APIrigolon import Rigolon
 # from DadosML import SaveML
 
 from flask import Flask, request, jsonify, send_file
@@ -39,6 +40,8 @@ def search():
             resultado = rogeriomenezes(query) or []
         case "freitas":
             resultado = Freitas(query) or []
+        case "rigolon":
+            resultado = Rigolon(query) or []
         case _:
             return jsonify({"message": "API inválida"}), 200
             
@@ -54,7 +57,7 @@ def teste_online():
 @app.route('/apis', methods=['GET'])
 def apis():
     
-    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitas"]}), 200
+    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitas","rigolon"]}), 200
 
 
 if __name__ == '__main__':
