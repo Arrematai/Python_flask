@@ -75,7 +75,7 @@ def Freitas(query):
 
             # Extraindo a monta
             monta = None
-            if link
+            if link:
                 try:
                     detail_page_response = requests.get(link, headers=headers, verify=False)
                     if detail_page_response.status_code == 200:
