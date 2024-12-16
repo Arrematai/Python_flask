@@ -91,6 +91,7 @@ def Freitas(modelo):
                 "ano": ano,
                 "thumb": thumb,
                 "link": link
+                "leiloeiro": "Freitas Leiloeiro"
             }
 
             resultados.append(resultado)
