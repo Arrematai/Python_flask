@@ -37,11 +37,11 @@ def search():
         case "rogeriomenezes":
             resultado = rogeriomenezes(query) or []
         case "freitas":
-        try:
-            resultado = Freitas(query) or []
-        except Exception as e:
-            print(f"Erro na API Freitas: {e}")
-            resultado = {"error": "Erro ao acessar API Freitas"}
+            try:
+                resultado = Freitas(query) or []
+            except Exception as e:
+                print(f"Erro na API Freitas: {e}")
+                resultado = {"error": "Erro ao acessar API Freitas"}
         case _:
             return jsonify({"message": "API inválida"}), 200
             
