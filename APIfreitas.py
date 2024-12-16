@@ -7,11 +7,11 @@ import urllib3
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def Freitas(modelo):
+def Freitas(query):
     url = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
 
     parametros = {
-        "Nome": modelo,
+        "Nome": {query},
         "Categoria": 1,
         "TipoLoteId": 0,
         "FaixaValor": 0,
