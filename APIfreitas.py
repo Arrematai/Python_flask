@@ -41,7 +41,7 @@ def Freitas(query):
     while True:
         parametros["PageNumber"] = page_number
         response = requests.get(url, params=parametros, headers=headers, verify=False)
-        print(f"Resposta da página: {response.text}"
+        print(f"Resposta da página: {response.text}")
 
         if response.status_code != 200:
             print(f"Erro ao acessar o site na página {page_number}: {response.status_code}")
