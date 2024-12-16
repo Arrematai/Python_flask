@@ -11,7 +11,7 @@ def Freitas(query):
     url = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
 
     parametros = {
-        "Nome": {query},
+        "Nome": query,
         "Categoria": 1,
         "TipoLoteId": 0,
         "FaixaValor": 0,
