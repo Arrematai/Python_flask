@@ -7,6 +7,7 @@ import urllib3
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
 def Freitas(query):
     url = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
 
@@ -84,14 +85,14 @@ def Freitas(query):
                     monta = monta_match.group(0) if monta_match else None
 
             resultado = {
+                "ano": ano,
+                "leiloeiro": "Freitas Leiloeiro",
+                "link": link,
                 "lote": lote_numero,
                 "marca": marca,
                 "modelo": modelo,
                 "monta": monta,
-                "ano": ano,
-                "thumb": thumb,
-                "link": link,
-                "leiloeiro": "Freitas Leiloeiro"
+                "thumb": thumb               
             }
 
             resultados.append(resultado)
@@ -101,4 +102,3 @@ def Freitas(query):
     # Imprimindo os resultados em formato JSON
     
     return resultados
-
