@@ -23,6 +23,7 @@ def search():
     query = data.get('query')
     #colocar aqui paginação para carregamento mais rápido, modo assíncrono
     api = data.get('api')
+    print(f"Query recebida: {query}")
     match api:
         case "copart":
             resultado = Copart(query) or [] 
@@ -37,11 +38,7 @@ def search():
         case "rogeriomenezes":
             resultado = rogeriomenezes(query) or []
         case "freitas":
-            try:
-                resultado = Freitas(query) or []
-            except Exception as e:
-                print(f"Erro na API Freitas: {e}")
-                resultado = {"error": "Erro ao acessar API Freitas"}
+            resultado = Freitas(query) or []
         case _:
             return jsonify({"message": "API inválida"}), 200
             
