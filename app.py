@@ -14,8 +14,8 @@ import random
 import os
 
 app = Flask(__name__)
-# CORS(app, origins=["https://arremataisolucoes.com.br"],
-# supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type", "Authorization"])
+CORS(app, origins=["https://arremataisolucoes.com.br"],
+supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type", "Authorization"])
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -37,7 +37,7 @@ def search():
             resultado = SuperBid(query) or []
         case "rogeriomenezes":
             resultado = rogeriomenezes(query) or []
-        case "freitas":
+        case "freitasleiloeiro":
             resultado = Freitas(query) or []
         case _:
             return jsonify({"message": "API inválida"}), 200
@@ -54,7 +54,7 @@ def teste_online():
 @app.route('/apis', methods=['GET'])
 def apis():
     
-    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitas"]}), 200
+    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitasleiloeiro"]}), 200
 
 
 if __name__ == '__main__':
