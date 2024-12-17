@@ -6,8 +6,7 @@ from APIjoaoemilio import Joao_Emilio
 from APIsuperbid import SuperBid
 from APIrogeriomenezes import rogeriomenezes
 from APIfreitas import Freitas
-from APIrigolon import Rigolon
-# from DadosML import SaveML
+
 
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
@@ -15,8 +14,8 @@ import random
 import os
 
 app = Flask(__name__)
-CORS(app, origins=["https://arremataisolucoes.com.br"],
-supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type", "Authorization"])
+# CORS(app, origins=["https://arremataisolucoes.com.br"],
+# supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type", "Authorization"])
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -40,8 +39,6 @@ def search():
             resultado = rogeriomenezes(query) or []
         case "freitas":
             resultado = Freitas(query) or []
-        case "rigolon":
-            resultado = Rigolon(query) or []
         case _:
             return jsonify({"message": "API inválida"}), 200
             
@@ -57,7 +54,7 @@ def teste_online():
 @app.route('/apis', methods=['GET'])
 def apis():
     
-    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitas","rigolon"]}), 200
+    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitas"]}), 200
 
 
 if __name__ == '__main__':
