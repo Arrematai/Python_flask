@@ -87,7 +87,7 @@ def Freitas(query):
                         if monta_tag:
                             monta_text = monta_tag.get_text(strip=True)
                             monta_match = re.search(r"(\w+)\s+MONTA", monta_text)
-                            monta = monta_match.group(0) if monta_match else None
+                            monta = monta_match.group(0) if monta_match else monta_match
                 except Exception as e:
                     print(f"Erro ao acessar página de detalhes: {e}")
 
