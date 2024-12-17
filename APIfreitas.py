@@ -31,7 +31,7 @@ def Freitas(query):
         'accept': "*/*",
         'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         'x-requested-with': "XMLHttpRequest",
-        'referer': "https://www.freitasleiloeiro.com.br/",  
+        'referer': "https://www.freitasleiloeiro.com.br/",
         'origin': "https://www.freitasleiloeiro.com.br"
     }
 
@@ -41,7 +41,7 @@ def Freitas(query):
     while True:
         parametros["PageNumber"] = page_number
         response = requests.get(url, params=parametros, headers=headers, verify=False)
-        print(f"Resposta da página: {response.text}")
+
 
         if response.status_code != 200:
             print(f"Erro ao acessar o site na página {page_number}: {response.status_code}")
@@ -86,8 +86,10 @@ def Freitas(query):
                         monta_tag = detail_soup.find("span", class_="fw-bold small")
                         if monta_tag:
                             monta_text = monta_tag.get_text(strip=True)
+                            print(monta_text)
                             monta_match = re.search(r"(\w+)\s+MONTA", monta_text)
-                            monta = monta_match.group(0) if monta_match else monta_match
+                            monta = monta_match.group(0) if monta_match else monta_text
+                            
                 except Exception as e:
                     print(f"Erro ao acessar página de detalhes: {e}")
 
@@ -99,7 +101,7 @@ def Freitas(query):
                 "marca": marca,
                 "modelo": modelo,
                 "monta": monta,
-                "thumb": thumb               
+                "thumb": thumb
             }
 
             resultados.append(resultado)
