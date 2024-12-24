@@ -1,0 +1,50 @@
+[
+    {
+        "codigo": 9434,
+        "nome": "e.co Cargo 10kW (Elétrico)"
+    },
+    {
+        "codigo": 10728,
+        "nome": "e.co Cargo 15.7kWh (Elétrico)"
+    },
+    {
+        "codigo": 9435,
+        "nome": "e.co Cargo 7,5kW (Elétrico)"
+    },
+    {
+        "codigo": 10729,
+        "nome": "e.co Delivery 15,7kWh (Elétrico)"
+    },
+    {
+        "codigo": 10730,
+        "nome": "e.co Delivery 7,7kWh (Elétrico)"
+    },
+    {
+        "codigo": 9436,
+        "nome": "e.co Tech2 6kW (Elétrico)"
+    },
+    {
+        "codigo": 9437,
+        "nome": "e.co Tech4 6kW (Elétrico)"
+    },
+    {
+        "codigo": 9438,
+        "nome": "e.co Truck 10kW (Elétrico)"
+    },
+    {
+        "codigo": 10731,
+        "nome": "e.co Truck 15,7kWh (Elétrico)"
+    },
+    {
+        "codigo": 9439,
+        "nome": "e.co Truck 7,5kW (Elétrico)"
+    },
+    {
+        "codigo": 11072,
+        "nome": "e.coCargo 31,4 kW (Elétrico)"
+    },
+    {
+        "codigo": 11073,
+        "nome": "e.coTruck 31,4 kW (Elétrico)"
+    }
+]

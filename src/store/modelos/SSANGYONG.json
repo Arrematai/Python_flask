@@ -1,0 +1,158 @@
+[
+    {
+        "codigo": 4535,
+        "nome": "ACTYON 2.0 16V 141cv Diesel"
+    },
+    {
+        "codigo": 4963,
+        "nome": "ACTYON 2.3 16V 150cv Aut."
+    },
+    {
+        "codigo": 8291,
+        "nome": "ACTYON SP DLX 2.2 7 4x4 178cv Dies. Aut."
+    },
+    {
+        "codigo": 4536,
+        "nome": "ACTYON SPORTS 2.0 16V 141cv Diesel"
+    },
+    {
+        "codigo": 6330,
+        "nome": "ACTYON SPORTS 2.0 16V 155cv Diesel"
+    },
+    {
+        "codigo": 8292,
+        "nome": "ACTYON SPORTS 2.2 4x4 178cv TB Dies Aut."
+    },
+    {
+        "codigo": 4099,
+        "nome": "Chairman 3.2 V6 220cv Aut."
+    },
+    {
+        "codigo": 4100,
+        "nome": "Istana 2.9 95cv TB Diesel Int. 16Lug."
+    },
+    {
+        "codigo": 5649,
+        "nome": "Korando 2.0 16V T.Diesel AWD Aut."
+    },
+    {
+        "codigo": 5650,
+        "nome": "Korando 2.0 16V T.Diesel AWD Mec."
+    },
+    {
+        "codigo": 8293,
+        "nome": "Korando 2.2 AWD 178cv TB Diesel Aut."
+    },
+    {
+        "codigo": 4101,
+        "nome": "Korando Canvas 2.9 TB Diesel Int. Aut."
+    },
+    {
+        "codigo": 4102,
+        "nome": "Korando Canvas 2.9 TB Diesel Int. Mec."
+    },
+    {
+        "codigo": 8294,
+        "nome": "Korando DLX 2.2 AWD 178cv TB Diesel Aut."
+    },
+    {
+        "codigo": 4103,
+        "nome": "Korando GL 2.9 TB Diesel Int. 120cv"
+    },
+    {
+        "codigo": 4104,
+        "nome": "Korando GLX 2.9 TB Diesel Int. 120cv Aut"
+    },
+    {
+        "codigo": 4105,
+        "nome": "Korando GLX 2.9 TB Diesel Int. 120cv Mec"
+    },
+    {
+        "codigo": 4927,
+        "nome": "Kyron 2.0 16V 141cv  TDI Diesel Aut."
+    },
+    {
+        "codigo": 4401,
+        "nome": "Kyron 2.7 20V 165cv TDI Dies. Aut."
+    },
+    {
+        "codigo": 4106,
+        "nome": "Musso DX 2.9 Diesel"
+    },
+    {
+        "codigo": 4107,
+        "nome": "Musso GL 2.9 TB Diesel Int. 120cv"
+    },
+    {
+        "codigo": 4108,
+        "nome": "Musso GLS 2.9 TB Diesel Int. 120cv Aut"
+    },
+    {
+        "codigo": 4109,
+        "nome": "Musso GLS 3.2 V6 220cv 4x4 Aut."
+    },
+    {
+        "codigo": 4110,
+        "nome": "Musso GLX 2.9 TB Diesel Int. 120cv Aut"
+    },
+    {
+        "codigo": 4111,
+        "nome": "Musso GLX 2.9 TB Diesel Int. 120cv Mec"
+    },
+    {
+        "codigo": 4112,
+        "nome": "Musso Pick-Up GLX 2.9 4x4 CD TB Int.Dies"
+    },
+    {
+        "codigo": 4113,
+        "nome": "Musso Pick-Up LX 2.9 4x4 CD TB Int.Dies."
+    },
+    {
+        "codigo": 4114,
+        "nome": "Musso SX 2.9 Diesel"
+    },
+    {
+        "codigo": 4263,
+        "nome": "Rexton II 2.7 20V 165/186cv TDI Dies.Aut"
+    },
+    {
+        "codigo": 4402,
+        "nome": "Rexton II 3.2 V6 24V 220cv Aut."
+    },
+    {
+        "codigo": 4115,
+        "nome": "Rexton RX 270 2.7 165cv Xdi Diesel Aut."
+    },
+    {
+        "codigo": 4116,
+        "nome": "Rexton RX 290 2.9 120cv TB Int. Dies.Aut"
+    },
+    {
+        "codigo": 4117,
+        "nome": "Rexton RX 290 2.9 120cv TB Int. Dies.Mec"
+    },
+    {
+        "codigo": 4118,
+        "nome": "Rexton RX 320 3.2 V6 235cv Aut."
+    },
+    {
+        "codigo": 7045,
+        "nome": "Rexton W 2.7 20V XDI Diesel Aut."
+    },
+    {
+        "codigo": 8295,
+        "nome": "TIVOLI 1.6 16V 128cv Aut."
+    },
+    {
+        "codigo": 8296,
+        "nome": "TIVOLI DLX 1.6 16V 128cv Aut."
+    },
+    {
+        "codigo": 8297,
+        "nome": "XLV 1.6 16V 128cv Aut."
+    },
+    {
+        "codigo": 8298,
+        "nome": "XLV DLX 1.6 16V 128cv Aut."
+    }
+]

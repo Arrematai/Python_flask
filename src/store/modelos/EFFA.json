@@ -1,0 +1,66 @@
+[
+    {
+        "codigo": 7342,
+        "nome": "K01 Pick-up CS 1.0 8V 2p"
+    },
+    {
+        "codigo": 7343,
+        "nome": "K02 Pick-up CD 1.0 8V 4p"
+    },
+    {
+        "codigo": 4637,
+        "nome": "M-100 1.0 8V 5p"
+    },
+    {
+        "codigo": 5660,
+        "nome": "Plutus 3.2 8V 4x2 CD Turbo Diesel"
+    },
+    {
+        "codigo": 5661,
+        "nome": "Start Picape CD 1.0 8V 5p"
+    },
+    {
+        "codigo": 5662,
+        "nome": "Start Picape L 1.0 8V 2p"
+    },
+    {
+        "codigo": 5663,
+        "nome": "Start Van 1.0 8V 4p"
+    },
+    {
+        "codigo": 4638,
+        "nome": "ULC FURGÃO 1.0 8V 5p"
+    },
+    {
+        "codigo": 4639,
+        "nome": "ULC PICAPE 1.0 8V 2p"
+    },
+    {
+        "codigo": 5358,
+        "nome": "ULC PICAPE CD 1.0 8V 4p"
+    },
+    {
+        "codigo": 5359,
+        "nome": "ULC PICAPE Longa 1.0 8V 2p"
+    },
+    {
+        "codigo": 5360,
+        "nome": "ULC PICAPE Longa Bau 1.0 8V 2p"
+    },
+    {
+        "codigo": 4640,
+        "nome": "ULC VAN 1.0 8V 5p"
+    },
+    {
+        "codigo": 7344,
+        "nome": "V21 Pick-up CS 1.3 16V 2p"
+    },
+    {
+        "codigo": 7345,
+        "nome": "V22 Pick-up CD 1.3 16V 4p"
+    },
+    {
+        "codigo": 9041,
+        "nome": "V25 Furgão 1.3 16V 5p"
+    }
+]
