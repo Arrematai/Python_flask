@@ -7,7 +7,6 @@ https://python-poetry.org/docs/
 https://pm2.io/docs/runtime/guide/installation/
 
 
-
 ## EXEC
 
 poetry install
