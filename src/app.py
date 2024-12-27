@@ -29,7 +29,7 @@ def search():
             palacios = ServicePalacios(query,"2000")
             resultado = palacios.exec()
         case "joaoemilio":
-            joaoEmilio = ServiceJoaoEmilio("fiat","2000")
+            joaoEmilio = ServiceJoaoEmilio(query,"2000")
             resultado = joaoEmilio.exec() or []
         case "superbid":
             superbid = ServiceSuperBid(query,"2000")
