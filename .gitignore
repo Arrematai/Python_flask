@@ -1,0 +1,11 @@
+# Diretórios e arquivos do ambiente virtual
+venv/
+.env/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+
+# Arquivos de log
+*.log
