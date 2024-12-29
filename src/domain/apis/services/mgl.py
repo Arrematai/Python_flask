@@ -75,7 +75,7 @@ def MGL():
     data = response.json()
 
 
-
+s
     resultados = []
     for item in data.get('Lotes', []):
         descricao = item.get("Lote", "")

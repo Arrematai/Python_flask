@@ -24,3 +24,11 @@ pm2 start ecosystem.config.js
 pip install dist/arrematai-0.1.0-py3-none-any.whl
 
 arrematai
+
+
+
+## Fipe quase -> calc no banco
+
+## Validador de leiloeiro
+
+## 

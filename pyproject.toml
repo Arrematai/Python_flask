@@ -10,7 +10,7 @@ packages = [
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.11"
 typer = "^0.15.1"
 requests = "^2.32.3"
 schedule = "^1.2.2"
@@ -20,9 +20,13 @@ urllib3 = "^2.3.0"
 flask = "^3.1.0"
 flask-cors = "^5.0.0"
 beautifulsoup4 = "4.11.1"
+flask-limiter = "^3.9.2"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.scripts]
 arrematai = "src.__main__:init"
+seed = "src.__seed__:init"
+test = "src.__test__:init"
 
 [build-system]
 requires = ["poetry-core"]

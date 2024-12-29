@@ -1,15 +1,17 @@
 import mysql.connector
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-
-class DataBase :
+class DataBase:
     
-  def __init__(self, ip, port, database, user, password):
+  def __init__(self):
     try:
-      self.ip = ip
-      self.port = port
-      self.database = database
-      self.user = user
-      self.password = password
+      self.ip = os.getenv("DATABASE_IP")
+      self.port = os.getenv("DATABASE_PORT")
+      self.database = os.getenv("DATABASE_DB")
+      self.user = os.getenv("DATABASE_USER")
+      self.password = os.getenv("DATABASE_PASSWORD")
       self.conn = mysql.connector.connect(
           host=self.ip,
           port=self.port,
@@ -23,10 +25,6 @@ class DataBase :
       print("DataBaseError: "+err)
     except mysql.connector.Error as err:
       print("Error: "+err)
-
-
-  
-
 
   def close(self):
     self.socket.close()

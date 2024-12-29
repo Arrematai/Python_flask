@@ -2,7 +2,7 @@ module.exports = {
 	apps: [
 		{
 			name: "Arrematai",
-			script: "src/__main__.py",
+			script: "poetry run arrematei",
 			autorestart: true,
 			watch: true,
 			max_memory_restart: "250M",
