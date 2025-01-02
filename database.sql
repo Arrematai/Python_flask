@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS `arrematai`.`Modelos` (
   `codigo` VARCHAR(11) NOT NULL,
   `nome` VARCHAR(254) NOT NULL,
   `marcaId` INT NOT NULL,
+  `marca` VARCHAR(254) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT NOW(),
   `updated_at` DATETIME NOT NULL DEFAULT NOW(),
   PRIMARY KEY (`id`),

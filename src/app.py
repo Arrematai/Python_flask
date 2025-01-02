@@ -11,6 +11,7 @@ from src.domain.apis.controller import ApisController
 from src.domain.marcas.controller import MarcasController
 from src.domain.modelos.controller import ModelosController
 from src.domain.modelosAnos.controller import ModelosAnosController
+from src.domain.fipes.controller import FipesController
 
 # Lista de IPs/DNS a serem ignorados pelo limter
 IGNORED_IPS = {"127.0.0.1", "localhost", "https://arremataisolucoes.com.br", "https://arrematai.com.br"}
@@ -87,6 +88,18 @@ def fipeModelosAnosByModeloID(modeloID):
         return jsonify({"data": { "success": False, "message": e }}), 200
     
 
+# ## Retorna os dados do carro
+@app.route('/fipe/marcas/<marcaID>/modelos/<modeloID>/anos/<ano>', methods=['GET'])
+def fipe(marcaID, modeloID,ano):
+    try:
+        if not modeloID:
+            raise Exception("Modelo deve ser enviado.") 
+        
+        service = FipesController()
+        carro = service.getCarro(marcaID, modeloID, ano)
+        return jsonify({"data": { "success": True, "dados": carro }}), 200
+    except Exception as e:
+        return jsonify({"data": { "success": False, "message": e }}), 200
 
 # ## Retorna os dados do carro
 # @app.route('/fipe/marcas/<marcaID>/modelos/<modeloID>/anos/<ano>', methods=['GET'])

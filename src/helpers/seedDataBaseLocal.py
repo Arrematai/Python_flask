@@ -92,7 +92,7 @@ class SeedDataBase:
           
     def seedModelosAnos(self):
       try:
-        lastID = 6223
+        lastID = 4895
         subQuery = """
             SELECT 
                 modelos.id, 
@@ -142,7 +142,7 @@ class SeedDataBase:
             dados = self.service.getAnos(modelo[3],modelo[1])
             
             query = """
-              INSERT INTO anos (codigo, nome, modeloId, modelo)
+              INSERT INTO AnosModelos (codigo, nome, modeloId, modelo)
               VALUES (%s, %s, %s, %s)
             """
             
@@ -150,7 +150,7 @@ class SeedDataBase:
             data = []
             
             for d in dados:
-              select = "SELECT count(id) as count FROM arrematai.anos where modelo = %s and codigo = %s and nome = %s limit 1;"
+              select = "SELECT count(id) as count FROM AnosModelos where modelo = %s and codigo = %s and nome = %s limit 1;"
               self.database.socket.execute(select, (modelo[2], d['codigo'], d['nome']))
               resultados = self.database.socket.fetchone()
               if resultados[0] == 0:
@@ -179,23 +179,23 @@ class SeedDataBase:
       try:
         lastID = None
         subQuery = """
-            SELECT anos.id, anos.codigo, anos.nome, modeloId, modelo, marcaId, marca FROM anos LEFT JOIN modelos ON modelos.id = modeloId
+            SELECT AnosModelos.id, AnosModelos.codigo, AnosModelos.nome, modeloId, modelo, marcaId, marca FROM AnosModelos LEFT JOIN modelos ON modelos.id = modeloId
             """
         
         # Executando uma consulta SELECT
         if lastID:
           query = subQuery + " " +"""
             WHERE 
-                anos.id < %s 
+                AnosModelos.id < %s 
             ORDER BY 
-                anos.id DESC;
+                AnosModelos.id DESC;
             """
           args = (lastID,) ## tem q ser uma tupla
           self.database.socket.execute(query,args) 
         else:
           query = subQuery + " " + """
             ORDER BY 
-                anos.id DESC;
+                AnosModelos.id DESC;
             """
           self.database.socket.execute(query)
         
@@ -221,7 +221,7 @@ class SeedDataBase:
             
             # Insert multiple rows
             query = """
-              INSERT INTO anos (AnoModelo, CodigoFipe, Combustivel, Marca, MesReferencia, Modelo, SiglaCombustivel, TipoVeiculo, Valor, modeloId, marcaId)
+              INSERT INTO Fipes (AnoModelo, CodigoFipe, Combustivel, Marca, MesReferencia, Modelo, SiglaCombustivel, TipoVeiculo, Valor, modeloId, marcaId)
               VALUES (%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s)
               ON DUPLICATE KEY UPDATE
               CodigoFipe = VALUES(CodigoFipe),
