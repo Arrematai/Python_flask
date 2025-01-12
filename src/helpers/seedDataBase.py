@@ -202,7 +202,6 @@ class SeedDataBase:
             """
           self.database.socket.execute(query)
         
-
         # Recuperando os resultados
         modelosAnos = self.database.socket.fetchall()
 
