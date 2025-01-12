@@ -122,7 +122,7 @@ def teste_online():
 
 def init():
   print("Inicio Aplicação")
-#   context = ('fullchain.pem', 'privkey.pem')#certificate and key files
-#   app.run(host='0.0.0.0', port=5001, ssl_context=context)
-  app.run(host='0.0.0.0', port=5001)
+  context = ('fullchain.pem', 'privkey.pem')#certificate and key files
+  app.run(host='0.0.0.0', port=5001, ssl_context=context)
+#   app.run(host='0.0.0.0', port=5001)
   print("Aplicação Finalizada")
