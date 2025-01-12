@@ -2,48 +2,72 @@ import os
 import logging
 from typing import Text
 
+current_dir = os.getcwd()
+EXECUTION_LEVEL = 25  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
+
+def createdExecution(self, message, *args, **kwargs):
+  if self.isEnabledFor(EXECUTION_LEVEL):
+      self._log(EXECUTION_LEVEL, message, args, **kwargs)
+
 class Log:
   hostname: Text
   level: Text
-  path_log: Text = '/log/arrematai'
+  path_log: Text
 
   def __init__(cls, ip):
     cls.ip = ip
     cls.logging = logging
+    cls.path_log = os.path.join(current_dir, "log")
     cls.createPathLog()
-    # cls.hostname = hostname
+    cls.createdLoggerCustom()
 
+  def createdLoggerCustom(cls):
+    cls.logging.addLevelName(EXECUTION_LEVEL, "EXECUTION")
+    cls.logging.Logger.execution = createdExecution
+    cls.logger = cls.logging.getLogger("arrematei_logger")
+    
   def register(cls, filename, level, formatter) -> None:
     cls.logging.basicConfig(handlers=[cls.logging.FileHandler(
-      filename=cls.path_log+filename+'.log',
+      filename=os.path.join(cls.path_log, f'{filename}.log'),
       mode='a', 
       encoding='utf-8', 
     )], level=level, format=formatter, datefmt='%d/%b/%y %H:%M:%S')
-    
-  def messageInfoHost(cls, message:Text) -> None:
+  
+  
+  def executionTime(cls, start, end, api, query) -> None:
+    execution_time = end - start
+    cls.register(
+      filename='execution', 
+      level=EXECUTION_LEVEL,
+      formatter=f"[%(asctime)s] — %(levelname)s - {cls.ip} — %(message)s"
+    )
+    cls.logger.execution(f"API: {api}, Tempo de execução da: {execution_time:.6f} segundos, query: {query}")
+  
+  
+  def messageInfo(cls, message:Text) -> None:
     cls.register(
       filename='info', 
-      level=cls.logging.INFO,
-      formatter=f"[%(asctime)s] — %(levelname)s - v{__version__} - {cls.ip} — %(message)s"
+      level=cls.logger.INFO,
+      formatter=f"[%(asctime)s] — %(levelname)s - {cls.ip} — %(message)s"
     )
-    cls.logging.info(str(message))
+    cls.logger.info(str(message))
 
-  def messageErrorHost(cls, message:Text) -> None:
+  def messageError(cls, message:Text) -> None:
     cls.register(
-      filename='info', 
-      level=cls.logging.ERROR,
-      formatter=f"[%(asctime)s] — %(name)s — %(levelname)s - v{__version__} - {cls.ip} — %(message)s"
+      filename='error', 
+      level=cls.logger.ERROR,
+      formatter=f"[%(asctime)s] — %(name)s — %(levelname)s - {cls.ip} — %(message)s"
     )
-    cls.logging.error(str(message))
+    cls.logger.error(str(message))
 
 
   def messageDebug(cls, message:Text) -> None:
     cls.register(
-      filename='info', 
-      level=cls.logging.DEBUG,
-      formatter=f"[%(asctime)s] — %(name)s — %(levelname)s - v{__version__} - {cls.ip} — %(message)s"
+      filename='debug', 
+      level=cls.logger.DEBUG,
+      formatter=f"[%(asctime)s] — %(name)s — %(levelname)s - {cls.ip} — %(message)s"
     )
-    cls.logging.debug(str(message))
+    cls.logger.debug(str(message))
 
   def createPathLog(cls) -> None:
     os.makedirs(cls.path_log, exist_ok = True)

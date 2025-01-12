@@ -92,7 +92,7 @@ class SeedDataBase:
           
     def seedModelosAnos(self):
       try:
-        lastID = 4895
+        lastID = 2052
         subQuery = """
             SELECT 
                 modelos.id, 
@@ -112,7 +112,7 @@ class SeedDataBase:
         if lastID:
           query = subQuery + " " +"""
             WHERE 
-                modelos.id < %s 
+                modelos.id <= %s 
             ORDER BY 
                 modelos.id DESC;
             """
@@ -177,32 +177,35 @@ class SeedDataBase:
 
     def seedFipes(self):
       try:
-        lastID = None
+        lastID = 23672
         subQuery = """
-            SELECT AnosModelos.id, AnosModelos.codigo, AnosModelos.nome, modeloId, modelo, marcaId, marca FROM AnosModelos LEFT JOIN modelos ON modelos.id = modeloId
+            SELECT anosmodelos.id, anosmodelos.codigo, anosmodelos.nome, modelos.codigo, modelo, modelos.id, marcas.codigo, marca, marcas.id 
+            FROM anosmodelos 
+            LEFT JOIN modelos ON modelos.id = modeloId
+            LEFT JOIN marcas ON marcas.id = marcaId
             """
         
         # Executando uma consulta SELECT
         if lastID:
           query = subQuery + " " +"""
             WHERE 
-                AnosModelos.id < %s 
+                anosmodelos.id >= %s 
             ORDER BY 
-                AnosModelos.id DESC;
+                anosmodelos.id ASC;
             """
           args = (lastID,) ## tem q ser uma tupla
           self.database.socket.execute(query,args) 
         else:
           query = subQuery + " " + """
             ORDER BY 
-                AnosModelos.id DESC;
+                anosmodelos.id ASC;
             """
           self.database.socket.execute(query)
         
 
         # Recuperando os resultados
         modelosAnos = self.database.socket.fetchall()
-        
+
         try:
           max_tentativas = 3
           tentativa = 0
@@ -211,25 +214,54 @@ class SeedDataBase:
             tentativa += 1
           
           for modelo in modelosAnos:
-            print(">>>> MODEL0", modelo)
-            dados = self.service.getFipe(modelo[5],modelo[3],modelo[1])
+            print(">>>> ANOMODELO", modelo)
+            dados = self.service.getFipe(modelo[6],modelo[3],modelo[1])
   
-            print(dados)
-            
             if not dados:
               continue
+            else:
+              dados = dados["AnoModelo"],dados["CodigoFipe"],dados["Combustivel"],dados["Marca"],dados["MesReferencia"],dados["Modelo"],dados["SiglaCombustivel"],dados["TipoVeiculo"],dados["Valor"],modelo[5],modelo[8]
             
-            # Insert multiple rows
-            query = """
-              INSERT INTO Fipes (AnoModelo, CodigoFipe, Combustivel, Marca, MesReferencia, Modelo, SiglaCombustivel, TipoVeiculo, Valor, modeloId, marcaId)
-              VALUES (%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s)
-              ON DUPLICATE KEY UPDATE
-              CodigoFipe = VALUES(CodigoFipe),
-            """
-            self.database.socket.executemany(query,dados + modelo[5] + modelo[3])
+            print("Dados", dados)
+            
+            # check exist 
+            select = "SELECT id FROM fipes WHERE AnoModelo = %s and modeloId = %s and marcaId = %s limit 1;"
+            self.database.socket.execute(select, (dados[0], dados[9], dados[10]))
+            resultados = self.database.socket.fetchone()
+            
+            print("Resultados", resultados)
+              
+            if not resultados:
+              # Insert row
+              query = """
+                INSERT INTO fipes (AnoModelo, CodigoFipe, Combustivel, Marca, MesReferencia, Modelo, SiglaCombustivel, TipoVeiculo, Valor, modeloId, marcaId)
+                VALUES (%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s)
+              """
+              
+              self.database.socket.execute(query,dados)
+              print(f"{self.database.socket.rowcount} linha inserida com sucesso.")
+            else:
+              # update row
+              query = """
+              UPDATE fipes
+              SET 
+                  AnoModelo = %s,
+                  CodigoFipe = %s,
+                  Combustivel = %s,
+                  Marca = %s,
+                  MesReferencia = %s,
+                  Modelo = %s,
+                  SiglaCombustivel = %s,
+                  TipoVeiculo = %s,
+                  Valor = %s,
+                  modeloId = %s,
+                  marcaId = %s
+              WHERE id = %s;
+              """
+              self.database.socket.execute(query,dados + (resultados[0],))
+              print(f"{self.database.socket.rowcount} linha atualizada com sucesso.")
             # Commit changes
             self.database.conn.commit()
-            print(f"{self.database.socket.rowcount} linhas inseridas com sucesso.")
             print("____________________________________________________________")
             print("")
         except requests.exceptions.RequestException as e:

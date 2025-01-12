@@ -93,7 +93,6 @@ CREATE TABLE IF NOT EXISTS `arrematai`.`Fipes` (
   `TipoVeiculo` INT NULL,
   `Valor` VARCHAR(245) NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `CodigoFipe_UNIQUE` (`CodigoFipe` ASC),
   INDEX `fk_Carros_Marcas1_idx` (`marcaId` ASC),
   INDEX `fk_Carros_Modelos1_idx` (`modeloId` ASC),
   CONSTRAINT `fk_Carros_Marcas1`

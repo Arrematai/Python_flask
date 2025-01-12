@@ -23,7 +23,7 @@ class ModelosAnosController:
   def getModelosByModeloId(self, modeloId):
     try:
       # Executando uma consulta SELECT
-      query = "SELECT id, codigo, nome, modeloId, modelo FROM modelos where modeloId = ? order by nome"
+      query = "SELECT id, codigo, nome, modeloId, modelo FROM anosmodelos where modeloId = %s order by nome"
       self.database.socket.execute(query, (modeloId,))
 
       # Recuperando os resultados

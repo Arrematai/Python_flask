@@ -4,20 +4,18 @@ class ServiceParallelum:
     urlApi = "https://parallelum.com.br/fipe/api/v1/carros"
     
     def get(self, url):
-        try:
-            response = requests.get(url)
-            if response.status_code == 200:
-                # return response.json()
-                responseJson = response.json()
-                
-                return responseJson
+        response = requests.get(url)
+        if response.status_code == 200:
+            # return response.json()
+            responseJson = response.json()
+            
+            return responseJson
 
-            else:
-                print(f"Erro ao acessar a API FIPE: Status {response.status_code}")
-                raise Exception("Erro de retorno da API")
-        except Exception as e:
-            print(f"Erro ao conectar à API FIPE: {e}")
-            raise Exception("erro em se conectar a API.")
+        else:
+            print(response.content)
+            print(f"Erro ao acessar a API FIPE: Status {response.status_code}")
+            if(response.status_code == 429):
+                raise Exception("Erro Rate limit expired.")
     
     
     # Função para obter marcas de veículos da API FIPE

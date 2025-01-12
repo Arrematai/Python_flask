@@ -1,0 +1,18 @@
+meta {
+  name: GET API
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{URL}}/search
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "api": "copart",
+    "query": "fiat"
+  }
+}

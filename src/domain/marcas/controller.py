@@ -12,7 +12,7 @@ class MarcasController:
         self.database.socket.execute(query)
 
         # Recuperando os resultados
-        return  self.database.socket.fetchall()
+        return self.database.socket.fetchall()
             
       except Exception as e:
           print(f"Error: {e}")

@@ -20,10 +20,11 @@ class ModelosController:
       finally:
           self.database.close()
           
-  def getModelosByMarcaId(self, marcaId):
+  def getModelosByMarcaId(self, marcaId: str):
     try:
+      print(marcaId)
       # Executando uma consulta SELECT
-      query = "SELECT id, codigo, nome FROM modelos where marcaId = ? order by nome"
+      query = "SELECT id, codigo, nome FROM modelos where = %s order by nome"
       self.database.socket.execute(query, (marcaId,))
 
       # Recuperando os resultados

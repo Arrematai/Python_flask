@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, json, request, jsonify
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-## Services
-from src.infra.service.Parallelum import ServiceParallelum
+
+## DATABASE
+from src.infra.database.mysql import DataBase
 
 ## CONTROLLER
 from src.domain.apis.controller import ApisController
@@ -13,7 +14,7 @@ from src.domain.modelos.controller import ModelosController
 from src.domain.modelosAnos.controller import ModelosAnosController
 from src.domain.fipes.controller import FipesController
 
-# Lista de IPs/DNS a serem ignorados pelo limter
+# Lista de IPs/DNS a serem ignorados pelo limiter
 IGNORED_IPS = {"127.0.0.1", "localhost", "https://arremataisolucoes.com.br", "https://arrematai.com.br"}
 
 def custom_key_func():
@@ -25,7 +26,6 @@ def custom_key_func():
 
 app = Flask(__name__)
 limiter = Limiter(
-    get_remote_address,
     app=app,
     default_limits=["1000 per day", "100 per hour"],
     storage_uri="memory://",
@@ -37,12 +37,13 @@ supports_credentials=True, methods=["GET", "POST"], allow_headers=["Content-Type
 @app.route('/search', methods=['POST'])
 def search():
     try:
-        apis = ApisController(request)
+        apis = ApisController(request,get_remote_address())
         resultado = apis.exec()
         
         return jsonify(resultado)
     
     except Exception as e:
+        print(e);
         return jsonify({"message": "API inválida"}), 200
 
 
@@ -55,7 +56,8 @@ def apis():
 @app.route('/fipe/marcas', methods=['GET'])
 def fipeMarcas():
     try:
-        service = MarcasController()
+        database = DataBase(dictionary=True)
+        service = MarcasController(database)
         marcas = service.getMarcas()
         return jsonify({"data": { "success": True, "dados": marcas }}), 200
     except Exception as e:
@@ -67,8 +69,8 @@ def fipeModelosByMarcaId(marcaID):
     try:
         if not marcaID:
             raise Exception("Marca deve ser enviada.") 
-        
-        service = ModelosController()
+        database = DataBase(dictionary=True)
+        service = ModelosController(database)
         modelos = service.getModelosByMarcaId(marcaID)
         return jsonify({"data": { "success": True, "dados": modelos }}), 200
     except Exception as e:
@@ -81,7 +83,8 @@ def fipeModelosAnosByModeloID(modeloID):
         if not modeloID:
             raise Exception("Modelo deve ser enviado.") 
         
-        service = ModelosAnosController()
+        database = DataBase(dictionary=True)
+        service = ModelosAnosController(database)
         modelos = service.getModelosByModeloId(modeloID)
         return jsonify({"data": { "success": True, "dados": modelos }}), 200
     except Exception as e:
@@ -95,7 +98,8 @@ def fipe(marcaID, modeloID,ano):
         if not modeloID:
             raise Exception("Modelo deve ser enviado.") 
         
-        service = FipesController()
+        database = DataBase(dictionary=True)
+        service = FipesController(database)
         carro = service.getCarro(marcaID, modeloID, ano)
         return jsonify({"data": { "success": True, "dados": carro }}), 200
     except Exception as e:
@@ -119,6 +123,6 @@ def teste_online():
 def init():
   print("Inicio Aplicação")
 #   context = ('fullchain.pem', 'privkey.pem')#certificate and key files
-#   app.run(host='0.0.0.0', port=6000, ssl_context=context)
-  app.run(host='0.0.0.0', port=6000)
+#   app.run(host='0.0.0.0', port=5001, ssl_context=context)
+  app.run(host='0.0.0.0', port=5001)
   print("Aplicação Finalizada")

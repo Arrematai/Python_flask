@@ -8,7 +8,7 @@ class FipesController:
   def getCarro(self, marcaId, modeloId, AnoModelo):
       try:
         # Executando uma consulta SELECT
-        query = "SELECT id, AnoModelo, CodigoFipe, Combustivel, Marca, marcaId, MesReferencia, Modelo, modeloId, SiglaCombustivel, TipoVeiculo, Valor FROM anos where AnoModelo = ? and marcaId = ? and modeloId = ? order by AnoModelo"
+        query = "SELECT id, AnoModelo, CodigoFipe, Combustivel, Marca, marcaId, MesReferencia, Modelo, modeloId, SiglaCombustivel, TipoVeiculo, Valor FROM fipes where marcaId = %s and modeloId = %s and AnoModelo = %s order by AnoModelo"
         self.database.socket.execute(query, (marcaId, modeloId, AnoModelo))
 
         # Recuperando os resultados

@@ -1,4 +1,9 @@
 from flask import Request
+import time
+
+## INFRA
+from src.infra.service.Logging import Log
+
 ## APIS
 from src.domain.apis.services.copart import ServiceCopart
 from src.domain.apis.services.sodresantoro import ServiceSantoro
@@ -11,19 +16,22 @@ from src.domain.apis.services.rogeriomenezes import ServiceRogerio
 
 class ApisController:
 
-  def __init__(self, request: Request):
+  def __init__(self, request: Request, ip: str):
     self.request = request
+    self.Log = Log(ip)
   
   def exec(self):
     data = self.request.json
     query = data.get('query')
     api = data.get('api')
     print(f"Query recebida: {query}")
+    print(f"Api recebida: {api}")
+    start_time = time.time()
     
     match api:
         case "copart":
             copart = ServiceCopart(query,"2000")
-            resultado = copart.exec() or [] 
+            resultado = copart.exec() or []
         case "sodresantoro":
             santoro = ServiceSantoro(query,"2000")
             resultado = santoro.exec() or []
@@ -45,6 +53,7 @@ class ApisController:
         case _:
             raise Exception("Api inválida.")
             
-
+    end_time = time.time()
+    self.Log.executionTime(query=query, api=api,end=end_time, start=start_time)
     return resultado
   

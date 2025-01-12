@@ -60,6 +60,6 @@ class ServiceCopart:
             resultados.append(resultado)
 
         # Exibe os resultados
-        print(len(resultados))
+        # print(len(resultados))
         # return jsonify(resultados)
         return resultados

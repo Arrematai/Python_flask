@@ -1,6 +1,6 @@
 from src.infra.database.mysql import DataBase
 from src.infra.service.Parallelum import ServiceParallelum
-from src.helpers.seedDataBaseLocal import SeedDataBase
+from src.helpers.seedDataBase import SeedDataBase
 
 def init():
   print("Inicio Aplicação")
@@ -10,6 +10,6 @@ def init():
   
   seed = SeedDataBase(database=database, service=service)
   
-  seed.seedModelosAnos()
+  seed.seedFipes()
 
   print("Aplicação Finalizada")

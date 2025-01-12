@@ -5,7 +5,7 @@ load_dotenv()
 
 class DataBase:
     
-  def __init__(self):
+  def __init__(self,dictionary: bool = False ):
     try:
       self.ip = os.getenv("DATABASE_IP")
       self.port = os.getenv("DATABASE_PORT")
@@ -19,7 +19,7 @@ class DataBase:
           user=self.user,
           password=self.password
       )
-      self.socket = self.conn.cursor()
+      self.socket = self.conn.cursor(dictionary=dictionary)
       
     except mysql.connector.DatabaseError as err:
       print("DataBaseError: "+err)
