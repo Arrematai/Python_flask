@@ -3,11 +3,25 @@ import requests
 from src.infra.database.mysql import DataBase
 from src.infra.service.Parallelum import ServiceParallelum
 
+
+def readLastId():
+  with open('lastId.txt', 'r', encoding='utf-8') as arquivo:
+    conteudo = arquivo.read()
+  print(conteudo)
+  return conteudo
+
+def writeLastId(conteudo):
+  if(conteudo):
+    with open('lastId.txt', 'w', encoding='utf-8') as arquivo:
+      arquivo.write(f'{conteudo}')
+
+
+
+
 class SeedDataBase:
     def __init__(self, database: DataBase, service: ServiceParallelum):
       self.database = database
       self.service = service
-      
       
     def seedMarcas(self):
       marcas = self.service.getMarcas()
@@ -38,7 +52,6 @@ class SeedDataBase:
       finally:
           self.database.close()
 
-      
     def seedModelos(self):
       try:
         # Executando uma consulta SELECT
@@ -177,7 +190,9 @@ class SeedDataBase:
 
     def seedFipes(self):
       try:
-        lastID = 23672
+        readLastId()
+        lastID = readLastId()
+        ultimo = None
         subQuery = """
             SELECT anosmodelos.id, anosmodelos.codigo, anosmodelos.nome, modelos.codigo, modelo, modelos.id, marcas.codigo, marca, marcas.id 
             FROM anosmodelos 
@@ -212,64 +227,68 @@ class SeedDataBase:
           while tentativa < max_tentativas:
             tentativa += 1
           
-          for modelo in modelosAnos:
-            print(">>>> ANOMODELO", modelo)
-            dados = self.service.getFipe(modelo[6],modelo[3],modelo[1])
-  
-            if not dados:
-              continue
-            else:
-              dados = dados["AnoModelo"],dados["CodigoFipe"],dados["Combustivel"],dados["Marca"],dados["MesReferencia"],dados["Modelo"],dados["SiglaCombustivel"],dados["TipoVeiculo"],dados["Valor"],modelo[5],modelo[8]
-            
-            print("Dados", dados)
-            
-            # check exist 
-            select = "SELECT id FROM fipes WHERE AnoModelo = %s and modeloId = %s and marcaId = %s limit 1;"
-            self.database.socket.execute(select, (dados[0], dados[9], dados[10]))
-            resultados = self.database.socket.fetchone()
-            
-            print("Resultados", resultados)
+            for modelo in modelosAnos:
+              ultimo = modelo[0]
+              print(">>>> ANOMODELO", modelo)
+              dados = self.service.getFipe(modelo[6],modelo[3],modelo[1])
+    
+              if not dados:
+                continue
+              else:
+                dados = dados["AnoModelo"],dados["CodigoFipe"],dados["Combustivel"],dados["Marca"],dados["MesReferencia"],dados["Modelo"],dados["SiglaCombustivel"],dados["TipoVeiculo"],dados["Valor"],modelo[5],modelo[8]
               
-            if not resultados:
-              # Insert row
-              query = """
-                INSERT INTO fipes (AnoModelo, CodigoFipe, Combustivel, Marca, MesReferencia, Modelo, SiglaCombustivel, TipoVeiculo, Valor, modeloId, marcaId)
-                VALUES (%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s)
-              """
+              print("Dados", dados)
               
-              self.database.socket.execute(query,dados)
-              print(f"{self.database.socket.rowcount} linha inserida com sucesso.")
-            else:
-              # update row
-              query = """
-              UPDATE fipes
-              SET 
-                  AnoModelo = %s,
-                  CodigoFipe = %s,
-                  Combustivel = %s,
-                  Marca = %s,
-                  MesReferencia = %s,
-                  Modelo = %s,
-                  SiglaCombustivel = %s,
-                  TipoVeiculo = %s,
-                  Valor = %s,
-                  modeloId = %s,
-                  marcaId = %s
-              WHERE id = %s;
-              """
-              self.database.socket.execute(query,dados + (resultados[0],))
-              print(f"{self.database.socket.rowcount} linha atualizada com sucesso.")
-            # Commit changes
-            self.database.conn.commit()
-            print("____________________________________________________________")
-            print("")
+              # check exist 
+              select = "SELECT id FROM fipes WHERE AnoModelo = %s and modeloId = %s and marcaId = %s limit 1;"
+              self.database.socket.execute(select, (dados[0], dados[9], dados[10]))
+              resultados = self.database.socket.fetchone()
+              
+              print("Resultados", resultados)
+                
+              if not resultados:
+                # Insert row
+                query = """
+                  INSERT INTO fipes (AnoModelo, CodigoFipe, Combustivel, Marca, MesReferencia, Modelo, SiglaCombustivel, TipoVeiculo, Valor, modeloId, marcaId)
+                  VALUES (%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s)
+                """
+                
+                self.database.socket.execute(query,dados)
+                print(f"{self.database.socket.rowcount} linha inserida com sucesso.")
+              else:
+                # update row
+                query = """
+                UPDATE fipes
+                SET 
+                    AnoModelo = %s,
+                    CodigoFipe = %s,
+                    Combustivel = %s,
+                    Marca = %s,
+                    MesReferencia = %s,
+                    Modelo = %s,
+                    SiglaCombustivel = %s,
+                    TipoVeiculo = %s,
+                    Valor = %s,
+                    modeloId = %s,
+                    marcaId = %s
+                WHERE id = %s;
+                """
+                self.database.socket.execute(query,dados + (resultados[0],))
+                print(f"{self.database.socket.rowcount} linha atualizada com sucesso.")
+                
+              # Commit changes
+              self.database.conn.commit()
+              print("____________________________________________________________")
+              print("")
         except requests.exceptions.RequestException as e:
           print(f"Erro: {e}. Retentando...")
           
         time.sleep(20)
           
       except Exception as e:
+
           print(f"Error: {e}")
           self.database.conn.rollback()
       finally:
+          writeLastId(ultimo)
           self.database.close()

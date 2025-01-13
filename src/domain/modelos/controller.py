@@ -24,7 +24,7 @@ class ModelosController:
     try:
       print(marcaId)
       # Executando uma consulta SELECT
-      query = "SELECT id, codigo, nome FROM modelos where = %s order by nome"
+      query = "SELECT id, codigo, nome FROM modelos where marcaId = %s order by nome"
       self.database.socket.execute(query, (marcaId,))
 
       # Recuperando os resultados

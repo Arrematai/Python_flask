@@ -95,8 +95,12 @@ def fipeModelosAnosByModeloID(modeloID):
 @app.route('/fipe/marcas/<marcaID>/modelos/<modeloID>/anos/<ano>', methods=['GET'])
 def fipe(marcaID, modeloID,ano):
     try:
+        if not marcaID:
+            raise Exception("Marca deve ser enviado.") 
         if not modeloID:
             raise Exception("Modelo deve ser enviado.") 
+        if not ano:
+            raise Exception("Ano deve ser enviado.") 
         
         database = DataBase(dictionary=True)
         service = FipesController(database)
@@ -122,7 +126,7 @@ def teste_online():
 
 def init():
   print("Inicio Aplicação")
-  context = ('fullchain.pem', 'privkey.pem')#certificate and key files
-  app.run(host='0.0.0.0', port=5001, ssl_context=context)
-#   app.run(host='0.0.0.0', port=5001)
+#   context = ('fullchain.pem', 'privkey.pem')#certificate and key files
+#   app.run(host='0.0.0.0', port=5001, ssl_context=context)
+  app.run(host='0.0.0.0', port=5001)
   print("Aplicação Finalizada")

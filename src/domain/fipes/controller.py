@@ -8,11 +8,11 @@ class FipesController:
   def getCarro(self, marcaId, modeloId, AnoModelo):
       try:
         # Executando uma consulta SELECT
-        query = "SELECT id, AnoModelo, CodigoFipe, Combustivel, Marca, marcaId, MesReferencia, Modelo, modeloId, SiglaCombustivel, TipoVeiculo, Valor FROM fipes where marcaId = %s and modeloId = %s and AnoModelo = %s order by AnoModelo"
+        query = "SELECT id, AnoModelo, CodigoFipe, Combustivel, Marca, marcaId, MesReferencia, Modelo, modeloId, SiglaCombustivel, TipoVeiculo, Valor FROM fipes where marcaId = %s and modeloId = %s and AnoModelo = %s order by AnoModelo LIMIT 1"
         self.database.socket.execute(query, (marcaId, modeloId, AnoModelo))
 
         # Recuperando os resultados
-        return  self.database.socket.fetchall()
+        return  self.database.socket.fetchone()
             
       except Exception as e:
           print(f"Error: {e}")

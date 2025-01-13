@@ -17,33 +17,35 @@ class ServiceSuperBid:
         
     def initValue(self):
         self.params = {
-        "keyword": self.query,
-        "locale": "pt_BR",
-        "orderBy": "score:desc",
-        "pageNumber": "1",
-        "pageSize": self.size,
-        "portalId": "[2,15]",
-        "requestOrigin": "marketplace",
-        "searchType": "opened",
-        "timeZoneId": "America/Sao_Paulo",
-        "urlSeo": "https://www.superbid.net/busca/"
+            "keyword": self.query,
+            "locale": "pt_BR",
+            "orderBy": "score:desc",
+            "pageNumber": "1",
+            "pageSize": self.size,
+            "portalId": "[2,15]",
+            "requestOrigin": "marketplace",
+            "searchType": "opened",
+            "timeZoneId": "America/Sao_Paulo",
+            "urlSeo": "https://www.superbid.net/busca/"
         }
         self.payload = {}
-        self.headers = {
-            "accept": "application/json",
-            "accept-language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-            "authorization": "ApiKey d2NHYVRKRUI0R0s5Q2kwRXNfNGU6b0xGVDl3blFRd0t6S2hZVURKZThHZw==",
-            "content-type": "application/json",
-            "origin": "https://www.sodresantoro.com.br",
+        self.headers =  {
+            "cookie": "__cf_bm=uobWTAu9HGNs8HVe4LFfSr1uU2W1pM8pp05snOTmXd4-1732108079-1.0.1.1-SFNI8XXgCwlC8wsUbAESqamToXss3KrQEAwFYWqFP3AfeQ48xp_qVG4RIGrZLpa5oftmYaRRRc4MNnRQZCpKDA",
+            "accept": "application/json, application/hal+json",
+            "accept-language": "pt-BR,pt;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,pt-PT;q=0.5",
+            "authorization": "",
+            "client_id": "dzqC3VodSoXukD45BQKg3NQU6-faststore",
+            "origin": "https://www.superbid.net",
             "priority": "u=1, i",
-            "referer": "https://www.sodresantoro.com.br/",
-            "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?1",
-            "sec-ch-ua-platform": "\"Android\"",
+            "referer": "https://www.superbid.net/",
+            "sec-ch-ua": """Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24""",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "Windows",
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "cross-site",
-            "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36"
+            "suppress-authenticate": "true",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
         }
 
     def _getAno(self,title):
@@ -85,9 +87,12 @@ class ServiceSuperBid:
                             marca = property['value']
                         if property['id'] == 'modelo':
                             modelo = property['value']
+                            
+            # Não encontrou modelo ou marca com query do cliente
+            if marca and modelo :
+                if not self.query.lower() in modelo.lower() and not self.query.lower() in marca.lower() :
+                    return
                         
-
-
             descricao = item['product'].get('shortDesc', 'Descrição não disponível')
             
             monta = getMonta(descricao.lower())
