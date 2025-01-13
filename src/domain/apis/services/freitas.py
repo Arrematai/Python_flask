@@ -79,13 +79,16 @@ class ServiceFreitas:
     def _getLanceInicial(self, page_lote):
         page_soup = BeautifulSoup(page_lote.text, "html.parser")
         lance_inicial = page_soup.find("div", class_="fw-bold text-warning")
-        
         lance_inicial_text = lance_inicial.get_text(strip=True)
-        
-        return float(lance_inicial_text.replace("R$", "").replace(".", "").replace(",", "."))  if lance_inicial_text  else None   
+        return float(lance_inicial_text.replace("R$", "").replace(".", "").replace(",", "."))  if lance_inicial_text  else None 
+    
+    def _getValorAtual(self, page_lote):
+        valor_atual = page_lote.find("div", class_="cardLote-vlr")
+        valor_atual = valor_atual.get_text(strip=True)
+        return float(valor_atual.replace("R$", "").replace(".", "").replace(",", "."))  if valor_atual  else None   
     
     def exec(self):
-
+        i = 1 
         resultados = []
 
         response = requests.get(self.url, params=self.parametros, headers=self.headers, verify=False)
@@ -95,8 +98,9 @@ class ServiceFreitas:
 
         soup = BeautifulSoup(response.text, "html.parser")
         lotes = soup.find_all("div", class_="cardlote") # Pega cada CARD
-        
+    
         for lote in lotes:
+            monta = "Não Informado"
             title = self._getTitle(lote)
             marca = self._getMarca(title)
             modelo = self._getModelo(title)
@@ -104,13 +108,16 @@ class ServiceFreitas:
             thumb = self._getThumb(lote)
             link = self._getLink(lote)
             lote_numero = self._getLoteNumero(link)
+            valor_atual = self._getValorAtual(lote)
             
+            
+            #! Codigo demora muito se implementar, pois faz varios request as paginas, por isso só 40 request.
             # Entra na pagina do card e pega mais informacoes
-            page_lote = requests.get(link, headers=self.headers, verify=False)
-            
-            if page_lote.status_code == 200:
-                monta = self._getMonta(page_lote)
-                valor_atual = self._getLanceInicial(page_lote)
+            if i <= 40:
+                page_lote = requests.get(link, headers=self.headers, verify=False)
+                if page_lote.status_code == 200:
+                    monta = self._getMonta(page_lote)
+                    valor_atual = self._getLanceInicial(page_lote)
 
 
             resultado = {
@@ -132,10 +139,23 @@ class ServiceFreitas:
         
 
             resultados.append(resultado)
+            i = i + 1
+            
+        # i = 1 
+        # for resultado in resultados:
+        #     if i == 40:
+        #         print("break", i)
+        #         break
+            
+        #     page_lote = requests.get(resultado["link"], headers=self.headers, verify=False)
+        #     if page_lote.status_code == 200:
+        #         monta = self._getMonta(page_lote)
+        #         valor_atual = self._getLanceInicial(page_lote)
+        #     i = i + 1
 
 
         # Imprimindo os resultados em formato JSON
-        print(json.dumps(resultados, indent=2, ensure_ascii=False))
+        # print(json.dumps(resultados, indent=2, ensure_ascii=False))
         return resultados
 
 

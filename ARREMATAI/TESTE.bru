@@ -5,7 +5,18 @@ meta {
 }
 
 get {
-  url: https://parallelum.com.br/fipe/api/v1/carros/marcas/23/modelos/1000/anos/2007-1
+  url: https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes?categoria=1&Nome=fiat
   body: none
   auth: none
+}
+
+params:query {
+  categoria: 1
+  Nome: fiat
+}
+
+headers {
+  x-requested-with: XMLHttpRequest
+  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 OPR/114.0.0.0
+  accept: */*
 }
