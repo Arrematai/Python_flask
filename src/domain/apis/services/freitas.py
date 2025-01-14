@@ -3,8 +3,9 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
-import json
 import urllib3
+
+from src.infra.service.Logging import Log
 
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -18,6 +19,7 @@ class ServiceFreitas:
         self.query = query
         self.size = size
         self.initValue()
+        self.log = Log("")
         
     def initValue(self):
         self.parametros = {
@@ -38,7 +40,8 @@ class ServiceFreitas:
         self.headers= {
             'accept': "*/*",
             'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 OPR/114.0.0.0",
-            'x-requested-with': "XMLHttpRequest"
+            'x-requested-with': "XMLHttpRequest",
+            "cookie":"__goc_session__=erbpxynnqzymuzctdhfiwyuaqmxtprkc"
         }
         
     def _getTitle(self, lote):
@@ -94,7 +97,8 @@ class ServiceFreitas:
         response = requests.get(self.url, params=self.parametros, headers=self.headers, verify=False)
 
         if response.status_code != 200:
-            print(f"Erro ao acessar o site na página {page_number}: {response.status_code}")
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            print(f"Erro ao acessar o site na página: {response.status_code}")
 
         soup = BeautifulSoup(response.text, "html.parser")
         lotes = soup.find_all("div", class_="cardlote") # Pega cada CARD
@@ -118,6 +122,8 @@ class ServiceFreitas:
                 if page_lote.status_code == 200:
                     monta = self._getMonta(page_lote)
                     valor_atual = self._getLanceInicial(page_lote)
+                else:
+                    self.log.messageError(f"Erro em acesso site {link}, status code : {page_lote.status_code}")
 
 
             resultado = {
@@ -141,18 +147,6 @@ class ServiceFreitas:
             resultados.append(resultado)
             i = i + 1
             
-        # i = 1 
-        # for resultado in resultados:
-        #     if i == 40:
-        #         print("break", i)
-        #         break
-            
-        #     page_lote = requests.get(resultado["link"], headers=self.headers, verify=False)
-        #     if page_lote.status_code == 200:
-        #         monta = self._getMonta(page_lote)
-        #         valor_atual = self._getLanceInicial(page_lote)
-        #     i = i + 1
-
 
         # Imprimindo os resultados em formato JSON
         # print(json.dumps(resultados, indent=2, ensure_ascii=False))

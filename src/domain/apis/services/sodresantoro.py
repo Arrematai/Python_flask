@@ -131,6 +131,6 @@ class ServiceSantoro:
             resultados.append(resultado)
 
         # Exibe os resultados
-        print(len(resultados))
+        # print(len(resultados))
         return resultados
     

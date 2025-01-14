@@ -47,27 +47,27 @@ class Log:
   def messageInfo(cls, message:Text) -> None:
     cls.register(
       filename='info', 
-      level=cls.logger.INFO,
+      level=cls.logging.INFO,
       formatter=f"[%(asctime)s] — %(levelname)s - {cls.ip} — %(message)s"
     )
-    cls.logger.info(str(message))
+    cls.logging.info(str(message))
 
   def messageError(cls, message:Text) -> None:
     cls.register(
       filename='error', 
-      level=cls.logger.ERROR,
+      level=cls.logging.ERROR,
       formatter=f"[%(asctime)s] — %(name)s — %(levelname)s - {cls.ip} — %(message)s"
     )
-    cls.logger.error(str(message))
+    cls.logging.error(str(message))
 
 
   def messageDebug(cls, message:Text) -> None:
     cls.register(
       filename='debug', 
-      level=cls.logger.DEBUG,
+      level=cls.logging.DEBUG,
       formatter=f"[%(asctime)s] — %(name)s — %(levelname)s - {cls.ip} — %(message)s"
     )
-    cls.logger.debug(str(message))
+    cls.logging.debug(str(message))
 
   def createPathLog(cls) -> None:
     os.makedirs(cls.path_log, exist_ok = True)
