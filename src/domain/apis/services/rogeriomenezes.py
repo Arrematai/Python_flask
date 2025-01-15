@@ -39,8 +39,11 @@ class ServiceRogerio:
         return img_tag["src"] if img_tag else None
     
     def _getValorInicial(self, resultado: Tag):
-        valor = resultado.select_one("p.lance-atual")
-        return float(valor.text.replace("R$", "").replace(".", "").replace(",", ".")) if valor else "N/A"
+        try:
+            valor = resultado.select_one("p.lance-atual")
+            return float(valor.text.replace("R$", "").replace(".", "").replace(",", ".")) if valor else "N/A"
+        except Exception as e:
+            return None
                 
     def _getAno(self, title: str):
         ano_match = re.search(r"\b(19[0-9]{2}|20[0-9]{2})(\/(19[0-9]{2}|20[0-9]{2}))?\b", title)

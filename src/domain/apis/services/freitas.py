@@ -3,12 +3,8 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
-import urllib3
 
 from src.infra.service.Logging import Log
-
-# Desativando avisos de InsecureRequestWarning
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class ServiceFreitas:
     url: Text = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
@@ -80,15 +76,21 @@ class ServiceFreitas:
             return monta_match.group(0) if monta_match else None
         
     def _getLanceInicial(self, page_lote):
-        page_soup = BeautifulSoup(page_lote.text, "html.parser")
-        lance_inicial = page_soup.find("div", class_="fw-bold text-warning")
-        lance_inicial_text = lance_inicial.get_text(strip=True)
-        return float(lance_inicial_text.replace("R$", "").replace(".", "").replace(",", "."))  if lance_inicial_text  else None 
+        try: 
+            page_soup = BeautifulSoup(page_lote.text, "html.parser")
+            lance_inicial = page_soup.find("div", class_="fw-bold text-warning")
+            lance_inicial_text = lance_inicial.get_text(strip=True)
+            return float(lance_inicial_text.replace("R$", "").replace(".", "").replace(",", "."))  if lance_inicial_text  else None 
+        except Exception as e:
+            return None
     
     def _getValorAtual(self, page_lote):
-        valor_atual = page_lote.find("div", class_="cardLote-vlr")
-        valor_atual = valor_atual.get_text(strip=True)
-        return float(valor_atual.replace("R$", "").replace(".", "").replace(",", "."))  if valor_atual  else None   
+        try: 
+            valor_atual = page_lote.find("div", class_="cardLote-vlr")
+            valor_atual = valor_atual.get_text(strip=True)
+            return float(valor_atual.replace("R$", "").replace(".", "").replace(",", "."))  if valor_atual  else None
+        except Exception as e:
+            return None
     
     def exec(self):
         i = 1 

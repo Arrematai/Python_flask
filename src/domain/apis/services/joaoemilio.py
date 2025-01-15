@@ -57,8 +57,11 @@ class ServiceJoaoEmilio:
         return link_match.group(1) if link_match else "N/A"
     
     def _getValorAtual(self, html):
-        valor_inicial = re.search(r'<h4 class="mb-0">R\$\s?([\d.,]+)</h4>', html)
-        return float(valor_inicial.group(1).replace("R$", "").replace(".", "").replace(",", ".")) if valor_inicial.group(1) else "N/A"
+        try:
+            valor_inicial = re.search(r'<h4 class="mb-0">R\$\s?([\d.,]+)</h4>', html)
+            return float(valor_inicial.group(1).replace("R$", "").replace(".", "").replace(",", ".")) if valor_inicial.group(1) else "N/A"
+        except Exception as e:
+            return None
 
     def exec(self):
 

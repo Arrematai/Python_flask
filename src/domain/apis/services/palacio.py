@@ -58,10 +58,13 @@ class ServicePalacios:
         return modelo_completo.split("/")[0]
     
     def _getValorInicial(self, lote):
-        valor_inicial_text = lote.find("div", class_="h3 mt-3 text-center").get_text(strip=True)
-        numeros = re.findall(r'\d+[\.,]?\d*', valor_inicial_text)
-        resultado = ','.join(numeros)
-        return float(resultado.replace("R$", "").replace(".", "").replace(",", "."))  if resultado  else None   
+        try: 
+            valor_inicial_text = lote.find("div", class_="h3 mt-3 text-center").get_text(strip=True)
+            numeros = re.findall(r'\d+[\.,]?\d*', valor_inicial_text)
+            resultado = ','.join(numeros)
+            return float(resultado.replace("R$", "").replace(".", "").replace(",", "."))  if resultado  else None 
+        except Exception as e:
+            return None
 
 
     def exec(self):
@@ -73,7 +76,6 @@ class ServicePalacios:
 
         soup = BeautifulSoup(lotes_html, 'html.parser')
         lotes = soup.select("div.col-md-3")
-
 
         resultados = []
         for lote in lotes:

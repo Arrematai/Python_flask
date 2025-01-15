@@ -12,6 +12,7 @@ from src.domain.apis.services.palacio import ServicePalacios
 from src.domain.apis.services.superbid import ServiceSuperBid
 from src.domain.apis.services.joaoemilio import ServiceJoaoEmilio 
 from src.domain.apis.services.rogeriomenezes import ServiceRogerio
+from src.domain.apis.services.liderleiloes import ServiceLiderLeiloes
 
 
 class ApisController:
@@ -50,6 +51,9 @@ class ApisController:
         case "rogeriomenezes":
             rogerio = ServiceRogerio(query,"2000")
             resultado = rogerio.exec() or []
+        case "liderleiloes":
+            lider = ServiceLiderLeiloes(query,"2000")
+            resultado = lider.exec() or []
         case _:
             raise Exception("Api inválida.")
             

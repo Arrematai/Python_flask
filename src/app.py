@@ -49,7 +49,7 @@ def search():
 
 @app.route('/apis', methods=['GET'])
 def apis():
-    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitasleiloeiro"]}), 200
+    return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitasleiloeiro", "liderleiloes"]}), 200
 
 ## FIPE
 ## Retorna todas as marcas
