@@ -12,6 +12,7 @@ from src.domain.apis.services.superbid import ServiceSuperBid
 from src.domain.apis.services.joaoemilio import ServiceJoaoEmilio
 from src.domain.apis.services.rogeriomenezes import ServiceRogerio
 from src.domain.apis.services.liderleiloes import ServiceLiderLeiloes
+from src.domain.apis.services.pestana import ServicePestana
 # from src.domain.apis.services.mgl import MGL
 
 
@@ -30,8 +31,12 @@ def init():
   # palacios = ServicePalacios("fiat", 2000)  
   # result = palacios.exec()
   
-  lider = ServiceLiderLeiloes("fiat", 2000)  
-  result = lider.exec()
+  # lider = ServiceLiderLeiloes("fiat", 2000)  
+  # result = lider.exec()
+  
+    
+  pestana = ServicePestana("fiat", 2000)  
+  result = pestana.exec()
 
   print("Resultados:",result)
   end_time = time.time()

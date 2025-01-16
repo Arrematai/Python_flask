@@ -15,6 +15,7 @@ class ServiceLiderLeiloes:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.resultados = []
         self.initValue()
     
     def initValue(self):

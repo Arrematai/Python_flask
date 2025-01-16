@@ -36,6 +36,12 @@ class ServiceCopart:
         
     def exec (self):
         response = requests.post(self.url, data=self.payload, headers=self.headers)
+        
+        if response.status_code != 200:
+            print(f"Erro ao acessar o site na página: {response.status_code}")
+            return []
+        
+        
         data = response.json()
         
         resultados = []

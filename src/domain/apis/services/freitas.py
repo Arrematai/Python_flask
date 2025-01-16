@@ -101,6 +101,7 @@ class ServiceFreitas:
         if response.status_code != 200:
             self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
             print(f"Erro ao acessar o site na página: {response.status_code}")
+            return []
 
         soup = BeautifulSoup(response.text, "html.parser")
         lotes = soup.find_all("div", class_="cardlote") # Pega cada CARD
