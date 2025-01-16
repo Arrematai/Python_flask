@@ -50,7 +50,12 @@ class ServicePestana:
             carro = next(filter(lambda item: item["tipo"] == 1733520657548, automovel["bens"][0]["caracteristicas"]), "")
             versao = next(filter(lambda item: item["tipo"] == 1733520660276, automovel["bens"][0]["caracteristicas"]), "")
             combustivel = next(filter(lambda item: item["tipo"] == 1733520672455, automovel["bens"][0]["caracteristicas"]), "")
-            modelo = f"{carro["valor"]} {versao["valor"]} {combustivel["valor"]}"
+
+            carro = carro["valor"]
+            versao = versao["valor"]
+            combustivel = combustivel["valor"]
+            
+            modelo = f"{carro} {versao} {combustivel}"
             
             
             # query enviada não é igual ao modelo e marca
