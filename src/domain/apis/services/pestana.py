@@ -69,7 +69,10 @@ class ServicePestana:
             thumb = automovel["bens"][0]["imagens"][0]["original"]
             
             
-            ano = f"{ano_inicial["valor"]}/{ano_final["valor"]}" if ano_inicial and ano_final else f"{ano_inicial["valor"]}" if ano_inicial else f"{ano_final["valor"]}" if ano_final else ""
+            ano_inicial = ano_inicial["valor"]
+            ano_final = ano_final["valor"]
+            
+            ano = f"{ano_inicial}/{ano_final}" if ano_inicial and ano_final else f"{ano_inicial}" if ano_inicial else f"{ano_final}" if ano_final else ""
             monta = monta["valor"]
             lote = automovel["id"]
             leilao = automovel["leilao"]
