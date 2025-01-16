@@ -7,6 +7,11 @@ venv/
 __pycache__/
 *.sqlite3
 log/*
+fullchain.pem
+privkey.pem
+database.pem
+banco.pem
+database.sql
 
 # Arquivos de log
 *.log

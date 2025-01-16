@@ -50,8 +50,12 @@ class ServiceVip:
         link_tag = lote.find("a", class_="itm-cdlink", href=True)
         return self.url + link_tag["href"] if link_tag else None
     
-    # def _getLoteNumero(self, link):
-    #     return re.search(r"loteNumero=(\d+)", link).group(1) if link else None
+    def _getLoteNumero(self, lote:BeautifulSoup):
+      lote_num = lote.find("p", class_="itm-info")
+      span = lote_num.find('span')
+      if span:
+        span.extract() 
+      return lote_num.get_text(strip=True) if lote_num else None
       
     def _getLanceInicial(self, lote:BeautifulSoup):
         try: 
@@ -97,10 +101,11 @@ class ServiceVip:
             thumb = self._getThumb(lote)
             link = self._getLink(lote)
             valor_atual = self._getLanceInicial(lote)
+            lote_numero = self._getLoteNumero(lote)
             
             resultado = {
                 "uuid": str(uuid.uuid4()),
-                # "lote": lote_numero,
+                "lote": lote_numero,
                 "chassi": None,
                 "valor_fipe": None,
                 "valor_atual": valor_atual,
