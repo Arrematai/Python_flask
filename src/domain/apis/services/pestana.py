@@ -37,7 +37,7 @@ class ServicePestana:
         data = response.json()
         
         
-        automoveis = list(filter(lambda item: item["bens"][0]["subTipoBem"]["id"] == 481, data))
+        automoveis = list(filter(lambda item: item["bens"][0]["tipoBem"]["id"] == 421, data))
         
         
         if automoveis and len(automoveis) > 0:
@@ -45,18 +45,17 @@ class ServicePestana:
             
             # Marca
             marca = next(filter(lambda item: item["tipo"] == 1733520656132, automovel["bens"][0]["caracteristicas"]), "Não Informado")
-            marca = marca["valor"]
+            marca = marca["valor"] if "valor" in marca else None
             # Modelo
             carro = next(filter(lambda item: item["tipo"] == 1733520657548, automovel["bens"][0]["caracteristicas"]), "")
             versao = next(filter(lambda item: item["tipo"] == 1733520660276, automovel["bens"][0]["caracteristicas"]), "")
             combustivel = next(filter(lambda item: item["tipo"] == 1733520672455, automovel["bens"][0]["caracteristicas"]), "")
-
-            carro = carro["valor"]
-            versao = versao["valor"]
-            combustivel = combustivel["valor"]
+            
+            carro = carro["valor"] if "valor" in carro else None
+            versao = versao["valor"] if "valor" in versao else None
+            combustivel = combustivel["valor"] if "valor" in combustivel else None
             
             modelo = f"{carro} {versao} {combustivel}"
-            
             
             # query enviada não é igual ao modelo e marca
             if (marca.lower() != self.query.lower()) and (self.query.lower() not in modelo.lower()):
@@ -69,11 +68,11 @@ class ServicePestana:
             thumb = automovel["bens"][0]["imagens"][0]["original"]
             
             
-            ano_inicial = ano_inicial["valor"]
-            ano_final = ano_final["valor"]
+            ano_inicial = ano_inicial["valor"] if "valor" in ano_inicial else None
+            ano_final = ano_final["valor"] if "valor" in ano_final else None
             
             ano = f"{ano_inicial}/{ano_final}" if ano_inicial and ano_final else f"{ano_inicial}" if ano_inicial else f"{ano_final}" if ano_final else ""
-            monta = monta["valor"]
+            monta = monta["valor"] if "valor" in monta else None
             lote = automovel["id"]
             leilao = automovel["leilao"]
             valor_atual = automovel["valorInicial"]

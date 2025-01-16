@@ -14,6 +14,7 @@ from src.domain.apis.services.joaoemilio import ServiceJoaoEmilio
 from src.domain.apis.services.rogeriomenezes import ServiceRogerio
 from src.domain.apis.services.liderleiloes import ServiceLiderLeiloes
 from src.domain.apis.services.pestana import ServicePestana
+from src.domain.apis.services.vipleiloes import ServiceVip
 
 
 class ApisController:
@@ -57,6 +58,9 @@ class ApisController:
             resultado = lider.exec() or []
         case "pestanaleiloes":
             pestana = ServicePestana(query,"2000")
+            resultado = pestana.exec() or []
+        case "vipleiloes":
+            pestana = ServiceVip(query,"2000")
             resultado = pestana.exec() or []
         case _:
             raise Exception("Api inválida.")
