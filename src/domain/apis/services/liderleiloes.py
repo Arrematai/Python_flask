@@ -103,7 +103,7 @@ class ServiceLiderLeiloes:
               "ano": ano,
               "thumb": thumb,
               "link": link,
-              "leiloeiro":"Freitas Leiloeiro",
+              "leiloeiro":"Lider Leilões",
               "ativo": 1,
           }
       
