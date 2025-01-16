@@ -121,8 +121,7 @@ class ServiceVip:
 
         # # Imprimindo os resultados em formato JSON
         # # print(json.dumps(resultados, indent=2, ensure_ascii=False))
-        print(len(resultados))
-        # return resultados
+        return resultados
 
 
 
