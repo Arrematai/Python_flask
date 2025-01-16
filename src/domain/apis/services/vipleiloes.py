@@ -111,7 +111,7 @@ class ServiceVip:
                 "ano": ano,
                 "thumb": thumb,
                 "link": link,
-                "leiloeiro":"Freitas Leiloeiro",
+                "leiloeiro":"Vip Leilões",
                 "ativo": 1,
             }
             resultados.append(resultado)
