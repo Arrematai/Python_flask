@@ -7,6 +7,8 @@ import json
 import urllib3
 import uuid
 
+from src.helpers.MarcaCarros import obter_marcas
+
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -19,10 +21,11 @@ class ServicePalacios:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.Marcas = obter_marcas()
         self.initValue()
         
     def initValue(self):
-        self.params = {f"quebra": "0.9389920978354351", "opcao": "listar_lote", "categoria_pesquisa": "",
+        self.params = {f"quebra": "0.9389920978354351", "opcao": "listar_lote", "categoria_pesquisa": "1",
                    "subcategoria_pesquisa": "", "marca_pesquisa": "", "situacao_pesquisa": "", "local_pesquisa": "",
                    "modelo_pesquisa": "", "ano_pesquisa": "", "grupo_site_pesquisa": "", "txt_pesquisa_lote": f"{self.query}",
                    "leilao_pesquisa": "", "tipo_exibicao": "grid", "paginacao": "-1", "total_paginas": "999",
@@ -65,20 +68,40 @@ class ServicePalacios:
             return float(resultado.replace("R$", "").replace(".", "").replace(",", "."))  if resultado  else None 
         except Exception as e:
             return None
-
-
+        
+        
     def exec(self):
 
         response = requests.post(self.url, data=self.payload, headers=self.headers, params=self.params)
         lotes_html = response.text  # HTML da resposta
-        # print(lotes_html)
-        # exit(0)
 
         soup = BeautifulSoup(lotes_html, 'html.parser')
         lotes = soup.select("div.col-md-3")
 
         resultados = []
         for lote in lotes:
+            
+            modelo = self._getModelo(lote)
+            marca = self._getMarca(lote)
+            
+            # # Se nao tem marca nem modelo
+            if not marca and not modelo or (not modelo):
+                print(modelo)
+                print(marca)
+                continue
+            
+            
+            # Se tem Marca
+            existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
+            
+            if existeMarca:
+                marca = existeMarca["nome"].capitalize()
+            
+        
+            if not existeMarca:
+                existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
+                marca = existeInModelo["nome"].capitalize()
+            
             
             resultado = {
                 "uuid": str(uuid.uuid4()),
@@ -87,8 +110,8 @@ class ServicePalacios:
                 "valor_fipe": None,
                 "valor_atual":  self._getValorInicial(lote),
                 "tipo_veiculo": None,
-                "marca": self._getMarca(lote),
-                "modelo": self._getModelo(lote),
+                "marca": marca,
+                "modelo": modelo,
                 "monta": lote.select_one(".mt-0.small").text,
                 "ano": lote.select_one(".my-0.h6.mb-2").text,
                 "thumb": f"https://www.palaciodosleiloes.com.br/site/{lote.select_one('img').get('src')}",

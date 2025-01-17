@@ -24,6 +24,9 @@ def init():
   start_time = time.time()
   log = Log("TESTE")
   
+  palacios = ServicePalacios("fiat", 2000)  
+  result = palacios.exec()
+  
   # freitas = ServiceFreitas("fiat", 2000)  
   # result = freitas.exec()
   
@@ -39,8 +42,8 @@ def init():
   # pestana = ServicePestana("bmw", 2000)  
   # result = pestana.exec()
   
-  vip = ServiceVip("fiat", 2000)  
-  result = vip.exec()
+  # vip = ServiceVip("fiat", 2000)  
+  # result = vip.exec()
 
   # print("Resultados:",result)
   end_time = time.time()
