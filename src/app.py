@@ -26,7 +26,7 @@ def custom_key_func():
 app = Flask(__name__)
 limiter = Limiter(
     app=app,
-    default_limits=["5000/day", "500/hour", "50/minute"],
+    default_limits=["5000/hour", "500/minute"],
     storage_uri="memory://",
     key_func=custom_key_func
 )

@@ -27,8 +27,8 @@ def init():
   # copart = ServiceCopart("fiat", 2000)  
   # result = copart.exec()
   
-  # bid = ServiceSuperBid("fiat", 2000)  
-  # result = bid.exec()
+  bid = ServiceSuperBid("MERCEDES-BENZ", 2000)  
+  result = bid.exec()
   
   # palacios = ServicePalacios("fiat", 2000)  
   # result = palacios.exec()

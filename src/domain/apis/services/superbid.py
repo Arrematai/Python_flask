@@ -62,6 +62,8 @@ class ServiceSuperBid:
 
     
     def _getMarca(self, marca):
+        if not marca: 
+            return None
         marca_info = next((m for m in self.Marcas if m['nome'].lower() in marca.lower()), None)
         if marca_info:
             return marca_info['nome']
@@ -150,10 +152,15 @@ class ServiceSuperBid:
             # SE ATE AGORA NAO CONSEGUI PEGAR NO JSON PEGA NO shortDesc
             if not marca and not modelo:
                 split = descricao.split("/")
-                marca = split[0]
-                modelo = split[1]
+                if len(split) >= 2:
+                    marca = split[0]
+                    modelo = split[1]
+                
+            ## verifica se o produto tem relacao com a query
+            if marca and modelo and (not self.query.lower() in marca.lower() and not self.query.lower() in modelo.lower()):
+                continue
             
-            
+        
             resultado = {
                 "uuid": str(uuid.uuid4()),
                 "lote": item['lotNumber'],

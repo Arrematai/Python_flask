@@ -9,6 +9,8 @@ def getMonta(monta: str):
           return 'Grande Monta'
      if "no estado que se encontra" == monta.lower():
           return "No estado que se encontra"
+     if "Não Informado":
+          return "Não Informada"
      else:
           return "Não Informada"
      
