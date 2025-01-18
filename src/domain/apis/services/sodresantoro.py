@@ -4,6 +4,8 @@ from typing import Text
 import requests
 import uuid
 
+from src.helpers.Monta import getMonta
+
 class ServiceSantoro:
     url: Text = "https://dc60842cf2f240e6b45f1f2db7f23641.sa-east-1.aws.found.io/veiculos/_search"
     payload: Text
@@ -104,26 +106,36 @@ class ServiceSantoro:
     def exec(self):
         response = requests.post(self.url, json=self.payload, headers=self.headers)
         data = response.json()
-        # print(data)
 
         resultados = []
+        
 
         for item in data.get('hits', {}).get('hits', []):
-            source = item.get('_source', {})
+            dados = item.get('_source', {})
+            
+            lote = dados.get("lot_id")
+            valor_atual = dados.get("bid_actual")
+            tipo_veiculo = dados.get("lot_category")
+            marca = dados.get("lot_brand")
+            modelo = dados.get("lot_model")
+            monta = getMonta(dados.get("lot_sinister"))
+            ano = dados.get("lot_year_manufacture")
+            thumb = dados.get("lot_pictures")[0] if dados.get("lot_pictures") else None,
+            link = f"https://leilao.sodresantoro.com.br/leilao/{dados.get('auction_id')}/lote/{dados.get('lot_id')}/?ref=v2",
             
             resultado = {
                 "uuid": str(uuid.uuid4()),
-                "lote": source.get("lot_id"),
+                "lote": lote,
                 "chassi": None,
                 "valor_fipe": None,
-                "valor_atual":  source.get("bid_actual"),
-                "tipo_veiculo": source.get("lot_category"),
-                "marca": source.get("lot_brand"),
-                "modelo": source.get("lot_model"),
-                "monta": source.get("lot_sinister"),
-                "ano": source.get("lot_year_manufacture"),
-                "thumb": source.get("lot_pictures")[0] if source.get("lot_pictures") else None,
-                "link": f"https://leilao.sodresantoro.com.br/leilao/{source.get('auction_id')}/lote/{source.get('lot_id')}/?ref=v2",
+                "valor_atual":  valor_atual,
+                "tipo_veiculo": tipo_veiculo,
+                "marca": marca,
+                "modelo": modelo,
+                "monta": monta,
+                "ano": ano,
+                "thumb": thumb,
+                "link": link,
                 "leiloeiro":"Sodré Santoro",
                 "ativo": 1,
 

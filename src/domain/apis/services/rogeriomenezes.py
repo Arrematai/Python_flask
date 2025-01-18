@@ -4,6 +4,8 @@ import re
 from typing import Text
 import uuid
 
+from src.helpers.Monta import getMonta
+from src.helpers.MarcaCarros import obter_marcas
 
 class ServiceRogerio:
     url: Text = "https://www.rogeriomenezes.com.br/busca"
@@ -14,6 +16,7 @@ class ServiceRogerio:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.Marcas = obter_marcas()
         self.initValue()
 
     def initValue(self):
@@ -84,7 +87,20 @@ class ServiceRogerio:
                 marca = self._getMarca(title)
                 modelo = self._getModelo(title)                
                 valor_atual = self._getValorInicial(resultado)
+                
+                
+                # Se tem Marca
+                existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
+                
+                if existeMarca:
+                    marca = existeMarca["nome"].capitalize()
+                
+            
+                if not existeMarca:
+                    existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
+                    marca = existeInModelo["nome"].capitalize()
 
+            
                 # Adicionar ao resultado
                 resultados.append({
                     "uuid": str(uuid.uuid4()),
@@ -95,7 +111,7 @@ class ServiceRogerio:
                     "tipo_veiculo": None,
                     "marca": marca,
                     "modelo": modelo,
-                    "monta" : "",
+                    "monta" : getMonta(""),
                     "ano": ano,
                     "thumb": img_url,
                     "link": link,

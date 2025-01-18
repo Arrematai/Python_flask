@@ -1,12 +1,14 @@
 
 
-def getMonta(monta):
-  match monta:
-    case 'pequena monta':
-         return 'Pequena Monta'
-    case 'média monta':
-         return 'Média Monta'
-    case 'grande monta':
-         'Grande Monta'
-    case _:
-        return ""
+def getMonta(monta: str):
+     if 'pequena monta' in monta.lower():
+          return 'Pequena Monta'
+     if 'média monta' in monta.lower() or 'media monta' in monta.lower():
+          return 'Média Monta'
+     if 'grande monta' in monta.lower() or  'sucata' in monta.lower():
+          return 'Grande Monta'
+     if "no estado que se encontra" == monta.lower():
+          return "No estado que se encontra"
+     else:
+          return "Não Informada"
+     

@@ -82,7 +82,7 @@ class ServiceJoaoEmilio:
             thumb = self._getThumb(html)
             link = self._getLink(html)
             valor_atual = self._getValorAtual(html)
-            
+        
         
             resultado = {
                 "uuid": str(uuid.uuid4()),

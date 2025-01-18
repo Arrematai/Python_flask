@@ -8,6 +8,7 @@ import urllib3
 import uuid
 
 from src.helpers.MarcaCarros import obter_marcas
+from src.helpers.Monta import getMonta
 
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -60,6 +61,13 @@ class ServicePalacios:
         modelo_completo = lote.select_one(".quebraln").text
         return modelo_completo.split("/")[0]
     
+    def _getMonta(self,lote: BeautifulSoup):
+        monta = lote.select_one(".mt-0.small")
+        div = monta.find('div', class_="float-right")
+        if div:
+          div.extract()
+        return getMonta(monta.get_text(strip=True))
+    
     def _getValorInicial(self, lote):
         try: 
             valor_inicial_text = lote.find("div", class_="h3 mt-3 text-center").get_text(strip=True)
@@ -71,25 +79,24 @@ class ServicePalacios:
         
         
     def exec(self):
+        resultados = []
 
         response = requests.post(self.url, data=self.payload, headers=self.headers, params=self.params)
         lotes_html = response.text  # HTML da resposta
 
         soup = BeautifulSoup(lotes_html, 'html.parser')
         lotes = soup.select("div.col-md-3")
+        
 
-        resultados = []
         for lote in lotes:
             
             modelo = self._getModelo(lote)
             marca = self._getMarca(lote)
+            monta = self._getMonta(lote)
             
             # # Se nao tem marca nem modelo
             if not marca and not modelo or (not modelo):
-                print(modelo)
-                print(marca)
                 continue
-            
             
             # Se tem Marca
             existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
@@ -112,7 +119,7 @@ class ServicePalacios:
                 "tipo_veiculo": None,
                 "marca": marca,
                 "modelo": modelo,
-                "monta": lote.select_one(".mt-0.small").text,
+                "monta": monta,
                 "ano": lote.select_one(".my-0.h6.mb-2").text,
                 "thumb": f"https://www.palaciodosleiloes.com.br/site/{lote.select_one('img').get('src')}",
                 "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={lote.get('onclick').split('(')[-1].split(',')[0]}",

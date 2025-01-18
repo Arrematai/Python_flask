@@ -46,6 +46,8 @@ class ServiceCopart:
         
         resultados = []
         for item in data.get('data', {}).get('results', {}).get('content', []):
+            monta = item.get("damageClassification")
+            
             resultado = {
                 "uuid": str(uuid.uuid4()),
                 "lote": item.get("lotNumberStr"),
@@ -55,7 +57,7 @@ class ServiceCopart:
                 "tipo_veiculo": item.get("vehicleType"),
                 "marca": item.get("mkn"),
                 "modelo": item.get("lm"),
-                "monta": item.get("damageClassification"),
+                "monta": monta,
                 "ano": item.get("manufactureYear"),
                 "thumb": item.get("tims").replace("thumbnail","vga"),
                 "link": "https://www.copart.com.br/lot/" + str(item.get("lotNumberStr")),

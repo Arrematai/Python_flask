@@ -1,5 +1,7 @@
+from flask import jsonify
 import requests
 import re  # Para expressões regulares
+from src.helpers.MarcaCarros import obter_marcas
 from src.helpers.Monta import getMonta
 from typing import Text
 import uuid
@@ -14,6 +16,7 @@ class ServiceSuperBid:
         self.query = query
         self.size = size
         self.initValue()
+        self.Marcas = obter_marcas()
         
     def initValue(self):
         self.params = {
@@ -26,9 +29,9 @@ class ServiceSuperBid:
             "requestOrigin": "marketplace",
             "searchType": "opened",
             "timeZoneId": "America/Sao_Paulo",
-            "urlSeo": "https://www.superbid.net/busca/"
+            "urlSeo": "https://www.superbid.net/busca/",
+            "filter": "auction.modalityDesc:leilao"
         }
-        self.payload = {}
         self.headers =  {
             "cookie": "__cf_bm=uobWTAu9HGNs8HVe4LFfSr1uU2W1pM8pp05snOTmXd4-1732108079-1.0.1.1-SFNI8XXgCwlC8wsUbAESqamToXss3KrQEAwFYWqFP3AfeQ48xp_qVG4RIGrZLpa5oftmYaRRRc4MNnRQZCpKDA",
             "accept": "application/json, application/hal+json",
@@ -49,54 +52,108 @@ class ServiceSuperBid:
         }
 
     def _getAno(self,title):
-        ano_match = re.search(r"\b((19|20)?[0-9]{2}(/(19|20)?[0-9]{2})?)\b", title)
-        return ano_match.group(0) if ano_match else None
+        ano_match = re.search(r"\b((19|20)?[0-9]{4}(/(19|20)?[0-9]{4})?)\b", title)
+        
+        if ano_match: 
+            return ano_match.group(0)
+        else:
+            ano_match = re.search(r"\b((19|20)?[0-9]{2}(/(19|20)?[0-9]{2})?)\b", title)
+            return ano_match.group(0) if ano_match else None
 
     
-    def _getMarca(self, title, marcas):
-        marca_info = next((m for m in marcas if m['nome'].lower() in title.lower()), None)
+    def _getMarca(self, marca):
+        marca_info = next((m for m in self.Marcas if m['nome'].lower() in marca.lower()), None)
         if marca_info:
             return marca_info['nome']
         else:
             return None
+        
+    def _handleAno(self, item):
+        ano = None
+        template = item['product'].get('template', None)
+        if template and len(template['groups']) > 0:
+            propriedades = template['groups'][0]['properties']
+            if propriedades:
+                for property in propriedades:
+                    if property['id'] == 'anofabricacao':
+                        ano = property['value']
+                    if property['id'] == 'anomodelo':
+                        ano = ano+"/"+property['value']
+        
+        if not ano:
+            ano = self._getAno(item['product']["shortDesc"])
+            
+        return ano
+    
+    def _handleMarca(self, item):
+        marca = None 
+        template = item['product'].get('template', None)        
+        if template and len(template['groups']) > 0:
+            propriedades = template['groups'][0]['properties']
+            if propriedades:
+                for property in propriedades:
+                    if property['id'] == 'marca':
+                        marca = property['value']
+        
+        if not marca:
+                marca = item['product']["brand"].get("description", None)
+                
+        return marca
+    
+    def _handleModelo(self, item):
+        modelo = None
+        template = item['product'].get('template', None)
+        if template and len(template['groups']) > 0:
+            propriedades = template['groups'][0]['properties']
+            if propriedades:
+                for property in propriedades:
+                    if property['id'] == 'modelo':
+                        modelo = property['value']
+                        
+                        
+        if not modelo :
+            modelo = item['product']["model"].get("description", None)
+
+        return modelo
 
     def exec(self):
-        response = requests.request("GET", self.url, data=self.payload, headers=self.headers, params=self.params)
+        response = requests.request("GET", self.url, headers=self.headers, params=self.params)
 
         data = response.json()
 
         resultados = []
-
-        for item in data['offers']:
         
+        # print(data['offers'][131])
+        # exit(0)
+        
+        
+        for item in data['offers']:
+            
+            # Caminhões & Ônibus Carros & Motos
+            type = item["product"]["productType"].get("description")
+            
+            if type != "Caminhões & Ônibus" and type != "Carros & Motos":
+                continue
+            
             valor_atual = item["price"] if item["price"] else None
-            
-            template = item['product'].get('template', None)
 
-            ano = None
-            marca = None
-            modelo = None
-                     
-            if template and len(template['groups']) > 0:
-                propriedades = template['groups'][0]['properties']
-                if propriedades:
-                    for property in propriedades:
-                        if property['id'] == 'anofabricacao':
-                            ano = property['value']
-                        if property['id'] == 'marca':
-                            marca = property['value']
-                        if property['id'] == 'modelo':
-                            modelo = property['value']
-                            
-            # Não encontrou modelo ou marca com query do cliente
-            if marca and modelo :
-                if not self.query.lower() in modelo.lower() and not self.query.lower() in marca.lower() :
-                    return
-                        
+            ano = self._handleAno(item)
+            marca = self._handleMarca(item)
+            modelo = self._handleModelo(item)
+        
+                
+            ## MONTA               
             descricao = item['product'].get('shortDesc', 'Descrição não disponível')
-            
             monta = getMonta(descricao.lower())
+            
 
+            # SE ATE AGORA NAO CONSEGUI PEGAR NO JSON PEGA NO shortDesc
+            if not marca and not modelo:
+                split = descricao.split("/")
+                marca = split[0]
+                modelo = split[1]
+            
+            
             resultado = {
                 "uuid": str(uuid.uuid4()),
                 "lote": item['lotNumber'],
@@ -104,7 +161,7 @@ class ServiceSuperBid:
                 "valor_fipe": None,
                 "valor_atual": valor_atual,
                 "tipo_veiculo": None,
-                "marca": marca,
+                "marca": self._getMarca(marca),
                 "modelo": modelo,
                 "monta": monta,
                 "ano": ano,
@@ -113,9 +170,12 @@ class ServiceSuperBid:
                 "leiloeiro": "SuperBid",
                 "ativo": 1,
             }
+            
 
-            if marca and modelo and ano:
+            if marca and modelo:
                 resultados.append(resultado)
+                
+        print(len(resultados))
 
         return resultados
 

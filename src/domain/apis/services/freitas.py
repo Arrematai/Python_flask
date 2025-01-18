@@ -4,6 +4,8 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
+from src.helpers.MarcaCarros import obter_marcas
+from src.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
 
 class ServiceFreitas:
@@ -15,6 +17,7 @@ class ServiceFreitas:
         self.query = query
         self.size = size
         self.initValue()
+        self.Marcas = obter_marcas()
         self.log = Log("")
         
     def initValue(self):
@@ -44,6 +47,11 @@ class ServiceFreitas:
         title = lote.find("div", class_="cardLote-descVeic")
         return title.get_text(strip=True) if title else None
     
+    def _getMonta(self, lote: BeautifulSoup):
+        card = lote.find("div", class_="cardLote-details")
+        monta = card.find('span')
+        return getMonta(monta.get_text(strip=True))
+    
     def _getModelo(self, title):
         modelo_match = re.match(r"^(\w+)/([\w\s\.\-]+)", title)
         return modelo_match.group(2).split(",")[0] if modelo_match else None
@@ -66,14 +74,7 @@ class ServiceFreitas:
     
     def _getLoteNumero(self, link):
         return re.search(r"loteNumero=(\d+)", link).group(1) if link else None
-    
-    def _getMonta(self, page_lote):
-        page_soup = BeautifulSoup(page_lote.text, "html.parser")
-        monta_tag = page_soup.find("span", class_="fw-bold small")
-        if monta_tag:
-            monta_text = monta_tag.get_text(strip=True)
-            monta_match = re.search(r"(\w+)\s+MONTA", monta_text)
-            return monta_match.group(0) if monta_match else None
+
         
     def _getLanceInicial(self, page_lote):
         try: 
@@ -93,7 +94,6 @@ class ServiceFreitas:
             return None
     
     def exec(self):
-        i = 1 
         resultados = []
 
         response = requests.get(self.url, params=self.parametros, headers=self.headers, verify=False)
@@ -107,7 +107,7 @@ class ServiceFreitas:
         lotes = soup.find_all("div", class_="cardlote") # Pega cada CARD
     
         for lote in lotes:
-            monta = "Não Informado"
+            monta = self._getMonta(lote)
             title = self._getTitle(lote)
             marca = self._getMarca(title)
             modelo = self._getModelo(title)
@@ -117,18 +117,24 @@ class ServiceFreitas:
             lote_numero = self._getLoteNumero(link)
             valor_atual = self._getValorAtual(lote)
             
+            # # Se nao tem marca nem modelo
+            if not marca and not modelo or (not modelo):
+                continue
             
-            #! Codigo demora muito se implementar, pois faz varios request as paginas, por isso só 40 request.
-            # Entra na pagina do card e pega mais informacoes
-            if i <= 40:
-                page_lote = requests.get(link, headers=self.headers, verify=False)
-                if page_lote.status_code == 200:
-                    monta = self._getMonta(page_lote)
-                    valor_atual = self._getLanceInicial(page_lote)
-                else:
-                    self.log.messageError(f"Erro em acesso site {link}, status code : {page_lote.status_code}")
-
-
+            # Se tem Marca
+            existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
+            
+            if existeMarca:
+                marca = existeMarca["nome"].capitalize()
+            
+        
+            if not existeMarca:
+                existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
+                marca = existeInModelo["nome"].capitalize()
+                
+                
+            print(marca, modelo)
+            
             resultado = {
                 "uuid": str(uuid.uuid4()),
                 "lote": lote_numero,
@@ -148,7 +154,6 @@ class ServiceFreitas:
         
 
             resultados.append(resultado)
-            i = i + 1
             
 
         # Imprimindo os resultados em formato JSON

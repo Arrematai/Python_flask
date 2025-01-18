@@ -24,8 +24,14 @@ def init():
   start_time = time.time()
   log = Log("TESTE")
   
-  palacios = ServicePalacios("fiat", 2000)  
-  result = palacios.exec()
+  # copart = ServiceCopart("fiat", 2000)  
+  # result = copart.exec()
+  
+  # bid = ServiceSuperBid("fiat", 2000)  
+  # result = bid.exec()
+  
+  # palacios = ServicePalacios("fiat", 2000)  
+  # result = palacios.exec()
   
   # freitas = ServiceFreitas("fiat", 2000)  
   # result = freitas.exec()
@@ -33,8 +39,11 @@ def init():
   # joao = ServiceJoaoEmilio("fiat", 2000)
   # result = joao.exec()
   
-  # palacios = ServicePalacios("fiat", 2000)  
-  # result = palacios.exec()
+  # santoro = ServiceSantoro("fiat", 2000)  
+  # result = santoro.exec()
+  
+  # rogerio = ServiceRogerio("fiat", 2000)  
+  # result = rogerio.exec()
   
   # lider = ServiceLiderLeiloes("fiat", 2000)  
   # result = lider.exec()
