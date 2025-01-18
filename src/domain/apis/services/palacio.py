@@ -119,7 +119,7 @@ class ServicePalacios:
                 "tipo_veiculo": None,
                 "marca": marca,
                 "modelo": modelo,
-                "monta": monta,
+                "monta": getMonta(monta),
                 "ano": lote.select_one(".my-0.h6.mb-2").text,
                 "thumb": f"https://www.palaciodosleiloes.com.br/site/{lote.select_one('img').get('src')}",
                 "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={lote.get('onclick').split('(')[-1].split(',')[0]}",

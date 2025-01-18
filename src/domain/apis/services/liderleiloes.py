@@ -6,6 +6,8 @@ import requests
 import uuid
 from bs4 import BeautifulSoup
 
+from src.helpers.Monta import getMonta
+
 class ServiceLiderLeiloes:
     url: Text = 'https://www.liderleiloes.com.br'
     payload: Text
@@ -99,7 +101,7 @@ class ServiceLiderLeiloes:
               "tipo_veiculo": None,
               "marca": marca,
               "modelo": modelo,
-              "monta": monta,
+              "monta": getMonta(monta),
               "ano": ano,
               "thumb": thumb,
               "link": link,

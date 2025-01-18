@@ -4,6 +4,8 @@ from typing import Text
 import requests
 import uuid
 
+from src.helpers.Monta import getMonta
+
 
 class ServiceCopart:
     url: Text = 'https://www.copart.com.br/public/lots/search'
@@ -57,7 +59,7 @@ class ServiceCopart:
                 "tipo_veiculo": item.get("vehicleType"),
                 "marca": item.get("mkn"),
                 "modelo": item.get("lm"),
-                "monta": monta,
+                "monta": getMonta(monta),
                 "ano": item.get("manufactureYear"),
                 "thumb": item.get("tims").replace("thumbnail","vga"),
                 "link": "https://www.copart.com.br/lot/" + str(item.get("lotNumberStr")),

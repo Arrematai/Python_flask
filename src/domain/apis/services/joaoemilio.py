@@ -3,6 +3,8 @@ import re  # Para expressões regulares
 from typing import Text
 import uuid
 
+from src.helpers.Monta import getMonta
+
 
 class ServiceJoaoEmilio:
     url: Text = "https://www.joaoemilio.com.br"
@@ -93,7 +95,7 @@ class ServiceJoaoEmilio:
                 "tipo_veiculo": None,
                 "marca": marca,
                 "modelo": modelo,
-                "monta": "Pequena Monta",  # Exemplo de valor padrão
+                "monta": getMonta(""),  # Exemplo de valor padrão
                 "ano": ano,
                 "thumb": thumb,
                 "link": link,

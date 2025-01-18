@@ -5,6 +5,8 @@ import requests
 import uuid
 from requests.exceptions import HTTPError
 
+from src.helpers.Monta import getMonta
+
 
 class ServicePestana:
     url: Text = 'https://www.pestanaleiloes.com.br/api/v2/lote'
@@ -98,7 +100,7 @@ class ServicePestana:
                 "tipo_veiculo": "",
                 "marca": marca,
                 "modelo": modelo,
-                "monta": monta,
+                "monta": getMonta(monta),
                 "ano": ano,
                 "thumb": f"https://ged.pestanaleiloes.com.br/ged/{thumb}",
                 "link": f"https://www.pestanaleiloes.com.br/agenda-de-leiloes/{leilao}/{lote}",
