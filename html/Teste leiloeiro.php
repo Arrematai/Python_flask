@@ -87,8 +87,6 @@ function lista_leiloeiros_shortcode_Rafael() {
         const leiloeiros = await result.json();
         return leiloeiros
     }
-
-
     function renderTableLeiloeiros(leiloeiros){
 
       if(!leiloeiros || leiloeiros.length === 0){
