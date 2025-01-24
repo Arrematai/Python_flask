@@ -1,4 +1,4 @@
-from src.app import init
+from src.server.app import server_init
 
 if __name__ == "__main__":
-  init()  
+  server_init()  

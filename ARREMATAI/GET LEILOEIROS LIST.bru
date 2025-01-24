@@ -1,0 +1,18 @@
+meta {
+  name: GET LEILOEIROS LIST
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{URL}}/leiloeiros/palavra/vit
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "api": "copart",
+    "query": "fiat"
+  }
+}

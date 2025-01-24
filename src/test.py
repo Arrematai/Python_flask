@@ -18,7 +18,6 @@ from src.domain.apis.services.vipleiloes import ServiceVip
 # from src.domain.apis.services.mgl import MGL
 
 
-
 def init():
   print("Inicio Aplicação TESTE")
   start_time = time.time()
@@ -27,8 +26,8 @@ def init():
   # copart = ServiceCopart("fiat", 2000)  
   # result = copart.exec()
   
-  bid = ServiceSuperBid("MERCEDES-BENZ", 2000)  
-  result = bid.exec()
+  # bid = ServiceSuperBid("MERCEDES-BENZ", 2000)  
+  # result = bid.exec()
   
   # palacios = ServicePalacios("fiat", 2000)  
   # result = palacios.exec()

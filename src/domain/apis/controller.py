@@ -1,5 +1,6 @@
 from flask import Request
 import time
+from flask_restful import Resource
 
 ## INFRA
 from src.infra.service.Logging import Log
@@ -17,7 +18,8 @@ from src.domain.apis.services.pestana import ServicePestana
 from src.domain.apis.services.vipleiloes import ServiceVip
 
 
-class ApisController:
+class ApisController(Resource):
+    
 
   def __init__(self, request: Request, ip: str):
     self.request = request

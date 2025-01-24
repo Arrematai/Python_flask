@@ -27,9 +27,9 @@ class ModelosController:
       query = "SELECT id, codigo, nome FROM modelos where marcaId = %s order by nome"
       self.database.socket.execute(query, (marcaId,))
 
-      # Recuperando os resultados
+      # # Recuperando os resultados
       return  self.database.socket.fetchall()
-          
+      
     except Exception as e:
         print(f"Error: {e}")
         self.database.conn.rollback()
