@@ -13,7 +13,15 @@ class DataBase:
       self.database = os.getenv("DATABASE_DB")
       self.user = os.getenv("DATABASE_USER")
       self.password = os.getenv("DATABASE_PASSWORD")
-      self.dictionary = dictionary
+      self.dictionary = dictionary      
+      self.conn = mysql.connector.connect(
+        host=self.ip,
+        port=self.port,
+        database=self.database,
+        user=self.user,
+        password=self.password
+      )
+      self.socket = self.conn.cursor(dictionary=self.dictionary)
       
     except mysql.connector.DatabaseError as err:
       print("DataBaseError: "+err)
@@ -22,14 +30,14 @@ class DataBase:
       
   def connection(self):
     self.conn = mysql.connector.connect(
-        host=self.ip,
-        port=self.port,
-        database=self.database,
-        user=self.user,
-        password=self.password
+      host=self.ip,
+      port=self.port,
+      database=self.database,
+      user=self.user,
+      password=self.password
     )
     self.socket = self.conn.cursor(dictionary=self.dictionary)
 
   def close(self):
+    # print("")
     self.socket.close()
-    self.conn.close()

@@ -6,7 +6,7 @@ function lista_leiloeiros_shortcode_Rafael() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <style>
      /* Estilo básico */
@@ -34,7 +34,31 @@ function lista_leiloeiros_shortcode_Rafael() {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-      
+
+        table{
+            margin-top: 60px;
+        }
+
+        .sortable{
+            cursor: pointer;
+        }
+        
+        .sort-icon {
+        margin-left: 5px;
+        display: inline-block;
+        }
+
+        .asc::after {
+        content: "▲"; /* Ícone para ordem ascendente */
+        }
+
+        .desc::after {
+        content: "▼"; /* Ícone para ordem descendente */
+        }
+
+        input{
+            color: #404040 !important
+        }
 	
     </style>
     </head>
@@ -43,10 +67,10 @@ function lista_leiloeiros_shortcode_Rafael() {
     <div class="container">
         <div class="row">
             <div class="col">
-                <input type="text" id="palavra_chave" placeholder="Digite o leiloeiro desejado.">
+                <input type="text" id="palavra_chave" placeholder="Digite o leiloeiro desejado." min="3" max="30">
             </div>
             <div class="col col-lg-2">
-                <button id="buscar" onclick="fetchResults()" disabled>Buscar</button>
+                <button id="buscar" onclick="searchWordKey(this)" disabled>Buscar</button>
             </div>
         </div>
 
@@ -60,14 +84,14 @@ function lista_leiloeiros_shortcode_Rafael() {
     </div>
 			
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
         let allResults = []; // Guarda todos os resultados acumulados
 		var URL = "https://api.arremataisolucoes.com.br:5001"
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('loader').style.display = 'block';
-            getLeiloeiros().then(leiloeiros => renderTableLeiloeiros(leiloeiros))
+            getLeiloeiros().then(leiloeiros => renderTableLeiloeiros(leiloeiros)).finally(() => document.getElementById('loader').style.display = 'none')
 
             const input = document.querySelector("#palavra_chave")
 
@@ -83,10 +107,52 @@ function lista_leiloeiros_shortcode_Rafael() {
         });
 
     async function getLeiloeiros(){
-        const result = await fetch(URL+'/leiloeiros');
-        const leiloeiros = await result.json();
-        return leiloeiros
+        const response = await fetch(URL+'/leiloeiros');
+        const result = await response.json();
+
+        if(result && result.data.success){
+          return result.data.dados
+        }
+
+        return []
     }
+
+    async function getLeiloeirosByFilter(){
+        const response = await fetch(URL+'/leiloeiros');
+        const result = await response.json();
+
+        if(result && result.data.success){
+          return result.data.dados
+        }
+
+        return []
+    }
+
+
+    async function searchWordKey(el){
+        el.setAttribute("disabled", "true")
+
+        wordKeyEl = document.getElementById("palavra_chave")
+
+
+        if(wordKeyEl.value){
+            const response = await fetch(URL+'/leiloeiros/'+wordKeyEl.value);
+            const result = await response.json();
+
+            if(result && result.data.success){
+                console.log(result.data.dados)
+                return result.data.dados
+            }
+        }
+
+
+
+
+        el.setAttribute("disabled", "false")
+    }
+
+
+
     function renderTableLeiloeiros(leiloeiros){
 
       if(!leiloeiros || leiloeiros.length === 0){
@@ -98,43 +164,88 @@ function lista_leiloeiros_shortcode_Rafael() {
 
 
       const table = document.createElement("table")
+      table.setAttribute("id", "sortableTable")
+      table.setAttribute("data-order", "asc")
       table.classList.add("table")
-      table.appendChild(`
-        <thead>
+      table.classList.add("table-striped")
+      table.classList.add("table-hover")
+      table.classList.add("table-responsive")
+      const thead = document.createElement("thead");
+      const tbody = document.createElement("tbody");
+      thead.innerHTML = `
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th onclick="sortTable(this, 0)" scope="col" class="sortable desc">Nome</th>
+            <th onclick="sortTable(this, 1)" scope="col" class="sortable">Email</th>
+            <th onclick="sortTable(this, 2)" scope="col" class="sortable">Site</th>
+            <th onclick="sortTable(this, 3)" scope="col" class="sortable">Estado</th>
+            <th scope="col">Confiavel</th>
+            <th scope="col">Status</th>
           </tr>
-        </thead>
+      `
+
+      leiloeiros.map(leiloeiro => tbody.innerHTML += `
+          <tr>
+            <th scope="row">${leiloeiro.nome.trim()}</th>
+            <td>${leiloeiro.email.trim()}</td>
+            <td><a target="_blank" href="https://${leiloeiro.site.trim().toLowerCase()}">${leiloeiro.site.trim().toLowerCase()}</a></td>
+            <td>${leiloeiro.estado}</td>
+            <td>${leiloeiro.confiavel ? '<span class="badge text-bg-primary">Confiável</span>' : '<span class="badge text-bg-warning">Perigoso</span>'}</td>
+            <td>${leiloeiro.status_site ? '<span class="badge text-bg-success">Online</span>' : '<span class="badge text-bg-danger">Offline</span>'}</td>
+          </tr>
       `)
 
-      table.appendChild(`
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
-        </tbody>
-      `)
-
-
+      table.appendChild(thead)
+      table.appendChild(tbody)
       content.appendChild(table)
 
+
+    }
+
+
+    function sortTable(el, columnIndex) {
+        const table = document.getElementById("sortableTable");
+        const headers = table.querySelectorAll("thead th.sortable");
+
+        const isAsc = el.classList.contains("asc");
+
+        console.log("isAsc", isAsc)
+
+        // Remove as classes "asc" e "desc" de todos os cabeçalhos
+        headers.forEach(h => h.classList.remove("asc", "desc"));
+
+
+        const rows = Array.from(table.rows).slice(1); // Exclui o cabeçalho
+
+        console.log("rows", rows.length)
+
+        rows.sort((a, b) => {
+            const cellA = a.cells[columnIndex].textContent.trim().toLowerCase();
+            const cellB = b.cells[columnIndex].textContent.trim().toLowerCase();
+
+
+            if(!isAsc){
+                // Verifica se é numérico
+                return isNaN(cellA) || isNaN(cellB)
+                    ? cellA.localeCompare(cellB) // Comparação alfabética
+                    : cellA - cellB; // Comparação numérica
+            }else if(isAsc){
+                return isNaN(cellA) || isNaN(cellB)
+                    ? cellB.localeCompare(cellA) // Comparação alfabética
+                    : cellB - cellA; // Comparação numérica
+            }
+
+
+        });
+
+        console.log(rows)
+
+        // Reorganiza as linhas na tabela
+        rows.forEach(row => table.tBodies[0].appendChild(row));
+        
+        // Atualiza a ordem do cabeçalho
+        el.classList.toggle("asc", !isAsc);
+        el.classList.toggle("desc", isAsc);
+      
 
     }
 

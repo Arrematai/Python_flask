@@ -21,6 +21,22 @@ class LeiloeirosRepository:
       finally:
           self.database.close()
           
+  def findLeiloeirosStatusSite(self, status = 1):
+    try:
+      self.database.connection()
+      # Executando uma consulta SELECT
+      query = "SELECT * FROM leiloeiros where status_site = %s order by nome"
+      self.database.socket.execute(query, (status,))
+
+      # Recuperando os resultados
+      return self.database.socket.fetchall()
+          
+    except Exception as e:
+        print(f"Error: {e}")
+        self.database.conn.rollback()
+    finally:
+        self.database.close()
+          
   def findLeiloeirosUniqueSite(self):
       try:
         self.database.connection()
@@ -93,4 +109,23 @@ class LeiloeirosRepository:
         self.database.conn.rollback()
     finally:
         self.database.close()
-  
+        
+  def updateStatusSite(self, id, status):
+    try:
+      self.database.connection()
+      
+      query = """ UPDATE leiloeiros 
+      SET  status_site = %s
+      WHERE id = %s """
+      
+      
+      valores = (status, id)
+      
+      self.database.socket.execute(query, valores)
+      self.database.conn.commit()
+      
+    except Exception as e:
+        print(f"Error: {e}")
+        self.database.conn.rollback()
+    finally:
+        self.database.close()

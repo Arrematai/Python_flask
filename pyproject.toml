@@ -24,11 +24,13 @@ flask-limiter = "^3.9.2"
 python-dotenv = "^1.0.1"
 flask-restful = "^0.3.10"
 levenshtein = "^0.26.1"
+cloudscraper = "^1.2.71"
 
 [tool.poetry.scripts]
 arrematai = "src.__main__:server_init"
 seed = "src.__seed__:init"
 test = "src.__test__:init"
+checkOnline = "src.checkSiteOnline:init"
 
 [build-system]
 requires = ["poetry-core"]

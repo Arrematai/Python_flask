@@ -22,5 +22,5 @@ def server_init():
   app.run(host='0.0.0.0', port=5001, ssl_context=context)
   
   if database.conn:
-    database.close()
+    database.conn.close()
   print("Aplicação Finalizada")
