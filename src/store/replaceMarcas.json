@@ -1,0 +1,41 @@
+[
+  {
+    "nome": "Volkswagen",
+    "lista": [
+      "VW",
+      "Volks",
+      "VW - Volkswagen"
+    ]
+  },
+  {
+    "nome": "Mercedes-Benz",
+    "lista": [
+      "M.Benz",
+      "M.Bens",
+      "M-Bens",
+      "M-Benz",
+      "Mercedes"
+    ]
+  },
+  {
+    "nome": "SSANGYONG",
+    "lista": [
+      "SANGYONG",
+      "YONG",
+      "SAN",
+      "SSANGYONG"
+    ]
+  },
+  {
+    "nome": "GREAT WALL",
+    "lista": [
+      "GW"
+    ]
+  },
+  {
+    "nome": "HITECH ELECTRIC",
+    "lista": [
+      "HE"
+    ]
+  }
+]

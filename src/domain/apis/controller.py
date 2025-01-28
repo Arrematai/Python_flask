@@ -16,6 +16,8 @@ from src.domain.apis.services.rogeriomenezes import ServiceRogerio
 from src.domain.apis.services.liderleiloes import ServiceLiderLeiloes
 from src.domain.apis.services.pestana import ServicePestana
 from src.domain.apis.services.vipleiloes import ServiceVip
+from src.domain.apis.services.guariglialeiloes import ServiceGuariglia
+from src.domain.apis.services.rigolon import ServiceRigolon
 
 
 class ApisController(Resource):
@@ -64,8 +66,14 @@ class ApisController(Resource):
         case "vipleiloes":
             pestana = ServiceVip(query,"2000")
             resultado = pestana.exec() or []
+        case "guariglialeiloes":
+            guariglia = ServiceGuariglia(query,"2000")
+            resultado = guariglia.exec() or []
+        case "ringolonleiloes":
+            ringolon = ServiceRigolon(query,"2000")
+            resultado = ringolon.exec() or []
         case _:
-            raise Exception("Api inválida.")
+            raise Exception("Api não inválida.")
             
     end_time = time.time()
     self.Log.executionTime(query=query, api=api,end=end_time, start=start_time)

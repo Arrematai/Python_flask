@@ -20,7 +20,6 @@ class ServiceCopart:
     def initValue(self):
         self.payload = f"length={self.size}&search%5Bvalue%5D=&search%5Bregex%5D=false&filter%5Bupcominglots%5D=exclude_upcoming_lots%3A*&query={self.query}&watchListOnly=false&freeFormSearch=true&page=0&size={self.size}"
         self.headers= {
-            "cookie": "copartbrmember=00df814ca4b576071d1e8881929849e1",
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
             "Connection": "keep-alive",

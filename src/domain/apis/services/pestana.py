@@ -21,21 +21,7 @@ class ServicePestana:
         self.initValue()
         
     def initValue(self):
-        self.headers= {
-          # "Content-Type": "application/json"
-            # "cookie": "SERVERUSED=c2364dd7264f0ff2; _gcl_au=1.1.578135360.1736975390; _gid=GA1.3.93877518.1736975391; AdoptVisitorId=BwTgpsDGIIYOwFoAMICMwEBYDMwwICMRMYEAmAgMwFY4ZKwzJLUg; rdtrk=%7B%22id%22%3A%22e2bf9a58-2aaf-48c6-9dbc-79283b9aff4f%22%7D; leiloes_logged=false; _hjSessionUser_5174377=eyJpZCI6IjRiNzJiMTkxLTQ2ZTQtNTNiMi1iZDM1LTVhNmFjYWZmZGYyNyIsImNyZWF0ZWQiOjE3MzY5NzUzODg2MjYsImV4aXN0aW5nIjp0cnVlfQ==; _clck=ce3bcj%7C2%7Cfsm%7C0%7C1841; _hjSession_5174377=eyJpZCI6IjkzM2QwYjhhLWQwMTEtNDhhZi1hODk4LTI4OGI5ZDcwYTRmMSIsImMiOjE3MzcwNjkwMjg3NDUsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MH0=; __trf.src=encoded_eyJmaXJzdF9zZXNzaW9uIjp7InZhbHVlIjoiaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS8iLCJleHRyYV9wYXJhbXMiOnt9fSwiY3VycmVudF9zZXNzaW9uIjp7InZhbHVlIjoiKG5vbmUpIiwiZXh0cmFfcGFyYW1zIjp7fX0sImNyZWF0ZWRfYXQiOjE3MzcwNjkwMjk2NDl9; AdoptConsent=N4Ig7gpgRgzglgFwgSQCIgFwgEwA4CGUADAMwBsA7ALQQUVlUAs+2RVUUJAZlQJyO4SvfEVxQAxgBNcIADQgAbnHgIA9gCdkkzCFy8IuccOpFeARlxMSuCO374q2KFwCsFfFwjZxXM3JCqAA4IyAB2ACr4AOYwmADaIBAAorhkaAAKqKgAmv4ASriBqLx5oaos/tkAFlW8AHJkzAC2ZPniFADqAPqhcLhmUP4AHgBS2OlQqgCuAGoAEgBi/lFVXAA2UB3jocggALryQQgA8lMIkTHxByDiqqEwEKEh2ljIUOFcAIJT/hAKj+cAJ6BCA6BB5ADSAEUKJJof5bvcATMIOp4HdMER5FNApJ8EhJJ8EDpWNgXFQiGYqGYyOFsCQMGYiBgSEQAHRM3gALRAAF8gA=; _uetsid=0f276cc0d38511efbd2839ae1b2ffba1; _uetvid=0f27ba30d38511efa66611aa1f8ab2a9; _ga=GA1.3.649137075.1736975391; _gat_UA-25815487-1=1; _gat_gtag_UA_25815487_1=1; _clsk=1k00q1u%7C1737069222415%7C4%7C1%7Ch.clarity.ms%2Fcollect; _ga_DH14FS8PNZ=GS1.1.1737069034.5.1.1737069237.37.0.0; _ga_DCZGFQBFF2=GS1.1.1737069036.3.1.1737069237.43.0.0",
-            # "Accept": "application/json, text/javascript, */*; q=0.01",
-            # "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-            # "Connection": "keep-alive",
-            # "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            # "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
-            # "if-none-match": 'W/"64e-drvVFgOkuE0pw5rY/LcfM3heDVM"',
-            # "referer": "https://www.pestanaleiloes.com.br/",
-            # "sec-ch-ua-platform": "Windows",
-            # "sec-fetch-dest": "empty",
-            # "sec-fetch-mode": "cors",
-            # "sec-fetch-site": "same-origin",
-        }
+        self.headers= {}
         
     def exec (self):
         try:

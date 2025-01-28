@@ -14,6 +14,8 @@ from src.domain.apis.services.rogeriomenezes import ServiceRogerio
 from src.domain.apis.services.liderleiloes import ServiceLiderLeiloes
 from src.domain.apis.services.pestana import ServicePestana
 from src.domain.apis.services.vipleiloes import ServiceVip
+from src.domain.apis.services.guariglialeiloes import ServiceGuariglia
+from src.domain.apis.services.rigolon import ServiceRigolon
 # from src.domain.apis.services.kuss import ServiceKuss
 # from src.domain.apis.services.mgl import MGL
 
@@ -52,8 +54,14 @@ def init():
   
   # vip = ServiceVip("fiat", 2000)  
   # result = vip.exec()
+  
+  # guariglia = ServiceGuariglia("fiat", 2000)  
+  # result = guariglia.exec()
+  
+  rigolon = ServiceRigolon("vw", 2000)  
+  result = rigolon.exec()
 
-  # print("Resultados:",result)
+  print("Resultados:",result)
   end_time = time.time()
   log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time)
   print("Aplicação Finalizada TESTE")

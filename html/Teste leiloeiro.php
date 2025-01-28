@@ -69,13 +69,16 @@ function lista_leiloeiros_shortcode_Rafael() {
             <div class="col">
                 <input type="text" id="palavra_chave" placeholder="Digite o leiloeiro desejado." min="3" max="30">
             </div>
-            <div class="col col-lg-2">
-                <button id="buscar" onclick="searchWordKey(this)" disabled>Buscar</button>
+            <div class="col col-lg-3">
+                <button type="button" id="buscar" onclick="searchWordKey(this)" disabled>Buscar</button>
+                <button type="button" id="clear" class="btn btn-outline-secondary">Limpar</button>
             </div>
         </div>
 
         <div class="row">
             <div id="loader"></div>
+            <div id="alert" class="alert alert-warning" role="alert" style="display: none;">
+            </div>
         </div>
 
         <div class="row"><div id="resultados"></div></div>
@@ -86,24 +89,42 @@ function lista_leiloeiros_shortcode_Rafael() {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
-        let allResults = []; // Guarda todos os resultados acumulados
+        let resultFiltrados = []
+        let resultNotFiltrados = []
+        let filtred = false
+
+        const wordKeyEl = document.getElementById("palavra_chave")
+        const content = document.querySelector("#resultados")
+        const button = document.getElementById('buscar');
+        const clearButton = document.getElementById('clear');
+
 		var URL = "https://api.arremataisolucoes.com.br:5001"
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('loader').style.display = 'block';
-            getLeiloeiros().then(leiloeiros => renderTableLeiloeiros(leiloeiros)).finally(() => document.getElementById('loader').style.display = 'none')
+            getLeiloeiros().then(leiloeiros => {
+                resultNotFiltrados = leiloeiros
+                renderTableLeiloeiros(leiloeiros)
 
-            const input = document.querySelector("#palavra_chave")
+            }).finally(() => document.getElementById('loader').style.display = 'none')
 
-            input.addEventListener("change", () => {
-            const button = document.getElementById('buscar');
-            button.removeAttribute('disabled');
+            wordKeyEl.addEventListener("change", () => {
+                button.removeAttribute('disabled');
+                filtred = false
 
-            if(!input.value || input.value === ""){
-                button.setAttribute('disabled', true);
-            }
+                if(!wordKeyEl.value || wordKeyEl.value === ""){
+                    button.setAttribute('disabled', true);
+                }
 
             })
+
+
+            clearButton.addEventListener("click", () => {
+                document.getElementById('loader').style.display = 'block';
+                renderTableLeiloeiros(resultNotFiltrados)
+                document.getElementById('loader').style.display = 'none'
+            })
+
         });
 
     async function getLeiloeiros(){
@@ -132,16 +153,22 @@ function lista_leiloeiros_shortcode_Rafael() {
     async function searchWordKey(el){
         el.setAttribute("disabled", "true")
 
-        wordKeyEl = document.getElementById("palavra_chave")
-
-
         if(wordKeyEl.value){
-            const response = await fetch(URL+'/leiloeiros/'+wordKeyEl.value);
+            const response = await fetch(URL+'/leiloeiros/palavra/'+wordKeyEl.value);
             const result = await response.json();
 
             if(result && result.data.success){
-                console.log(result.data.dados)
-                return result.data.dados
+                const [tipo, dados] = result.data.dados
+
+
+                if(dados.length > 0){
+                    resultFiltrados = dados
+                    filtred = true
+                    renderTableLeiloeiros(dados)
+                }
+
+
+                return dados
             }
         }
 
@@ -159,8 +186,8 @@ function lista_leiloeiros_shortcode_Rafael() {
         return
       }
 
-
-      const content = document.querySelector("#resultados")
+      // Remove todas as tabelas se tiver
+      document.querySelectorAll("table").forEach(el => el.remove())
 
 
       const table = document.createElement("table")
@@ -249,223 +276,7 @@ function lista_leiloeiros_shortcode_Rafael() {
 
     }
 
-    
-    //   async function fetchResults() {
-    //     const button = document.getElementById('buscar');
-    //     button.setAttribute('disabled',true);
-    //     const cardsContainer = document.getElementById('resultsCards');
-    //     cardsContainer.innerHTML = '';
-    //     allResults = []; // Limpa os resultados anteriores
 
-    //     const query = document.getElementById('queryInput').value;
-    //     document.getElementById('loader').style.display = 'block';
-
-    //     try {
-    //         const result = await fetch(URL+'/apis');
-    //         const arrays = await result.json();
-
-    //         await Promise.all(arrays.apis.map(async (api) => {
-    //             const response = await fetch(URL+'/search', {
-    //                 method: 'POST',
-    //                 headers: { 'Content-Type': 'application/json' },
-    //                 body: JSON.stringify({ query: query, api })
-    //             });
-
-    //             const results = await response.json();
-	// 			console.log(`Resultados: ${results.length} na api ${api} com a query ${query}`)
-	// 			if(results && results.length > 0){
-	// 				allResults = [...allResults, ...results]; // Acumula resultados
-	// 			}
-                
-    //             populateFilters(allResults); // Atualiza filtros dinamicamente
-    //             populateCards(results, cardsContainer); // Renderiza novos cards
-    //             document.getElementById('resultados').innerText = `${allResults.length} resultados encontrados.`
-    //         }));
-
-    //         document.getElementById('loader').style.display = 'none';
-    //     } catch (error) {
-    //       console.error("Erro ao buscar os dados:", error);
-    //       document.getElementById('loader').style.display = 'none';
-    //     } finally {
-    //       button.removeAttribute("disabled")
-    //     }
-    //   }
-
- 
-			
-
-        // function populateCards(results, cardsContainer) {
-        //     results.forEach(item => {
-        //         const card = document.createElement('div');
-        //         card.className = 'card';
-        //         card.onclick = () => window.open(item.link, '_blank');
-
-        //         card.innerHTML = `
-        //             <img src="${item.thumb}" alt="Imagem">
-        //             <div class="card-header">
-        //                 <p><strong>Lote:</strong> ${item.lote} <span>${item.leiloeiro}</span></p>
-        //             </div>
-        //             <div class="card-body">
-        //                 <p>${item.marca} ${item.modelo} - Ano ${item.ano}</p>
-        //                 <p>${item.monta}</p>
-        //             </div>
-        //             <div class="card-footer">
-        //                 <div class="card-status">ABERTO PARA LANCES</div>
-        //             </div>
-        //         `;
-        //         cardsContainer.appendChild(card);
-        //     });
-        // }
-
-        // function populateFilters(results) {
-        //     const filters = {
-        //         model: document.getElementById('modelFilter'),
-        //         monta: document.getElementById('montaFilter'),
-        //         leiloeiro: document.getElementById('leiloeiroFilter')
-        //     };
-
-        //     const uniqueValues = {
-        //         model: [...new Set(results.map(item => item.modelo))],
-        //         monta: [...new Set(results.map(item => item.monta))],
-        //         leiloeiro: [...new Set(results.map(item => item.leiloeiro))]
-        //     };
-
-        //     Object.keys(filters).forEach(key => {
-        //         filters[key].innerHTML = ''; // Limpa filtros
-        //         uniqueValues[key].forEach(value => {
-        //             let qnt = ""
-        //             const checkbox = document.createElement('input');
-        //             checkbox.type = 'checkbox';
-        //             checkbox.value = value;
-        //             checkbox.onchange = applyFilters;
-
-        //             if(key === "leiloeiro" || key === "monta"){
-        //                 qnt = allResults.filter(e => e[key] === value)
-        //                 console.log(qnt, value)
-        //                 const label = document.createElement('label');
-        //                 label.appendChild(checkbox);
-        //                 label.append(value + ` (${qnt.length})`);
-        //                 filters[key].appendChild(label);
-        //             }else{
-        //                 const label = document.createElement('label');
-        //                 label.appendChild(checkbox);
-        //                 label.append(value);
-        //                 filters[key].appendChild(label);
-        //             }
-
-        //         });
-        //     });
-        // }
-
-        // function applyFilters() {
-        //     const selected = {
-        //         model: [...document.querySelectorAll('#modelFilter input:checked')].map(c => c.value),
-        //         monta: [...document.querySelectorAll('#montaFilter input:checked')].map(c => c.value),
-        //         leiloeiro: [...document.querySelectorAll('#leiloeiroFilter input:checked')].map(c => c.value)
-        //     };
-
-        //     const filteredResults = allResults.filter(item =>
-        //         (selected.model.length === 0 || selected.model.includes(item.modelo)) &&
-        //         (selected.monta.length === 0 || selected.monta.includes(item.monta)) &&
-        //         (selected.leiloeiro.length === 0 || selected.leiloeiro.includes(item.leiloeiro))
-        //     );
-
-        //     const cardsContainer = document.getElementById('resultsCards');
-        //     cardsContainer.innerHTML = '';
-
-             
-        //     populateCards(filteredResults, cardsContainer);
-        
-        // }
-	
-        // //Functions para filtro móvel
-
-        //         // Função para abrir os filtros no modal
-        // function openMobileFilters() {
-        //     const overlay = document.getElementById('mobileFiltersOverlay');
-        //     const content = document.querySelector('.mobile-filters-content');
-
-        //     overlay.style.display = 'flex'; // Mostra o overlay
-        //     content.style.display = 'block'; // Mostra o conteúdo dos filtros
-        //     document.body.classList.add('no-scroll'); // Desativa a rolagem do body
-
-        //     populateMobileFilters();
-        // }
-
-        // // Função para fechar o modal e aplicar os filtros
-        // function confirmMobileFilters() {
-        //     const overlay = document.getElementById('mobileFiltersOverlay');
-        //     const content = document.querySelector('.mobile-filters-content');
-
-        //     overlay.style.display = 'none'; // Oculta o overlay
-        //     content.style.display = 'none'; // Oculta o conteúdo dos filtros
-        //     document.body.classList.remove('no-scroll'); // Reativa a rolagem do body
-
-        //     applyMobileFilters();
-        // }
-
-        // // Preenche os filtros no modal
-        // function populateMobileFilters() {
-        //     const filters = {
-        //         model: document.getElementById('mobileModelFilter'),
-        //         monta: document.getElementById('mobileMontaFilter'),
-        //         leiloeiro: document.getElementById('mobileLeiloeiroFilter')
-        //     };
-
-        //     const uniqueValues = {
-        //         model: [...new Set(allResults.map(item => item.modelo))],
-        //         monta: [...new Set(allResults.map(item => item.monta))],
-        //         leiloeiro: [...new Set(allResults.map(item => item.leiloeiro))]
-        //     };
-
-        //     Object.keys(filters).forEach(key => {
-        //         filters[key].innerHTML = ''; // Limpa filtros
-        //         uniqueValues[key].forEach(value => {
-        //             const checkbox = document.createElement('input');
-        //             checkbox.type = 'checkbox';
-        //             checkbox.value = value;
-        //             checkbox.name = `mobile-${key}`;
-
-        //             const label = document.createElement('label');
-        //             label.appendChild(checkbox);
-        //             label.append(value);
-
-        //             filters[key].appendChild(label);
-        //         });
-        //     });
-        // }
-
-        // // Aplica os filtros selecionados no modal
-        // function applyMobileFilters() {
-        //     const selected = {
-        //         model: [...document.querySelectorAll('#mobileModelFilter input:checked')].map(c => c.value),
-        //         monta: [...document.querySelectorAll('#mobileMontaFilter input:checked')].map(c => c.value),
-        //         leiloeiro: [...document.querySelectorAll('#mobileLeiloeiroFilter input:checked')].map(c => c.value)
-        //     };
-
-        //     const filteredResults = allResults.filter(item =>
-        //         (selected.model.length === 0 || selected.model.includes(item.modelo)) &&
-        //         (selected.monta.length === 0 || selected.monta.includes(item.monta)) &&
-        //         (selected.leiloeiro.length === 0 || selected.leiloeiro.includes(item.leiloeiro))
-        //     );
-
-        //     const cardsContainer = document.getElementById('resultsCards');
-        //     cardsContainer.innerHTML = '';
-
-        //     populateCards(filteredResults, cardsContainer);
-        // }
-
-        // //Limpa Filtros Aplicados
-        // // Função para limpar os filtros no mobile
-        // function clearMobileFilters() {
-        //     // Desmarca todas as checkboxes no modal
-        //     document.querySelectorAll('.mobile-filters-content input[type="checkbox"]').forEach(checkbox => {
-        //         checkbox.checked = false;
-        //     });
-
-        //     // Aplica os filtros no modal com tudo desmarcado
-        //     applyMobileFilters();
-        // }
             
     </script>
     
