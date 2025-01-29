@@ -1,0 +1,18 @@
+meta {
+  name: GET APIs
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{URL}}/apis
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "api": "guariglialeiloes",
+    "query": "honda"
+  }
+}

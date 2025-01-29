@@ -94,7 +94,7 @@ class ServiceVip:
           
           
           for lote in lotes:
-            monta = "Não Informado"
+            monta = "Não Informada"
             marca = self._getMarca(lote)
             modelo = self._getModelo(lote)
             ano = self._getAno(modelo)

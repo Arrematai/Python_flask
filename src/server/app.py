@@ -1,11 +1,11 @@
-from flask import Flask, json, request, jsonify
+from flask import Flask
 from flask_cors import CORS
 
 ## DATABASE
 from src.infra.database.mysql import DataBase
 
 ## SERVER
-from src.server.api import api_init
+from src.server.routes import Routes
 from src.server.middleware.limiter import init_limiter
 from src.server.middleware.cors import init_cors
 
@@ -17,7 +17,7 @@ def server_init():
   limiter = init_limiter(app)
   init_cors(app)
   database = DataBase(dictionary=True)  
-  api_init(app=app,limiter=limiter,database=database)
+  Routes(app=app,limiter=limiter,database=database)
   context = ('fullchain.pem', 'privkey.pem')#certificate and key files
   app.run(host='0.0.0.0', port=5001, ssl_context=context)
   

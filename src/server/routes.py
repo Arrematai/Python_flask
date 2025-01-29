@@ -33,7 +33,8 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
   @app.route('/apis', methods=['GET'])
   @limiter.limit("1000/day;100/minute")
   def apis():
-      return jsonify({"apis": ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitasleiloeiro", "liderleiloes", "pestanaleiloes", "vipleiloes", "guariglialeiloes", "ringolonleiloes"]}), 200
+      apis = ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitasleiloeiro", "liderleiloes", "pestanaleiloes", "vipleiloes", "guariglialeiloes", "ringolonleiloes"]
+      return jsonify({"apis": apis}), 200
 
   ## FIPE
   ## Retorna todas as marcas
@@ -117,7 +118,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
       
   @app.route('/leiloeiros/list/estados', methods=['GET'])
   @limiter.limit("1000/day;10/minute")
-  def getLeiloeiros():
+  def getEstados():
       try:
           service = LeiloeirosController(database)
           estados = service.getEstados()
