@@ -7,6 +7,7 @@ class MarcasController:
   
   def getMarcas(self):
       try:
+        self.database.connection()
         # Executando uma consulta SELECT
         query = "SELECT id, codigo, nome FROM marcas order by nome"
         self.database.socket.execute(query)

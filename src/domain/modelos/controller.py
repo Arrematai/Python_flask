@@ -7,6 +7,7 @@ class ModelosController:
   
   def getModelos(self):
       try:
+        self.database.connection()
         # Executando uma consulta SELECT
         query = "SELECT id, codigo, nome FROM modelos order by nome"
         self.database.socket.execute(query)
@@ -22,7 +23,7 @@ class ModelosController:
           
   def getModelosByMarcaId(self, marcaId: str):
     try:
-      print(marcaId)
+      self.database.connection()
       # Executando uma consulta SELECT
       query = "SELECT id, codigo, nome FROM modelos where marcaId = %s order by nome"
       self.database.socket.execute(query, (marcaId,))

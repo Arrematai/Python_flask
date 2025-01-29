@@ -4,10 +4,16 @@ from typing import Text
 
 current_dir = os.getcwd()
 EXECUTION_LEVEL = 25  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
+CHECKSITEONLINE_LEVEL = 30  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
 
 def createdExecution(self, message, *args, **kwargs):
   if self.isEnabledFor(EXECUTION_LEVEL):
       self._log(EXECUTION_LEVEL, message, args, **kwargs)
+      
+def createdCheckSiteOnline(self, message, *args, **kwargs):
+  if self.isEnabledFor(CHECKSITEONLINE_LEVEL):
+      self._log(CHECKSITEONLINE_LEVEL, message, args, **kwargs)
+
 
 class Log:
   hostname: Text
@@ -23,7 +29,9 @@ class Log:
 
   def createdLoggerCustom(cls):
     cls.logging.addLevelName(EXECUTION_LEVEL, "EXECUTION")
+    cls.logging.addLevelName(CHECKSITEONLINE_LEVEL, "CHECKSITE")
     cls.logging.Logger.execution = createdExecution
+    cls.logging.Logger.checkonline = createdCheckSiteOnline
     cls.logger = cls.logging.getLogger("arrematei_logger")
     
   def register(cls, filename, level, formatter) -> None:
@@ -42,6 +50,15 @@ class Log:
       formatter=f"[%(asctime)s] — %(levelname)s - {cls.ip} — %(message)s"
     )
     cls.logger.execution(f"API: {api}, Tempo de execução da: {execution_time:.6f} segundos, query: {query}")
+    
+  def checkOnlineSite(cls, start, end, site, status) -> None:
+    execution_time = end - start
+    cls.register(
+      filename='check_online', 
+      level=CHECKSITEONLINE_LEVEL,
+      formatter=f"[%(asctime)s] — %(levelname)s — %(message)s"
+    )
+    cls.logger.checkonline(f"SITE: {site}, Tempo de checagem da: {execution_time:.6f} segundos, status code: {status}")
   
   
   def messageInfo(cls, message:Text) -> None:

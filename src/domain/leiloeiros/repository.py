@@ -21,12 +21,18 @@ class LeiloeirosRepository:
       finally:
           self.database.close()
           
-  def findLeiloeirosStatusSite(self, status = 1):
+  def findLeiloeirosStatusSite(self, status = None):
     try:
+      query = ""
       self.database.connection()
-      # Executando uma consulta SELECT
-      query = "SELECT * FROM leiloeiros where status_site = %s order by nome"
-      self.database.socket.execute(query, (status,))
+
+      if status:
+        query = "SELECT * FROM leiloeiros where status_site = %s group by site order by site"
+        self.database.socket.execute(query, (status,))
+      else:
+        query = "SELECT * FROM leiloeiros group by site order by site"
+        self.database.socket.execute(query)
+        
 
       # Recuperando os resultados
       return self.database.socket.fetchall()

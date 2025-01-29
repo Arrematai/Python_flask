@@ -1,11 +1,16 @@
+import requests
+import time
+import cloudscraper
+## INFRA
 from src.infra.database.mysql import DataBase
+from src.infra.service.Logging import Log
+
+## DOMAIN
 from src.domain.leiloeiros.repository import LeiloeirosRepository
 
-import requests
-import cloudscraper
 
 def init():
-  print("Inicio Aplicação")
+  log = Log("")
   
   headers= {
       "Connection": "keep-alive",
@@ -26,12 +31,13 @@ def init():
   database = DataBase(dictionary=True)
   repository = LeiloeirosRepository(database)
 
-  
-  leiloeiros = repository.findLeiloeirosStatusSite(0)
+
+  leiloeiros = repository.findLeiloeirosStatusSite()
 
   
   for l in leiloeiros:
     try:
+      start_time = time.time()  
       
       site = f'https://{l["site"]}'
       headers["origin"] = site
@@ -40,19 +46,27 @@ def init():
       print(l["site"], response.status_code)
       
       if response.status_code >= 200 and response.status_code <= 299:
+        end_time = time.time()
         repository.updateStatusSite(l["id"], 1)
+        log.checkOnlineSite(start=start_time,end=end_time,site=site, status=response.status_code)
       else:
         # Cria uma instância do scraper do Cloudflare
         scraper = cloudscraper.create_scraper()
         responseScraper = scraper.get(site)
         print(l["site"], responseScraper.status_code)
         if responseScraper.status_code >= 200 and responseScraper.status_code <= 299:
+          end_time = time.time()
           repository.updateStatusSite(l["id"], 1)
+          log.checkOnlineSite(start=start_time,end=end_time,site=site, status=responseScraper.status_code)
         else:
+          end_time = time.time()
           repository.updateStatusSite(l["id"], 0)
+          log.checkOnlineSite(start=start_time,end=end_time,site=site, status=responseScraper.status_code)
         
     except requests.exceptions.RequestException as e:
+        end_time = time.time()
         repository.updateStatusSite(l["id"], 0)
+        log.checkOnlineSite(start=start_time,end=end_time,site=site, status=500)
     except Exception as e:
       print(f"Error: {e}")
     finally: 
