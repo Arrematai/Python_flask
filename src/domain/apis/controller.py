@@ -18,6 +18,13 @@ class ApisController(Resource):
     self.request = request
     self.Log = Log(ip)
     self.database = database
+    
+  def getApis(self):
+    repository = ApisRepository(self.database)
+    apis = repository.getApis()
+    
+    return [api['nome'] for api in apis]
+    
   
   def exec(self):
     data = self.request.json

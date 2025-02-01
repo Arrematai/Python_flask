@@ -5,7 +5,6 @@ from flask_limiter.util import get_remote_address
 ## DATABASE
 from src.infra.database.mysql import DataBase
 
-
 ## CONTROLLER
 from src.domain.apis.controller import ApisController
 from src.domain.leiloeiros.controller import LeiloeirosController
@@ -33,8 +32,9 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
   @app.route('/apis', methods=['GET'])
   @limiter.limit("1000/day;100/minute")
   def apis():
-      apis = ["copart","palacio","sodresantoro","joaoemilio","superbid","rogeriomenezes","freitasleiloeiro", "liderleiloes", "pestanaleiloes", "vipleiloes", "guariglialeiloes", "ringolonleiloes"]
-      return jsonify({"apis": apis}), 200
+        apis = ApisController(request,get_remote_address(),database)
+        resultado = apis.getApis()
+        return jsonify({"apis": resultado}), 200
 
   ## FIPE
   ## Retorna todas as marcas
