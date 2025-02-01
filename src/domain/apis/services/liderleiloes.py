@@ -6,7 +6,7 @@ import requests
 import uuid
 from bs4 import BeautifulSoup
 
-from src.helpers.Monta import getMonta
+from src.infra.helpers.Monta import getMonta
 
 class ServiceLiderLeiloes:
     url: Text = 'https://www.liderleiloes.com.br'

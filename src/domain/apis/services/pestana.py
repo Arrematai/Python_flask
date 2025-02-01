@@ -5,7 +5,7 @@ import requests
 import uuid
 from requests.exceptions import HTTPError
 
-from src.helpers.Monta import getMonta
+from src.infra.helpers.Monta import getMonta
 
 
 class ServicePestana:

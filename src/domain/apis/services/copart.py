@@ -4,7 +4,7 @@ from typing import Text
 import requests
 import uuid
 
-from src.helpers.Monta import getMonta
+from src.infra.helpers.Monta import getMonta
 
 
 class ServiceCopart:

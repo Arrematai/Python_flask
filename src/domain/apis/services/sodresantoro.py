@@ -4,7 +4,7 @@ from typing import Text
 import requests
 import uuid
 
-from src.helpers.Monta import getMonta
+from src.infra.helpers.Monta import getMonta
 
 class ServiceSantoro:
     url: Text = "https://dc60842cf2f240e6b45f1f2db7f23641.sa-east-1.aws.found.io/veiculos/_search"

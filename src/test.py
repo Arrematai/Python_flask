@@ -2,66 +2,61 @@ import time
 
 ## INFRA
 from src.infra.service.Logging import Log
+from src.infra.helpers.importModules import dynamic_import
+
+## DATABASE
+from src.infra.database.mysql import DataBase
 
 ## APIS
-from src.domain.apis.services.copart import ServiceCopart
-from src.domain.apis.services.sodresantoro import ServiceSantoro
-from src.domain.apis.services.freitas import ServiceFreitas
-from src.domain.apis.services.palacio import ServicePalacios
-from src.domain.apis.services.superbid import ServiceSuperBid
-from src.domain.apis.services.joaoemilio import ServiceJoaoEmilio
-from src.domain.apis.services.rogeriomenezes import ServiceRogerio
-from src.domain.apis.services.liderleiloes import ServiceLiderLeiloes
-from src.domain.apis.services.pestana import ServicePestana
-from src.domain.apis.services.vipleiloes import ServiceVip
-from src.domain.apis.services.guariglialeiloes import ServiceGuariglia
-from src.domain.apis.services.rigolon import ServiceRigolon
+from src.domain.apis.repository import ApisRepository
 # from src.domain.apis.services.kuss import ServiceKuss
 # from src.domain.apis.services.mgl import MGL
+
+
+## WORDKEY
+from src.domain.leiloeiros.controller import LeiloeirosController
 
 
 def init():
   print("Inicio Aplicação TESTE")
   start_time = time.time()
   log = Log("TESTE")
+  especifico = "topoleiloes"
+  result = None
   
-  # copart = ServiceCopart("fiat", 2000)  
-  # result = copart.exec()
-  
-  # bid = ServiceSuperBid("MERCEDES-BENZ", 2000)  
-  # result = bid.exec()
-  
-  # palacios = ServicePalacios("fiat", 2000)  
-  # result = palacios.exec()
-  
-  # freitas = ServiceFreitas("fiat", 2000)  
-  # result = freitas.exec()
-  
-  # joao = ServiceJoaoEmilio("fiat", 2000)
-  # result = joao.exec()
-  
-  # santoro = ServiceSantoro("fiat", 2000)  
-  # result = santoro.exec()
-  
-  # rogerio = ServiceRogerio("fiat", 2000)  
-  # result = rogerio.exec()
-  
-  # lider = ServiceLiderLeiloes("fiat", 2000)  
-  # result = lider.exec()
-  
-  # pestana = ServicePestana("bmw", 2000)  
-  # result = pestana.exec()
-  
-  # vip = ServiceVip("fiat", 2000)  
-  # result = vip.exec()
-  
-  # guariglia = ServiceGuariglia("fiat", 2000)  
-  # result = guariglia.exec()
-  
-  rigolon = ServiceRigolon("vw", 2000)  
-  result = rigolon.exec()
+  try:
+    
+    # database = DataBase(dictionary=True)
+    # repository = ApisRepository(database)
+    
+    # if especifico:
+    #   api = repository.getApi(especifico)
+      
+    #   print(api)
 
-  print("Resultados:",result)
+    #   if api:
+    #     ServiceClass  = dynamic_import(api["path"], api["class"]) 
+    #     # Verifica se a classe foi carregada corretamente e instancia um objeto
+    #     if ServiceClass:
+    #       instance = ServiceClass("fiat", 2000)  # Instancia a classe
+    #       result = instance.exec() or []
+    # else:    
+    #   dados = repository.getApis()
+    #   for api in dados:
+      
+    #       ServiceClass  = dynamic_import(api["path"], api["class"]) 
+    #       # Verifica se a classe foi carregada corretamente e instancia um objeto
+    #       if ServiceClass:
+    #         instance = ServiceClass("fiat", 2000)  # Instancia a classe
+    #         result = instance.exec() or []
+      
+
+        
+  except Exception as e:
+      print(f"Error: {e}")
+  
+
+  print("Resultados:",len(result))
   end_time = time.time()
   log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time)
   print("Aplicação Finalizada TESTE")

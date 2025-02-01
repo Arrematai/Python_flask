@@ -4,8 +4,8 @@ import re
 from typing import Text
 import uuid
 
-from src.helpers.Monta import getMonta
-from src.helpers.MarcaCarros import obter_marcas
+from src.infra.helpers.Monta import getMonta
+from src.infra.helpers.MarcaCarros import obter_marcas
 
 class ServiceRogerio:
     url: Text = "https://www.rogeriomenezes.com.br/busca"

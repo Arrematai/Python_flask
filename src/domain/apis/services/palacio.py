@@ -7,8 +7,8 @@ import json
 import urllib3
 import uuid
 
-from src.helpers.MarcaCarros import obter_marcas
-from src.helpers.Monta import getMonta
+from src.infra.helpers.MarcaCarros import obter_marcas
+from src.infra.helpers.Monta import getMonta
 
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

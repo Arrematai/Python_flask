@@ -1,7 +1,7 @@
 
 
 def getMonta(monta: str):
-     if 'pequena monta' in monta.lower():
+     if 'pequena monta' in monta.lower() or "recuperável" in monta.lower():
           return 'Pequena Monta'
      if 'média monta' in monta.lower() or 'media monta' in monta.lower():
           return 'Média Monta'

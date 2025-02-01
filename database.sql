@@ -111,3 +111,55 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+-- -----------------------------------------------------
+-- Table `arrematai`.`Leiloeiros`
+-- -----------------------------------------------------
+CREATE TABLE `arrematai`.`leiloeiros` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(245) NOT NULL,
+  `email` VARCHAR(245) NOT NULL,
+  `site` VARCHAR(245) NOT NULL,
+  `rua` VARCHAR(245) NULL,
+  `numero` VARCHAR(45) NULL,
+  `complemento` VARCHAR(245) NULL,
+  `bairro` VARCHAR(245) NULL,
+  `estado` VARCHAR(2) NOT NULL,
+  `cep` VARCHAR(45) NULL,
+  `cnpj_cpf` VARCHAR(245) NULL,
+  `telefone` VARCHAR(45) NULL,
+  `whatsapp` VARCHAR(45) NULL,
+  `image` VARCHAR(245) NULL,
+  `confiavel` TINYINT(1) NOT NULL DEFAULT '1',
+  `ativo` TINYINT(1) NOT NULL DEFAULT '1',
+  `status_site` TINYINT(1) ZEROFILL NOT NULL DEFAULT '1',
+  `logo` VARCHAR(245) NULL,
+  `obs` MEDIUMTEXT NULL,
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  UNIQUE INDEX `nome_UNIQUE` (`nome` ASC),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
+  UNIQUE INDEX `site_UNIQUE` (`site` ASC));
+
+
+-- -----------------------------------------------------
+-- Table `arrematai`.`apis`
+-- -----------------------------------------------------
+CREATE TABLE `arrematai`.`apis` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(245) NOT NULL,
+  `path` VARCHAR(245) NOT NULL,
+  `class` VARCHAR(245) NOT NULL,
+  `ativo` TINYINT(1) NOT NULL DEFAULT '1',
+  `status_site` TINYINT(1) ZEROFILL NOT NULL DEFAULT '1',
+  `obs` MEDIUMTEXT NULL,
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  UNIQUE INDEX `nome_UNIQUE` (`nome` ASC),
+  UNIQUE INDEX `path_UNIQUE` (`path` ASC),
+  UNIQUE INDEX `class_UNIQUE` (`class` ASC));

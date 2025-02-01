@@ -1,10 +1,12 @@
 from flask import jsonify
 import requests
 import re  # Para expressões regulares
-from src.helpers.MarcaCarros import obter_marcas
-from src.helpers.Monta import getMonta
 from typing import Text
 import uuid
+
+
+from src.infra.helpers.MarcaCarros import obter_marcas
+from src.infra.helpers.Monta import getMonta
 
 class ServiceSuperBid:
     url: Text = "https://api.sbwebservices.net/offer-query/seo/offers"

@@ -30,6 +30,7 @@ cloudscraper = "^1.2.71"
 arrematai = "src.__main__:server_init"
 seed = "src.__seed__:init"
 test = "src.__test__:init"
+test_le = "src.test_leiloeiros:init"
 checkOnline = "src.checkSiteOnline:init"
 
 [build-system]

@@ -6,8 +6,8 @@ from flask import json
 import requests
 import uuid
 
-from src.helpers.MarcaCarros import obter_marcas, replace_marcas
-from src.helpers.Monta import getMonta
+from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
+from src.infra.helpers.Monta import getMonta
 
 
 class ServiceRigolon:

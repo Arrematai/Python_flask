@@ -20,7 +20,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
   @limiter.limit("30000/day;5000/hour;500/minute")
   def search():
       try:
-          apis = ApisController(request,get_remote_address())
+          apis = ApisController(request,get_remote_address(),database)
           resultado = apis.exec()
           
           return jsonify(resultado)
@@ -142,7 +142,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
       
       
   ## Leiloeiros By Estado
-  @app.route('/leiloeiros/<word_key>', methods=['GET'])
+  @app.route('/leiloeiros/palavra/<word_key>', methods=['GET'])
   @limiter.limit("1000/day;10/minute")
   def getLeiloeirosByWordKey(word_key):
       try:

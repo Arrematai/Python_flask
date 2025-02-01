@@ -4,8 +4,8 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-from src.helpers.MarcaCarros import obter_marcas
-from src.helpers.Monta import getMonta
+from src.infra.helpers.MarcaCarros import obter_marcas
+from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
 
 class ServiceGuariglia:
