@@ -3,6 +3,10 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
+import urllib3
+
+# Desativando avisos de InsecureRequestWarning
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class ServiceVip:
     url: Text = "https://www.vipleiloes.com.br"

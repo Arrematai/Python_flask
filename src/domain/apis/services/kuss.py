@@ -69,7 +69,6 @@ class ServiceKuss:
           return []
                 
         for item in data:
-          print(item)
           lote = item["seq"] or None
           resultado = {
               "uuid": str(uuid.uuid4()),

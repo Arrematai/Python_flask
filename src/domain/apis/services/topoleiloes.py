@@ -3,9 +3,13 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
+import urllib3
 
 from src.infra.helpers.Monta import getMonta
 from src.infra.helpers.MarcaCarros import obter_marcas
+
+# Desativando avisos de InsecureRequestWarning
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class ServiceTopo:
     url: Text = "https://topoleiloes.com.br/busca"
