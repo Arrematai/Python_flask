@@ -78,7 +78,6 @@ class ServiceVip:
           response = requests.get(self.url + "/Veiculos/ListarVeiculos", params=self.parametros, headers=self.headers, verify=False)
 
           if response.status_code != 200:
-              self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
               print(f"Erro ao acessar o site na página: {response.status_code}")
               return []
 

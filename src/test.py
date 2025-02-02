@@ -9,8 +9,8 @@ from src.infra.database.mysql import DataBase
 
 ## APIS
 from src.domain.apis.repository import ApisRepository
-# from src.domain.apis.services.kuss import ServiceKuss
-# from src.domain.apis.services.mgl import MGL
+from src.domain.apis.services.kuss import ServiceKuss
+# from src.domain.apis.services.mgl import ServiceMgl
 
 
 ## WORDKEY
@@ -25,6 +25,9 @@ def init():
   result = None
   
   try:
+    
+    mgl = ServiceKuss("fiat", 2000)
+    result = mgl.exec()
     
     # database = DataBase(dictionary=True)
     # repository = ApisRepository(database)

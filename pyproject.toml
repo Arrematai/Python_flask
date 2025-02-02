@@ -25,6 +25,7 @@ python-dotenv = "^1.0.1"
 flask-restful = "^0.3.10"
 levenshtein = "^0.26.1"
 cloudscraper = "^1.2.71"
+cfscrape = "^2.1.1"
 
 [tool.poetry.scripts]
 arrematai = "src.__main__:server_init"

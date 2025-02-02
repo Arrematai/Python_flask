@@ -19,9 +19,10 @@ def replace_marcas(marca):
     for item in dados:
         nome = item["nome"]
         for termo in item["lista"]:
-            # Usa regex para substituir, ignorando maiúsculas/minúsculas
-            texto = re.sub(rf'\b{re.escape(termo)}\b', nome, marca, flags=re.IGNORECASE)
-            return texto
+            if termo in marca:
+                # Usa regex para substituir, ignorando maiúsculas/minúsculas
+                texto = re.sub(rf'\b{re.escape(termo)}\b', nome, marca, flags=re.IGNORECASE)
+                return texto
         
     return marca
         

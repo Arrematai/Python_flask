@@ -61,9 +61,9 @@ class LeiloeirosController:
       chaves_vistas = set()
       cutoff = 0.7
       
-      resultados = list(chain(resultados, self.moreSimilarWord(wordKey, listLeiloeiros, "nome", cutoff)))
       resultados = list(chain(resultados, self.moreSimilarWord(wordKey, listLeiloeiros, "site",cutoff)))
       resultados = list(chain(resultados, self.moreSimilarWord(wordKey, listLeiloeiros, "email",cutoff )))
+      resultados = list(chain(resultados, self.moreSimilarWord(wordKey, listLeiloeiros, "nome", cutoff)))
       if len(resultados) > 0:
         for obj in resultados:
           chave = (obj["id"])  # Defina os campos que devem ser considerados únicos
@@ -75,9 +75,9 @@ class LeiloeirosController:
       
       while cutoff >= 0.5:
         ## search NOME OR EMAIL OR SITE  
-        resultados = list(chain(resultados, self.moreSimilarWordsCutOff(wordKey, listLeiloeiros, "nome", cutoff)))
         resultados = list(chain(resultados, self.moreSimilarWordsCutOff(wordKey, listLeiloeiros, "site", cutoff)))
         resultados = list(chain(resultados, self.moreSimilarWordsCutOff(wordKey, listLeiloeiros, "email", cutoff)))
+        resultados = list(chain(resultados, self.moreSimilarWordsCutOff(wordKey, listLeiloeiros, "nome", cutoff)))
         
         for obj in resultados:
             chave = (obj["id"])  # Defina os campos que devem ser considerados únicos
