@@ -11,6 +11,7 @@ def obter_marcas():
     return dados
 
 
+## TROCA MARCA DENTRO DE UMA ESPRESSÃO
 def replace_marcas(marca):
     # Abrir o arquivo JSON
     with open('src/store/replaceMarcas.json', 'r', encoding='utf-8') as arquivo:
@@ -25,4 +26,18 @@ def replace_marcas(marca):
                 return texto
         
     return marca
+
+## RETORNA A MARCA ENCONTRADA DENTRO DE UMA EXPRECAO       
+def match_marca(marca):
+    # Abrir o arquivo JSON
+    with open('src/store/replaceMarcas.json', 'r', encoding='utf-8') as arquivo:
+        dados = json.load(arquivo)
+        
+    for item in dados:
+        nome = item["nome"]
+        for termo in item["lista"]:
+            if termo in marca:
+                return nome
+        
+    return None
         

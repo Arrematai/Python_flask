@@ -9,7 +9,8 @@ from src.infra.database.mysql import DataBase
 
 ## APIS
 from src.domain.apis.repository import ApisRepository
-from src.domain.apis.services.kuss import ServiceKuss
+# from src.domain.apis.services.kuss import ServiceKuss
+from src.domain.apis.services.megaleiloes import ServiceMega
 # from src.domain.apis.services.mgl import ServiceMgl
 
 
@@ -26,7 +27,7 @@ def init():
   
   try:
     
-    mgl = ServiceKuss("fiat", 2000)
+    mgl = ServiceMega("fiat", 500)
     result = mgl.exec()
     
     # database = DataBase(dictionary=True)

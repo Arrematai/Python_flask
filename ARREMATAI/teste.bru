@@ -5,7 +5,17 @@ meta {
 }
 
 post {
-  url: https://www.mgl.com.br/ApiFeatures/GetBusca/1/1/0?
-  body: none
+  url: https://1a8o5m7x6q-dsn.algolia.net/1/indexes/Items/query?x-algolia-agent=Algolia%20for%20JavaScript%20(3.33.0)%3B%20Browser&x-algolia-application-id=1A8O5M7X6Q&x-algolia-api-key=055311365c6f5cdd0d1bff3e0acba7ae
+  body: json
   auth: none
+}
+
+params:query {
+  x-algolia-agent: Algolia for JavaScript (3.33.0); Browser
+  x-algolia-application-id: 1A8O5M7X6Q
+  x-algolia-api-key: 055311365c6f5cdd0d1bff3e0acba7ae
+}
+
+body:json {
+  {"params":"query=fiat&page=0&hitsPerPage=500"}
 }

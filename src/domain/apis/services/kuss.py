@@ -60,33 +60,35 @@ class ServiceKuss:
         
         if response.status_code != 200:
             print(f"Erro ao acessar o site na página: {response.status_code}")
-            continue
+            return []
           
         data = response.json()
         
         
         if len(data) <= 0:
-          continue
+          return []
                 
         for item in data:
-            resultado = {
-                "uuid": str(uuid.uuid4()),
-                "lote": item["lote"],
-                "chassi": None,
-                "valor_fipe": None,
-                "valor_atual": item["valor"],
-                "tipo_veiculo": None,
-                "marca": self._getMarca(item["bem"]),
-                "modelo": self._getModelo(item["bem"]),
-                "monta": getMonta(""),
-                "ano": item["ano"],
-                "thumb": item["foto"],
-                "link": f"https://www.claudiokussleiloes.com.br/lance/{leilao}/{item["lote"]}",
-                "leiloeiro":"Claudio Kuss",
-                "ativo": 1,
-            }
-            # Adiciona o dicionário à lista de resultados
-            self.resultados.append(resultado)
+          lote = item["lote"] or None
+          print(item["foto"])
+          resultado = {
+              "uuid": str(uuid.uuid4()),
+              "lote": lote,
+              "chassi": None,
+              "valor_fipe": None,
+              "valor_atual": item["valor"],
+              "tipo_veiculo": None,
+              "marca": self._getMarca(item["bem"]),
+              "modelo": self._getModelo(item["bem"]),
+              "monta": getMonta(""),
+              "ano": item["ano"],
+              "thumb": item["foto"],
+              "link": f"https://www.claudiokussleiloes.com.br/lance/{leilao}/{lote}",
+              "leiloeiro":"Claudio Kuss",
+              "ativo": 1,
+          }
+          # Adiciona o dicionário à lista de resultados
+          self.resultados.append(resultado)
 
         # Exibe os resultados
         # print(self.resultados[0])
