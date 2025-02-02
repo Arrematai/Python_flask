@@ -1,0 +1,27 @@
+meta {
+  name: teste_3
+  type: http
+  seq: 17
+}
+
+post {
+  url: https://www.leilaovip.com.br/pesquisa?handler=pesquisar
+  body: formUrlEncoded
+  auth: none
+}
+
+params:query {
+  handler: pesquisar
+}
+
+headers {
+  origin: https://www.leilaovip.com.br
+}
+
+body:json {
+  {"params":"query=2500&page=0&hitsPerPage=500"}
+}
+
+body:multipart-form {
+  Filtro.Texto: fiat
+}

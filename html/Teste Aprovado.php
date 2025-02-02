@@ -139,10 +139,13 @@ function busca_veiculos_shortcode_Rafael() {
             font-size: 0.9rem;
             display: flex;
             padding-left: 10px;
+            display: flex;
+            justify-content: space-between;
         }
 
         .card-header p {
             margin: 0;
+            margin-right: 10px;
         }
 
         .card-owner  {
@@ -486,9 +489,12 @@ function busca_veiculos_shortcode_Rafael() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: query, api })
+					
                 });
+				
 
                 const results = await response.json();
+				
 				console.log(`Resultados: ${results.length} na api ${api} com a query ${query}`)
 				if(results && results.length > 0){
 					allResults = [...allResults, ...results]; // Acumula resultados
@@ -515,10 +521,12 @@ function busca_veiculos_shortcode_Rafael() {
                 card.className = 'card';
                 card.onclick = () => window.open(item.link, '_blank');
 
+                lote = item.lote ? `<strong>Lote:</strong> ${item.lote}` : ""
+
                 card.innerHTML = `
-                    <img src="${item.thumb}" alt="Imagem">
+                    <img loading="lazy" decoding="sync" src="${item.thumb}" alt="Imagem">
                     <div class="card-header">
-                        <p><strong>Lote:</strong> ${item.lote} <span>${item.leiloeiro}</span></p>
+                        <span>${item.leiloeiro}</span>  <p>${lote}</p>
                     </div>
                     <div class="card-body">
                         <p>${item.marca} ${item.modelo} - Ano ${item.ano}</p>

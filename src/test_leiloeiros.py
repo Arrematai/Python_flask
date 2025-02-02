@@ -22,7 +22,7 @@ def init():
     controller = LeiloeirosController(database)
     
     
-    result = controller.getByWordKey("paracios")
+    result = controller.getByWordKey("paalciop")
             
   except Exception as e:
       print(f"Error: {e}")

@@ -158,7 +158,7 @@ class LeiloeirosController:
         objetos_filtrados.append(obj)
 
     
-    return resultados
+    return objetos_filtrados
   
   def moreSimilarWord(self, string_base: str, lista: list, key: str, limite=0.6):     
     similares = []
