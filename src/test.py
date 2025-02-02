@@ -27,7 +27,7 @@ def init():
   
   try:
     
-    mgl = ServiceMega("fiat", 500)
+    mgl = ServiceMega("2500", 500)
     result = mgl.exec()
     
     # database = DataBase(dictionary=True)

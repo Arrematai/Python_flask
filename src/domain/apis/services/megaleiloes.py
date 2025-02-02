@@ -74,10 +74,13 @@ class ServiceMega:
         if not data: 
           return []
         
+        ## filtra categoria carro "category": "Veículos"
+        carros = list(filter(lambda x: x['category'] == "Veículos", data.get("hits")))
+        
         
         ## filtra batch_status 0(Em breve) e 1(Aberto para lances)
-        carros = list(filter(lambda x: x["batch_status"] == 0 or x['batch_status'] == 1, data.get("hits")))
-        
+        carros = list(filter(lambda x: x["batch_status"] == 0 or x['batch_status'] == 1, carros))
+                
       
         for carro in carros:
           title = carro["headline"]
