@@ -70,7 +70,7 @@ def init():
     except Exception as e:
       print(f"Error: {e}")
     finally: 
-      database.conn.close()
+      database.close()
   
  
 

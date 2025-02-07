@@ -101,7 +101,7 @@ class ServiceLeilaoVip:
                 "ano": ano,
                 "thumb": thumb,
                 "link": link,
-                "leiloeiro":"Lider Leilões",
+                "leiloeiro":"Leilão Vip",
                 "ativo": 1,
             }
 

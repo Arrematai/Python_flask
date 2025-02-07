@@ -39,5 +39,5 @@ class DataBase:
     self.socket = self.conn.cursor(dictionary=self.dictionary)
 
   def close(self):
-    # print("")
+    self.conn.close()
     self.socket.close()
