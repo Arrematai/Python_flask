@@ -11,7 +11,8 @@ from src.infra.database.mysql import DataBase
 from src.domain.apis.repository import ApisRepository
 # from src.domain.apis.services.kuss import ServiceKuss
 # from src.domain.apis.services.megaleiloes import ServiceMega
-from src.domain.apis.services.leilaovip import ServiceLeilaoVip
+# from src.domain.apis.services.leilaovip import ServiceLeilaoVip
+from src.domain.apis.services.freitas import ServiceFreitas
 # from src.domain.apis.services.mgl import ServiceMgl
 
 
@@ -28,11 +29,13 @@ def init():
   
   try:
     
-    mgl = ServiceLeilaoVip("fiat", 500)
-    result = mgl.exec()
+    # service = ServiceFreitas("fiat", 500)
+    # result = service.exec()
     
-    # database = DataBase(dictionary=True)
-    # repository = ApisRepository(database)
+    database = DataBase(dictionary=True)
+    repository = ApisRepository(database)
+
+    print(repository.getApis())
     
     # if especifico:
     #   api = repository.getApi(especifico)
@@ -61,7 +64,7 @@ def init():
       print(f"Error: {e}")
   
 
-  print("Resultados:",len(result))
+  # print("Resultados:",len(result))
   end_time = time.time()
   log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time)
   print("Aplicação Finalizada TESTE")

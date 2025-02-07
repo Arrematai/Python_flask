@@ -17,7 +17,4 @@ class FipesController:
             
       except Exception as e:
           print(f"Error: {e}")
-          self.database.conn.rollback()
-      finally:
           self.database.close()
-          

@@ -25,7 +25,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           return jsonify(resultado)
       
       except Exception as e:
-          print(e);
+          print("Erro search:", e);
           return jsonify({"message": "API inválida"}), 200
 
 
@@ -160,12 +160,6 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
   @app.route('/online', methods=['GET'])
   def teste_online():
       return jsonify({"message": "API ONLINE"}), 200
-
-  def init():
-    print("Inicio Aplicação")
-    context = ('fullchain.pem', 'privkey.pem')#certificate and key files
-    app.run(host='0.0.0.0', port=5001, ssl_context=context)
-    print("Aplicação Finalizada")
     
     
     

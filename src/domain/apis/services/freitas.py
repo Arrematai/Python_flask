@@ -4,6 +4,8 @@ import requests
 import re
 from bs4 import BeautifulSoup
 import urllib3
+import cloudscraper
+
 
 from src.infra.helpers.MarcaCarros import obter_marcas
 from src.infra.helpers.Monta import getMonta
@@ -99,8 +101,10 @@ class ServiceFreitas:
     
     def exec(self):
         resultados = []
+        
+        scraper = cloudscraper.create_scraper()
 
-        response = requests.get(self.url, params=self.parametros, headers=self.headers, verify=False)
+        response = scraper.get(self.url, params=self.parametros, headers=self.headers)
 
         if response.status_code != 200:
             self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")

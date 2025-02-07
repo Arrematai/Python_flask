@@ -17,8 +17,6 @@ class LeiloeirosRepository:
             
       except Exception as e:
           print(f"Error: {e}")
-          self.database.conn.rollback()
-      finally:
           self.database.close()
           
   def findLeiloeirosStatusSite(self, status = None):
@@ -39,8 +37,6 @@ class LeiloeirosRepository:
           
     except Exception as e:
         print(f"Error: {e}")
-        self.database.conn.rollback()
-    finally:
         self.database.close()
           
   def findLeiloeirosUniqueSite(self):
@@ -55,8 +51,6 @@ class LeiloeirosRepository:
             
       except Exception as e:
           print(f"Error: {e}")
-          self.database.conn.rollback()
-      finally:
           self.database.close()
           
   def filterByEstado(self, estado):
@@ -71,8 +65,6 @@ class LeiloeirosRepository:
             
       except Exception as e:
           print(f"Error: {e}")
-          self.database.conn.rollback()
-      finally:
           self.database.close()
           
   def filterEstados(self):
@@ -87,8 +79,6 @@ class LeiloeirosRepository:
             
       except Exception as e:
           print(f"Error: {e}")
-          self.database.conn.rollback()
-      finally:
           self.database.close()
           
   def getLeiloeirosByWordKey(self, wordKey):
@@ -112,8 +102,6 @@ class LeiloeirosRepository:
           
     except Exception as e:
         print(f"Error: {e}")
-        self.database.conn.rollback()
-    finally:
         self.database.close()
         
   def updateStatusSite(self, id, status):
@@ -121,7 +109,7 @@ class LeiloeirosRepository:
       self.database.connection()
       
       query = """ UPDATE leiloeiros 
-      SET  status_site = %s
+      SET  status_site = %s, updated_at = NOW()
       WHERE id = %s """
       
       
@@ -133,5 +121,3 @@ class LeiloeirosRepository:
     except Exception as e:
         print(f"Error: {e}")
         self.database.conn.rollback()
-    finally:
-        self.database.close()

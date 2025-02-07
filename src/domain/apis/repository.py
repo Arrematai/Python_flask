@@ -9,16 +9,13 @@ class ApisRepository:
       try:
         self.database.connection()
         # Executando uma consulta SELECT
-        query = "SELECT * FROM apis where ativo = 1 and status_site = 1"
+        query = "SELECT id,nome,path,class,ativo,status_site,obs FROM apis where ativo = 1 and status_site = 1"
         self.database.socket.execute(query)
 
         # Recuperando os resultados
         return self.database.socket.fetchall()
             
       except Exception as e:
-          print(f"Error: {e}")
-          self.database.conn.rollback()
-      finally:
           self.database.close()
           
   def getApi(self, nome: str):
@@ -32,8 +29,5 @@ class ApisRepository:
         return self.database.socket.fetchone()
             
       except Exception as e:
-          print(f"Error: {e}")
-          self.database.conn.rollback()
-      finally:
           self.database.close()
           

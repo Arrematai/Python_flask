@@ -69,8 +69,9 @@ def init():
         log.checkOnlineSite(start=start_time,end=end_time,site=site, status=500)
     except Exception as e:
       print(f"Error: {e}")
-    finally: 
-      database.close()
+
+  # Close Connection database
+  database.close()
   
  
 

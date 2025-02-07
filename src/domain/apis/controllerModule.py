@@ -1,0 +1,62 @@
+from flask import Request
+import time
+from flask_restful import Resource
+
+## INFRA
+from src.infra.service.Logging import Log
+from src.infra.helpers.importModules import dynamic_import
+
+## DATABASE
+from src.infra.database.mysql import DataBase
+
+## APIS
+from src.domain.apis.repository import ApisRepository
+
+class ApisController(Resource):
+    
+  def __init__(self, request: Request, ip: str,database: DataBase):
+    self.request = request
+    self.Log = Log(ip)
+    self.database = database
+    
+  def getApis(self):
+    repository = ApisRepository(self.database)
+    apis = repository.getApis()
+    
+    return [api['nome'] for api in apis]
+    
+  
+  def exec(self):
+    try:
+      data = self.request.json
+      query = data.get('query')
+      api = data.get('api')
+      print(f"Query recebida: {query}")
+      print(f"Api recebida: {api}")
+      start_time = time.time()
+      resultado = []
+      
+      repository = ApisRepository(self.database)
+      
+      if api:
+          dado = repository.getApi(api)
+          if dado:
+              ServiceClass  = dynamic_import(dado["path"], dado["class"]) 
+              # Verifica se a classe foi carregada corretamente e instancia um objeto
+              if ServiceClass:
+                  instance = ServiceClass(query, 2000)  # Instancia a classe
+                  resultado = instance.exec() or []
+              else:
+                  raise Exception("ServiceClass não foi executada.")
+          else:
+              raise Exception("Dado não encontrada.")
+      else:
+          raise Exception("Api não enviada.")
+      
+              
+      end_time = time.time()
+      self.Log.executionTime(query=query, api=api,end=end_time, start=start_time)
+      return resultado
+    except Exception as e:
+      print("Error APIS", e)
+      raise Exception("Api não encontrada.")
