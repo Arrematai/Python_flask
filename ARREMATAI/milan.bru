@@ -1,0 +1,23 @@
+meta {
+  name: milan
+  type: http
+  seq: 18
+}
+
+get {
+  url: https://milanleiloes.com.br/Busca/Busca.asp?txtBusca=fiat&selOpcaoTodas=0&btnProcurar=Procurar
+  body: none
+  auth: none
+}
+
+params:query {
+  txtBusca: fiat
+  selOpcaoTodas: 0
+  btnProcurar: Procurar
+}
+
+headers {
+  x-requested-with: XMLHttpRequest
+  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 OPR/114.0.0.0
+  accept: */*
+}

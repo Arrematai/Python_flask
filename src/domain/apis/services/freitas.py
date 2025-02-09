@@ -3,16 +3,20 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
-import urllib3
-import cloudscraper
-
 
 from src.infra.helpers.MarcaCarros import obter_marcas
 from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
+from urllib3.exceptions import InsecureRequestWarning
 
-# Desativando avisos de InsecureRequestWarning
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# Suppress the warnings from urllib3
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+
+
+proxies = {
+    "http": "http://gzetzlso:nezwqwqqxumm@161.123.152.115:6360",
+    "https": "http://gzetzlso:nezwqwqqxumm@161.123.152.115:6360",
+}
 
 class ServiceFreitas:
     url: Text = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
@@ -102,9 +106,7 @@ class ServiceFreitas:
     def exec(self):
         resultados = []
         
-        scraper = cloudscraper.create_scraper()
-
-        response = scraper.get(self.url, params=self.parametros, headers=self.headers)
+        response = requests.get(self.url, params=self.parametros, headers=self.headers, proxies=proxies, verify=False)
 
         if response.status_code != 200:
             self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")

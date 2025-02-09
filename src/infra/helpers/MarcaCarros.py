@@ -10,6 +10,15 @@ def obter_marcas():
 
     return dados
 
+def marcaIsExiste(nome):
+    # Abrir o arquivo JSON
+    with open('src/store/Marcas.json', 'r', encoding='utf-8') as arquivo:
+        dados = json.load(arquivo)
+
+    marca = any(m["nome"] == nome for m in dados)
+    return nome if marca else None
+
+
 
 ## TROCA MARCA DENTRO DE UMA ESPRESSÃO
 def replace_marcas(marca):
@@ -28,15 +37,15 @@ def replace_marcas(marca):
     return marca
 
 ## RETORNA A MARCA ENCONTRADA DENTRO DE UMA EXPRECAO       
-def match_marca(marca):
+def match_marca(marca:str):
     # Abrir o arquivo JSON
     with open('src/store/replaceMarcas.json', 'r', encoding='utf-8') as arquivo:
         dados = json.load(arquivo)
-        
+            
     for item in dados:
         nome = item["nome"]
         for termo in item["lista"]:
-            if termo in marca:
+            if termo.upper() in marca.upper():
                 return nome
         
     return None

@@ -1,3 +1,5 @@
+## https://docs.google.com/spreadsheets/d/15Oe0-PEWpfyZfDjJJfbqbP6JrK9_bcMPbH8VlPU94_4/edit
+
 ## INSTALL POETRY
 https://python-poetry.org/docs/
 

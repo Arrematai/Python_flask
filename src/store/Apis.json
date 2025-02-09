@@ -1,146 +1,164 @@
 [
    {
-      "id":1,
-      "nome":"copart",
-      "path":"src.domain.apis.services.copart",
-      "class":"ServiceCopart",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 1,
+      "nome": "copart",
+      "path": "src.domain.apis.services.copart",
+      "class": "ServiceCopart",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":2,
-      "nome":"sodresantoro",
-      "path":"src.domain.apis.services.sodresantoro",
-      "class":"ServiceSantoro",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 2,
+      "nome": "sodresantoro",
+      "path": "src.domain.apis.services.sodresantoro",
+      "class": "ServiceSantoro",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":3,
-      "nome":"freitasleiloeiro",
-      "path":"src.domain.apis.services.freitas",
-      "class":"ServiceFreitas",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 3,
+      "nome": "freitasleiloeiro",
+      "path": "src.domain.apis.services.freitas",
+      "class": "ServiceFreitas",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":4,
-      "nome":"palacio",
-      "path":"src.domain.apis.services.palacio",
-      "class":"ServicePalacios",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 4,
+      "nome": "palacio",
+      "path": "src.domain.apis.services.palacio",
+      "class": "ServicePalacios",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":5,
-      "nome":"superbid",
-      "path":"src.domain.apis.services.superbid",
-      "class":"ServiceSuperBid",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 5,
+      "nome": "superbid",
+      "path": "src.domain.apis.services.superbid",
+      "class": "ServiceSuperBid",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":6,
-      "nome":"joaoemilio",
-      "path":"src.domain.apis.services.joaoemilio",
-      "class":"ServiceJoaoEmilio",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 6,
+      "nome": "joaoemilio",
+      "path": "src.domain.apis.services.joaoemilio",
+      "class": "ServiceJoaoEmilio",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":7,
-      "nome":"rogeriomenezes",
-      "path":"src.domain.apis.services.rogeriomenezes",
-      "class":"ServiceRogerio",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 7,
+      "nome": "rogeriomenezes",
+      "path": "src.domain.apis.services.rogeriomenezes",
+      "class": "ServiceRogerio",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":8,
-      "nome":"liderleiloes",
-      "path":"src.domain.apis.services.liderleiloes",
-      "class":"ServiceLiderLeiloes",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 8,
+      "nome": "liderleiloes",
+      "path": "src.domain.apis.services.liderleiloes",
+      "class": "ServiceLiderLeiloes",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":9,
-      "nome":"pestanaleiloes",
-      "path":"src.domain.apis.services.pestana",
-      "class":"ServicePestana",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 9,
+      "nome": "pestanaleiloes",
+      "path": "src.domain.apis.services.pestana",
+      "class": "ServicePestana",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":10,
-      "nome":"vipleiloes",
-      "path":"src.domain.apis.services.vipleiloes",
-      "class":"ServiceVip",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 10,
+      "nome": "vipleiloes",
+      "path": "src.domain.apis.services.vipleiloes",
+      "class": "ServiceVip",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":11,
-      "nome":"guariglialeiloes",
-      "path":"src.domain.apis.services.guariglialeiloes",
-      "class":"ServiceGuariglia",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 11,
+      "nome": "guariglialeiloes",
+      "path": "src.domain.apis.services.guariglialeiloes",
+      "class": "ServiceGuariglia",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":12,
-      "nome":"ringolonleiloes",
-      "path":"src.domain.apis.services.rigolon",
-      "class":"ServiceRigolon",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 12,
+      "nome": "ringolonleiloes",
+      "path": "src.domain.apis.services.rigolon",
+      "class": "ServiceRigolon",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":13,
-      "nome":"topoleiloes",
-      "path":"src.domain.apis.services.topoleiloes",
-      "class":"ServiceTopo",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 13,
+      "nome": "topoleiloes",
+      "path": "src.domain.apis.services.topoleiloes",
+      "class": "ServiceTopo",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":14,
-      "nome":"claudiokuss",
-      "path":"src.domain.apis.services.kuss",
-      "class":"ServiceKuss",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 14,
+      "nome": "claudiokuss",
+      "path": "src.domain.apis.services.kuss",
+      "class": "ServiceKuss",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":15,
-      "nome":"megaleiloes",
-      "path":"src.domain.apis.services.megaleiloes",
-      "class":"ServiceMega",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 15,
+      "nome": "megaleiloes",
+      "path": "src.domain.apis.services.megaleiloes",
+      "class": "ServiceMega",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    },
    {
-      "id":16,
-      "nome":"leilaovip",
-      "path":"src.domain.apis.services.leilaovip",
-      "class":"ServiceLeilaoVip",
-      "ativo":1,
-      "status_site":1,
-      "obs":"None"
+      "id": 16,
+      "nome": "leilaovip",
+      "path": "src.domain.apis.services.leilaovip",
+      "class": "ServiceLeilaoVip",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
+   },
+   {
+      "id": 17,
+      "nome": "hastapublica",
+      "path": "src.domain.apis.services.hasta",
+      "class": "ServiceHasta",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
+   },
+   {
+      "id": 18,
+      "nome": "milanleiloes",
+      "path": "src.domain.apis.services.milan",
+      "class": "ServiceMilan",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    }
 ]

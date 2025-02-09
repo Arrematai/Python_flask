@@ -12,8 +12,10 @@ from src.domain.apis.repository import ApisRepository
 # from src.domain.apis.services.kuss import ServiceKuss
 # from src.domain.apis.services.megaleiloes import ServiceMega
 # from src.domain.apis.services.leilaovip import ServiceLeilaoVip
-from src.domain.apis.services.freitas import ServiceFreitas
+# from src.domain.apis.services.freitas import ServiceFreitas
 # from src.domain.apis.services.mgl import ServiceMgl
+# from src.domain.apis.services.hasta import ServiceHasta
+from src.domain.apis.services.milan import ServiceMilan
 
 
 ## WORDKEY
@@ -25,17 +27,13 @@ def init():
   start_time = time.time()
   log = Log("TESTE")
   especifico = "topoleiloes"
-  result = None
+  result = []
   
   try:
     
-    # service = ServiceFreitas("fiat", 500)
-    # result = service.exec()
-    
-    database = DataBase(dictionary=True)
-    repository = ApisRepository(database)
-
-    print(repository.getApis())
+    service = ServiceMilan("fiat", 500)
+    result = service.exec()
+  
     
     # if especifico:
     #   api = repository.getApi(especifico)
