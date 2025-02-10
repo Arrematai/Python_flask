@@ -143,8 +143,7 @@ class ServiceFreitas:
                 marca = existeInModelo["nome"].capitalize()
                 
                 
-            print(marca, modelo)
-            
+        
             resultado = {
                 "uuid": str(uuid.uuid4()),
                 "lote": lote_numero,

@@ -12,6 +12,7 @@ from src.domain.marcas.controller import MarcasController
 from src.domain.modelos.controller import ModelosController
 from src.domain.modelosAnos.controller import ModelosAnosController
 from src.domain.fipes.controller import FipesController
+from src.domain.calc.controller import CalcController
 
 def Routes(app: Flask, limiter: Limiter, database: DataBase):
 
@@ -21,8 +22,10 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
       try:
           apis = ApisController(request,get_remote_address(),database)
           resultado = apis.exec()
-          
-          return jsonify(resultado)
+
+
+        
+          return jsonify(resultado), 200
       
       except Exception as e:
           print("Erro search:", e);
@@ -91,6 +94,19 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           service = FipesController(database)
           carro = service.getCarro(marcaID, modeloID, ano)
           return jsonify({"data": { "success": True, "dados": carro }}), 200
+      except Exception as e:
+          return jsonify({"data": { "success": False, "message": e }}), 200
+      
+
+  # ## Retorna os dados do carro
+  @app.route('/calc/fipe/simplificado', methods=['POST'])
+  @limiter.limit("1000/day;100/minute")
+  def calSimplificado():
+      try:
+
+          service = CalcController(database)
+          valor = service.calSimplificado(request.get_json())
+          return jsonify({"data": { "success": True, "dados": valor }}), 200
       except Exception as e:
           return jsonify({"data": { "success": False, "message": e }}), 200
 

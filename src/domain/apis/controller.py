@@ -36,7 +36,7 @@ class ApisController(Resource):
       print(f"Query recebida: {query}")
       print(f"Api recebida: {api}")
       start_time = time.time()
-      resultado = []
+      resultados = []
       
       if api:
           APIS = obter_apis()
@@ -51,7 +51,7 @@ class ApisController(Resource):
               # Verifica se a classe foi carregada corretamente e instancia um objeto
               if ServiceClass:
                   instance = ServiceClass(query, 2000)  # Instancia a classe
-                  resultado = instance.exec() or []
+                  resultados = instance.exec() or []
               else:
                   raise Exception("ServiceClass não foi executada.")
           else:
@@ -59,10 +59,12 @@ class ApisController(Resource):
       else:
           raise Exception("Api não enviada.")
       
+
+      
               
       end_time = time.time()
       self.Log.executionTime(query=query, api=api,end=end_time, start=start_time)
-      return resultado
+      return resultados
     except Exception as e:
       print("Error APIS", e)
       raise Exception("erro geral na apis.")

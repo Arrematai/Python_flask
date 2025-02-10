@@ -184,7 +184,6 @@ class ServiceSuperBid:
             if marca and modelo:
                 resultados.append(resultado)
                 
-        print(len(resultados))
 
         return resultados
 

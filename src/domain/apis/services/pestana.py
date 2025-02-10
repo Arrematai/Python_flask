@@ -97,6 +97,6 @@ class ServicePestana:
             self.resultados.append(resultado)
 
         # Exibe os resultados
-        print(len(self.resultados))
+        # print(len(self.resultados))
         # return jsonify(resultados)
         return self.resultados

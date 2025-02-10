@@ -73,25 +73,16 @@ class ServiceMilan:
         return None
     
       
-    # def _getLanceInicial(self, lote:BeautifulSoup):
-    #     try: 
-    #         lance_inicial = lote.find('dt', text="Lance Inicial").find_next('dd').text.strip()
-    #         return float(lance_inicial.replace("R$", "").replace(".", "").replace(",", "."))  if lance_inicial  else None 
-    #     except Exception as e:
-    #         return None
-    
     
     def exec(self):
         resultados = []
 
-          
         response = requests.post(self.url, params=self.parametros, headers=self.headers)
 
         if response.status_code != 200:
             print(f"Erro ao acessar o site na página: {response.status_code}")
             return []
         
-
         
         soup = BeautifulSoup(response.text, "html.parser")
         tables = soup.find_all("table")
@@ -102,7 +93,8 @@ class ServiceMilan:
 
         lotes = table.find_all("tr")
         lotes = lotes[1:]
-                    
+
+                  
         for lote in lotes:
           valores = lote.find_all("td")
           lote_numero = valores[0]
@@ -115,10 +107,9 @@ class ServiceMilan:
           thumb = None
           link = self._getLink(url)
           
-
           resultado = {
               "uuid": str(uuid.uuid4()),
-              "lote": lote_numero,
+              "lote": lote_numero.text,
               "chassi": None,
               "valor_fipe": None,
               "valor_atual": None,
@@ -132,12 +123,11 @@ class ServiceMilan:
               "leiloeiro":"Milan Leilões",
               "ativo": 1,
           }
+
           resultados.append(resultado)
       
             
 
-        # # Imprimindo os resultados em formato JSON
-        # # print(json.dumps(resultados, indent=2, ensure_ascii=False))
         return resultados
 
 

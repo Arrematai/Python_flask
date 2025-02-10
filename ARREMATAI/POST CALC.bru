@@ -1,0 +1,20 @@
+meta {
+  name: POST CALC
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{URL}}/calc/fipe/simplificado
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "fipeId": 1, 
+    "reparos": 30, 
+    "taxa": 30, 
+    "despesas": 30
+  }
+}

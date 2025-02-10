@@ -36,7 +36,6 @@ class ServiceRigolon:
         
     # Regex para capturar o modelo
     def _getModelo(self, marca_modelo, marca):
-        print(marca_modelo, marca)
         padrao = rf'{re.escape(marca)}[ /]([a-zA-Z0-9\s.]+)'
         match = re.search(padrao, marca_modelo, re.IGNORECASE)
         if match:
