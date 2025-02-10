@@ -11,7 +11,7 @@ from src.infra.helpers.MarcaCarros import marcaIsExiste,replace_marcas
 
 
 class ServiceMilan:
-    url: Text = "https://milanleiloes.com.br/Busca/Busca.asp?txtBusca=fiat&selOpcaoTodas=0&btnProcurar=Procurar"
+    url: Text = "https://milanleiloes.com.br/Busca/Busca.asp"
     parametros: Text
     headers: Text
     pagina: Text
@@ -23,12 +23,9 @@ class ServiceMilan:
         
     def initValue(self):
         self.parametros = {
-          "id_categoria": "1",
-          "id_sub_categoria": "",
-          "localidade": "",
-          "data": "",
-          "id_leilao": "",
-          "palavra": self.query,
+          "btnProcurar": "0",
+          "selOpcaoTodas": "Procurar",
+          "txtBusca": self.query,
         }
         self.headers= {
             'accept': "*/*",
@@ -88,8 +85,13 @@ class ServiceMilan:
         tables = soup.find_all("table")
         table = []
 
+
         if tables and len(tables) > 2:
             table = tables[2]
+
+
+        if not table or len(table) <= 0:
+           return []
 
         lotes = table.find_all("tr")
         lotes = lotes[1:]
