@@ -9,8 +9,10 @@ from src.infra.helpers.importModules import dynamic_import
 ## DATABASE
 from src.infra.database.mysql import DataBase
 
-## APIS
+## REPOSITORY
 from src.domain.apis.repository import ApisRepository
+from src.domain.apis.LocalRepository import obter_apis
+
 
 class ApisController(Resource):
     
@@ -34,29 +36,34 @@ class ApisController(Resource):
       print(f"Query recebida: {query}")
       print(f"Api recebida: {api}")
       start_time = time.time()
-      resultado = []
-      
-      repository = ApisRepository(self.database)
+      resultados = []
       
       if api:
-          dado = repository.getApi(api)
-          if dado:
-              ServiceClass  = dynamic_import(dado["path"], dado["class"]) 
+          APIS = obter_apis()
+          API = next((item for item in APIS if item['nome'] == api), None)
+
+          if not API:
+            raise Exception("Api não encontrada.")
+
+          if API and API["ativo"] == 1 and API["status_site"]:
+              ServiceClass  = dynamic_import(API["path"], API["class"]) 
               # Verifica se a classe foi carregada corretamente e instancia um objeto
               if ServiceClass:
                   instance = ServiceClass(query, 2000)  # Instancia a classe
-                  resultado = instance.exec() or []
+                  resultados = instance.exec() or []
               else:
                   raise Exception("ServiceClass não foi executada.")
           else:
-              raise Exception("Dado não encontrada.")
+              raise Exception("Dado não encontrada ou não está ativo ou dite down.")
       else:
           raise Exception("Api não enviada.")
+      
+
       
               
       end_time = time.time()
       self.Log.executionTime(query=query, api=api,end=end_time, start=start_time)
-      return resultado
+      return resultados
     except Exception as e:
       print("Error APIS", e)
-      raise Exception("Api não encontrada.")
+      raise Exception("erro geral na apis.")

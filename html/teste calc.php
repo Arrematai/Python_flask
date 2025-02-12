@@ -4,7 +4,6 @@ function fipe_veiculos_shortcode_Rafael() {
     <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 	<!-- Include base CSS (optional) -->
     <link
   rel="stylesheet"
@@ -147,6 +146,10 @@ function fipe_veiculos_shortcode_Rafael() {
 		.hidden {
 			display: none;
 		}
+
+        input.form-control{
+            color: #404040;
+        }
 		
 
 
@@ -194,7 +197,6 @@ function fipe_veiculos_shortcode_Rafael() {
 		</div>
 
     <!-- Include Choices JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
 		const URL = 'https://api.arremataisolucoes.com.br:5001/fipe'
@@ -302,6 +304,7 @@ function fipe_veiculos_shortcode_Rafael() {
                     if(result && result.data && result.data.success){
                         resultFipe = result.data.dados
                         handleResultFile()
+                        handleResultCalc()
                     }
                 }).finally(() => loading(false));
             })
@@ -520,27 +523,59 @@ function fipe_veiculos_shortcode_Rafael() {
 
             divCalc.innerHTML = `
                 <div class="mb-3 row">
+                  <label for="taxa" class="col-sm-2 col-form-label">Valor da Fipe</label>
+                  <div class="col-sm-10">
+                    <input class="form-control form-control-lg" type="text" value="${resultFipe.Valor.replace("R$","").replace(",",".").replace(".","")}" aria-label="Valor das Taxas" name="valorfipe" id="valorfipe" readonly>
+                  </div>
+                </div>
+                <div class="mb-3 row">
                   <label for="taxa" class="col-sm-2 col-form-label">Valor da Taxa</label>
                   <div class="col-sm-10">
-                    <input class="form-control form-control-lg" type="text" placeholder="30,00" aria-label="Valor das Taxas" name="taxa" id="taxa">
+                    <input class="form-control form-control-lg" type="text" placeholder="Preencha com valor todas das taxas" aria-label="Valor das Taxas" name="taxa" id="taxa">
                   </div>
                 </div>
                 <div class="mb-3 row">
                   <label for="despesas" class="col-sm-2 col-form-label">Valor das Despesas</label>
                   <div class="col-sm-10">
-                    <input class="form-control form-control-lg" type="text" placeholder="500,00" aria-label="Valor das Despesas" name="despesas" id="despesas">
+                    <input class="form-control form-control-lg" type="text" placeholder="Preencha com valor todas das despesas" aria-label="Preencha com valor todas das despesas" name="despesas" id="despesas">
                   </div>
                 </div>
                 <div class="mb-3 row">
                   <label for="reparos" class="col-sm-2 col-form-label">Valor dos Reparos</label>
                   <div class="col-sm-10">
-                    <input class="form-control form-control-lg" type="text" placeholder="500,00" aria-label="Valor dos Reparos" name="reparos" id="reparos">
+                    <input class="form-control form-control-lg" type="text" placeholder="Preencha com valor dos reparos" aria-label="Preencha com valor dos reparos" name="reparos" id="reparos">
                   </div>
+                </div>
+                <div class="mb-3 row" style="display: flex;justify-content: space-between;align-items: center;">
+                    <div class="valor_total"></div>
+                    <button onClick="calcSimplificado()">Calcular</button>
                 </div>
             `
 
         }
 
+        function calcSimplificado(){
+            const div = divResult.querySelector(".valor_total")
+            const Fipe = divResult.querySelector("#valorfipe")
+            const taxas = divResult.querySelector("#taxa")
+            const despesas = divResult.querySelector("#despesas")
+            const reparos = divResult.querySelector("#reparos")
+
+
+            valor = parseFloat(taxas.value ?  taxas.value.replace(",",".") : 0) + parseFloat(despesas.value ?  despesas.value.replace(",",".") : 0) + parseFloat(reparos.value ?  reparos.value.replace(",",".") : 0) + parseFloat(Fipe.value ? Fipe.value.replace(",",".") : 0)
+ 
+
+            const valorFormatado = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            div.innerHTML = `<h3>Valor Total: ${valorFormatado}</h3>`
+
+
+            console.log(valor)
+            console.log(taxas.value)
+            console.log(despesas.value)
+            console.log(reparos.value)
+            console.log(Fipe)
+        }
 
 
             

@@ -4,7 +4,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-from src.infra.helpers.MarcaCarros import obter_marcas
+from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
 from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
 from urllib3.exceptions import InsecureRequestWarning
@@ -68,7 +68,7 @@ class ServiceFreitas:
         
     def _getMarca(self, title):
         marca_match = re.match(r"^(\w+)/([\w\s\.\-]+)", title)
-        return marca_match.group(1) if marca_match else None
+        return replace_marcas(marca_match.group(1)) if marca_match else None
     
     def _getAno(self, title):
         ano_match = re.search(r"(\d{2}/\d{2})", title)

@@ -26,35 +26,37 @@ def init():
   print("Inicio Aplicação TESTE")
   start_time = time.time()
   log = Log("TESTE")
-  especifico = "topoleiloes"
+  especifico = "rogeriomenezes"
   result = []
   
   try:
     
-    service = ServiceMilan("fiat", 500)
-    result = service.exec()
-  
-    
-    # if especifico:
-    #   api = repository.getApi(especifico)
-      
-    #   print(api)
+    # service = ServiceMilan("fiat", 500)
+    # result = service.exec()
 
-    #   if api:
-    #     ServiceClass  = dynamic_import(api["path"], api["class"]) 
-    #     # Verifica se a classe foi carregada corretamente e instancia um objeto
-    #     if ServiceClass:
-    #       instance = ServiceClass("fiat", 2000)  # Instancia a classe
-    #       result = instance.exec() or []
-    # else:    
-    #   dados = repository.getApis()
-    #   for api in dados:
+    
+    if especifico:
+      database = DataBase(dictionary=True)
+      repository = ApisRepository(database)
+      api = repository.getApi(especifico)
       
-    #       ServiceClass  = dynamic_import(api["path"], api["class"]) 
-    #       # Verifica se a classe foi carregada corretamente e instancia um objeto
-    #       if ServiceClass:
-    #         instance = ServiceClass("fiat", 2000)  # Instancia a classe
-    #         result = instance.exec() or []
+      print(api)
+
+      if api:
+        ServiceClass  = dynamic_import(api["path"], api["class"]) 
+        # Verifica se a classe foi carregada corretamente e instancia um objeto
+        if ServiceClass:
+          instance = ServiceClass("onix", 2000)  # Instancia a classe
+          result = instance.exec() or []
+    else:    
+      dados = repository.getApis()
+      for api in dados:
+      
+          ServiceClass  = dynamic_import(api["path"], api["class"]) 
+          # Verifica se a classe foi carregada corretamente e instancia um objeto
+          if ServiceClass:
+            instance = ServiceClass("onix", 2000)  # Instancia a classe
+            result = instance.exec() or []
       
 
         

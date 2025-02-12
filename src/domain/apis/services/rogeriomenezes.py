@@ -5,7 +5,7 @@ from typing import Text
 import uuid
 
 from src.infra.helpers.Monta import getMonta
-from src.infra.helpers.MarcaCarros import obter_marcas
+from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
 
 class ServiceRogerio:
     url: Text = "https://www.rogeriomenezes.com.br/busca"
@@ -44,7 +44,7 @@ class ServiceRogerio:
     def _getValorInicial(self, resultado: Tag):
         try:
             valor = resultado.select_one("p.lance-atual")
-            return float(valor.text.replace("R$", "").replace(".", "").replace(",", ".")) if valor else "N/A"
+            return float(valor.text.replace("R$", "").replace(".", "").replace(",", ".")) if valor else None
         except Exception as e:
             return None
                 
@@ -54,7 +54,7 @@ class ServiceRogerio:
     
     def _getMarca(self, title):
         marca = title.split()[0]
-        return marca
+        return replace_marcas(marca)
     
     def _getModelo(self, title):
         resultado = re.sub(r"^[A-Z]+\s", "", title)
@@ -73,38 +73,43 @@ class ServiceRogerio:
 
         # Parsear o HTML
         soup = BeautifulSoup(response.text, "html.parser")
+        lotes = soup.select(".lote-item")
 
         # Encontrar os itens
         resultados = []
-        for resultado in soup.select(".lote-item"):
+        for lote in lotes:
             try:
                 
-                title = self._getTitle(resultado)
-                link = self._getLink(resultado)
-                lote = self._getLote(resultado)
-                img_url = self._getImgUrl(resultado)
+                title = self._getTitle(lote)
+                link = self._getLink(lote)
+                lote_numero = self._getLote(lote)
+                img_url = self._getImgUrl(lote)
                 ano = self._getAno(title)
                 marca = self._getMarca(title)
                 modelo = self._getModelo(title)                
-                valor_atual = self._getValorInicial(resultado)
-                
+                valor_atual = self._getValorInicial(lote)
+
+                if marca and modelo:
+                    regex = rf'(?i)\b{re.escape(marca)}\b'
+                    modelo = re.sub(regex, '', modelo).strip()
+
+
                 
                 # Se tem Marca
-                existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
+                # existeMarca = next((m for m in self.Marcas if replace_marcas(m["nome"]) in marca.lower()), None)
                 
-                if existeMarca:
-                    marca = existeMarca["nome"].capitalize()
+                # if existeMarca:
+                #     marca = existeMarca["nome"].capitalize()
                 
             
-                if not existeMarca:
-                    existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
-                    marca = existeInModelo["nome"].capitalize()
-
+                # if not existeMarca:
+                #     existeInModelo = next((m for m in self.Marcas if replace_marcas(m["nome"]) in modelo.lower()), None)
+                #     marca = existeInModelo["nome"].capitalize()
             
                 # Adicionar ao resultado
                 resultados.append({
                     "uuid": str(uuid.uuid4()),
-                    "lote": lote,
+                    "lote": lote_numero,
                     "chassi": None,
                     "valor_fipe": None,
                     "valor_atual": valor_atual,

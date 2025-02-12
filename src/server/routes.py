@@ -6,7 +6,7 @@ from flask_limiter.util import get_remote_address
 from src.infra.database.mysql import DataBase
 
 ## CONTROLLER
-from src.domain.apis.controller import ApisController
+from src.domain.apis.controllerLocal import ApisController
 from src.domain.leiloeiros.controller import LeiloeirosController
 from src.domain.marcas.controller import MarcasController
 from src.domain.modelos.controller import ModelosController
@@ -23,8 +23,6 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           apis = ApisController(request,get_remote_address(),database)
           resultado = apis.exec()
 
-
-        
           return jsonify(resultado), 200
       
       except Exception as e:

@@ -20,7 +20,7 @@ def marcaIsExiste(nome):
 
 
 
-## TROCA MARCA DENTRO DE UMA ESPRESSÃO
+## TROCA MARCA DENTRO DE UMA EXPRESSÃO
 def replace_marcas(marca):
     # Abrir o arquivo JSON
     with open('src/store/replaceMarcas.json', 'r', encoding='utf-8') as arquivo:
@@ -36,7 +36,7 @@ def replace_marcas(marca):
         
     return marca
 
-## RETORNA A MARCA ENCONTRADA DENTRO DE UMA EXPRECAO       
+## RETORNA A MARCA ENCONTRADA DENTRO DE UMA EXPRESSÃO       
 def match_marca(marca:str):
     # Abrir o arquivo JSON
     with open('src/store/replaceMarcas.json', 'r', encoding='utf-8') as arquivo:
