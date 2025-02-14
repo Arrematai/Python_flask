@@ -6,8 +6,6 @@ import re
 from src.infra.database.mysql import DataBase
 from src.domain.leiloeiros.repository import LeiloeirosRepository
 
-
-
 class LeiloeirosController:
 
   def __init__(self, database: DataBase):
@@ -22,7 +20,7 @@ class LeiloeirosController:
             
       except Exception as e:
           print(f"Error: {e}")
-          raise("Teste Controller Leiloeiro")
+          raise Exception("Leiloeiros não encontrados.")
         
   def getLeiloeirosByEstado(self, estado):
       try:
@@ -32,7 +30,7 @@ class LeiloeirosController:
             
       except Exception as e:
           print(f"Error: {e}")
-          raise("Teste Controller Leiloeiro")
+          raise Exception("Leiloeiros por estado não encontrados.")
         
   def getEstados(self):
       try:
@@ -42,7 +40,7 @@ class LeiloeirosController:
             
       except Exception as e:
           print(f"Error: {e}")
-          raise("Teste Controller Leiloeiro")
+          raise Exception("Estados não encontrados.")
         
         
   def getByWordKey(self, wordKey: str):
@@ -90,6 +88,7 @@ class LeiloeirosController:
       return ("algoritmo-lvl2", sorted(resultadosUniques, key=lambda x: x['nota'], reverse=True))
     except Exception as e:
       print("ERROR:",e)
+      raise Exception("Nem um leiloeiro encontrado na busca.")
     
     
   # Função para encontrar a string mais parecida

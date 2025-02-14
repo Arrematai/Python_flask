@@ -47,7 +47,7 @@ class Log:
     cls.register(
       filename='execution', 
       level=EXECUTION_LEVEL,
-      formatter=f"[%(asctime)s] — %(levelname)s - {cls.ip} — %(message)s"
+      formatter=f"[%(asctime)s] — %(levelname)s — %(message)s"
     )
     cls.logger.execution(f"API: {api}, Tempo de execução da: {execution_time:.6f} segundos, query: {query}")
     
@@ -65,7 +65,7 @@ class Log:
     cls.register(
       filename='info', 
       level=cls.logging.INFO,
-      formatter=f"[%(asctime)s] — %(levelname)s - {cls.ip} — %(message)s"
+      formatter=f"[%(asctime)s] — %(levelname)s — %(message)s"
     )
     cls.logging.info(str(message))
 
@@ -73,7 +73,7 @@ class Log:
     cls.register(
       filename='error', 
       level=cls.logging.ERROR,
-      formatter=f"[%(asctime)s] — %(name)s — %(levelname)s - {cls.ip} — %(message)s"
+      formatter=f"[%(asctime)s] — %(name)s — %(levelname)s — %(message)s"
     )
     cls.logging.error(str(message))
 
@@ -82,7 +82,7 @@ class Log:
     cls.register(
       filename='debug', 
       level=cls.logging.DEBUG,
-      formatter=f"[%(asctime)s] — %(name)s — %(levelname)s - {cls.ip} — %(message)s"
+      formatter=f"[%(asctime)s] — %(name)s — %(levelname)s — %(message)s"
     )
     cls.logging.debug(str(message))
 

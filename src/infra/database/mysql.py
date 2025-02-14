@@ -26,17 +26,26 @@ class DataBase:
     except mysql.connector.DatabaseError as err:
       print("DataBaseError: "+err)
     except mysql.connector.Error as err:
-      print("Error: "+err)
+      print("Error MYSQL: "+err)
+    except Exception as e:
+      print("Error DATABASE: "+e)
       
   def connection(self):
-    self.conn = mysql.connector.connect(
-      host=self.ip,
-      port=self.port,
-      database=self.database,
-      user=self.user,
-      password=self.password
-    )
-    self.socket = self.conn.cursor(dictionary=self.dictionary)
+    try:
+      self.conn = mysql.connector.connect(
+        host=self.ip,
+        port=self.port,
+        database=self.database,
+        user=self.user,
+        password=self.password
+      )
+      self.socket = self.conn.cursor(dictionary=self.dictionary)
+    except mysql.connector.DatabaseError as err:
+      print("connection DataBaseError: "+err)
+    except mysql.connector.Error as err:
+      print("Error connection MYSQL: "+err)
+    except Exception as e:
+      print("Error connection DATABASE: "+e)
 
   def close(self):
     self.conn.close()

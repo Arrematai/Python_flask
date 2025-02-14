@@ -22,6 +22,9 @@ def marcaIsExiste(nome):
 
 ## TROCA MARCA DENTRO DE UMA EXPRESSÃO
 def replace_marcas(marca):
+    if not marca:
+        return None
+
     # Abrir o arquivo JSON
     with open('src/store/replaceMarcas.json', 'r', encoding='utf-8') as arquivo:
         dados = json.load(arquivo)
@@ -38,6 +41,9 @@ def replace_marcas(marca):
 
 ## RETORNA A MARCA ENCONTRADA DENTRO DE UMA EXPRESSÃO       
 def match_marca(marca:str):
+    if not marca:
+        return None
+
     # Abrir o arquivo JSON
     with open('src/store/replaceMarcas.json', 'r', encoding='utf-8') as arquivo:
         dados = json.load(arquivo)

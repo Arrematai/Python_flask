@@ -26,7 +26,7 @@ def init():
   print("Inicio Aplicação TESTE")
   start_time = time.time()
   log = Log("TESTE")
-  especifico = "rogeriomenezes"
+  especifico = "superbid"
   result = []
   
   try:
@@ -46,7 +46,7 @@ def init():
         ServiceClass  = dynamic_import(api["path"], api["class"]) 
         # Verifica se a classe foi carregada corretamente e instancia um objeto
         if ServiceClass:
-          instance = ServiceClass("onix", 2000)  # Instancia a classe
+          instance = ServiceClass("GM", 2000)  # Instancia a classe
           result = instance.exec() or []
     else:    
       dados = repository.getApis()

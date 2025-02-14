@@ -1,38 +1,29 @@
 from src.infra.database.mysql import DataBase
+from src.domain.modelos.repository import  ModelosRepository
+
 
 class ModelosController:
 
   def __init__(self, database: DataBase):
     self.database = database
+    self.repository = ModelosRepository(self.database)
   
   def getModelos(self):
-      try:
-        self.database.connection()
-        # Executando uma consulta SELECT
-        query = "SELECT id, codigo, nome FROM modelos order by nome"
-        self.database.socket.execute(query)
-
-        # Recuperando os resultados
-        return  self.database.socket.fetchall()
-            
-      except Exception as e:
-          print(f"Error: {e}")
-          self.database.conn.rollback()
-      finally:
-          self.database.close()
+    try:
+      result = self.repository.findModelos()
+      
+      return result
+          
+    except Exception as e:
+        print(f"Error: {e}")
+        raise Exception("Marcas não encontrados.")
           
   def getModelosByMarcaId(self, marcaId: str):
     try:
-      self.database.connection()
-      # Executando uma consulta SELECT
-      query = "SELECT id, codigo, nome FROM modelos where marcaId = %s order by nome"
-      self.database.socket.execute(query, (marcaId,))
-
-      # # Recuperando os resultados
-      return  self.database.socket.fetchall()
+      result = self.repository.findModelosByMarcaId(marcaId)
       
+      return result
+          
     except Exception as e:
         print(f"Error: {e}")
-        self.database.conn.rollback()
-    finally:
-        self.database.close()
+        raise Exception("Marcas não encontrados.")

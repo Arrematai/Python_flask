@@ -5,7 +5,7 @@ from typing import Text
 import uuid
 
 
-from src.infra.helpers.MarcaCarros import obter_marcas
+from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
 from src.infra.helpers.Monta import getMonta
 
 class ServiceSuperBid:
@@ -63,14 +63,14 @@ class ServiceSuperBid:
             return ano_match.group(0) if ano_match else None
 
     
-    def _getMarca(self, marca):
-        if not marca: 
-            return None
-        marca_info = next((m for m in self.Marcas if m['nome'].lower() in marca.lower()), None)
-        if marca_info:
-            return marca_info['nome']
-        else:
-            return None
+    # def _getMarca(self, marca):
+    #     if not marca: 
+    #         return None
+    #     marca_info = next((m for m in self.Marcas if replace_marcas(m['nome'].lower()) in marca.lower()), None)
+    #     if marca_info:
+    #         return marca_info['nome']
+    #     else:
+    #         return None
         
     def _handleAno(self, item):
         ano = None
@@ -101,8 +101,8 @@ class ServiceSuperBid:
         
         if not marca:
                 marca = item['product']["brand"].get("description", None)
-                
-        return marca
+        
+        return replace_marcas(marca) if marca else None
     
     def _handleModelo(self, item):
         modelo = None
@@ -141,6 +141,8 @@ class ServiceSuperBid:
             
             valor_atual = item["price"] if item["price"] else None
 
+
+
             ano = self._handleAno(item)
             marca = self._handleMarca(item)
             modelo = self._handleModelo(item)
@@ -149,20 +151,14 @@ class ServiceSuperBid:
             ## MONTA               
             descricao = item['product'].get('shortDesc', 'Descrição não disponível')
             monta = getMonta(descricao.lower())
-            
 
             # SE ATE AGORA NAO CONSEGUI PEGAR NO JSON PEGA NO shortDesc
             if not marca and not modelo:
                 split = descricao.split("/")
                 if len(split) >= 2:
-                    marca = split[0]
+                    marca = replace_marcas(split[0]) if split[0] else None
                     modelo = split[1]
-                
-            ## verifica se o produto tem relacao com a query
-            if marca and modelo and (not self.query.lower() in marca.lower() and not self.query.lower() in modelo.lower()):
-                continue
-            
-        
+                            
             resultado = {
                 "uuid": str(uuid.uuid4()),
                 "lote": item['lotNumber'],
@@ -170,7 +166,7 @@ class ServiceSuperBid:
                 "valor_fipe": None,
                 "valor_atual": valor_atual,
                 "tipo_veiculo": None,
-                "marca": self._getMarca(marca),
+                "marca": marca,
                 "modelo": modelo,
                 "monta": monta,
                 "ano": ano,

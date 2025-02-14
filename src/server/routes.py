@@ -27,7 +27,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
       
       except Exception as e:
           print("Erro search:", e);
-          return jsonify({"message": "API inválida"}), 200
+          return jsonify({"message": "Erro no processamento da API."}), 200
 
 
   @app.route('/apis', methods=['GET'])
@@ -121,7 +121,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
 
   ## Leiloeiros
   @app.route('/leiloeiros', methods=['GET'])
-  @limiter.limit("1000/day;10/minute")
+  @limiter.limit("1000/day;100/minute")
   def getLeiloeiros():
       try:
           service = LeiloeirosController(database)
@@ -131,7 +131,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           return jsonify({"data": { "success": False, }}), 200
       
   @app.route('/leiloeiros/list/estados', methods=['GET'])
-  @limiter.limit("1000/day;10/minute")
+  @limiter.limit("1000/day;100/minute")
   def getEstados():
       try:
           service = LeiloeirosController(database)
@@ -142,7 +142,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
 
   ## Leiloeiros By Estado
   @app.route('/leiloeiros/<estado>', methods=['GET'])
-  @limiter.limit("1000/day;10/minute")
+  @limiter.limit("1000/day;100/minute")
   def getLeiloeirosByEstado(estado):
       try:
           if not estado:
@@ -157,7 +157,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
       
   ## Leiloeiros By Estado
   @app.route('/leiloeiros/palavra/<word_key>', methods=['GET'])
-  @limiter.limit("1000/day;10/minute")
+  @limiter.limit("1000/day;100/minute")
   def getLeiloeirosByWordKey(word_key):
       try:
           if not word_key:

@@ -20,10 +20,14 @@ class ApisController(Resource):
     self.database = database
     
   def getApis(self):
-    repository = ApisRepository(self.database)
-    apis = repository.getApis()
-    
-    return [api['nome'] for api in apis]
+    try:
+      repository = ApisRepository(self.database)
+      apis = repository.getApis()
+      
+      return [api['nome'] for api in apis]
+    except Exception as e:
+      print("Error APIS", e)
+      raise Exception("Apis não encontrada.")
     
   
   def exec(self):
@@ -58,5 +62,5 @@ class ApisController(Resource):
       self.Log.executionTime(query=query, api=api,end=end_time, start=start_time)
       return resultado
     except Exception as e:
-      print("Error APIS", e)
+      print("Error API", e)
       raise Exception("Api não encontrada.")
