@@ -158,27 +158,31 @@ class ServiceSuperBid:
                 if len(split) >= 2:
                     marca = replace_marcas(split[0]) if split[0] else None
                     modelo = split[1]
-                            
-            resultado = {
-                "uuid": str(uuid.uuid4()),
-                "lote": item['lotNumber'],
-                "chassi": None,
-                "valor_fipe": None,
-                "valor_atual": valor_atual,
-                "tipo_veiculo": None,
-                "marca": marca,
-                "modelo": modelo,
-                "monta": monta,
-                "ano": ano,
-                "thumb": item['product'].get('thumbnailUrl', 'Imagem não disponível'),
-                "link": f"https://www.superbid.net/oferta/{item['id']}",
-                "leiloeiro": "SuperBid",
-                "ativo": 1,
-            }
-            
 
+
+            # NA API VEM MUITO COISA JUNTO, COMO LIXO OU OUTROS CARROS, assim do quando bate parececido
             if marca and modelo:
-                resultados.append(resultado)
+                if re.search(r'\b' + re.escape(self.query) + r'\b', marca, re.IGNORECASE) or re.search(r'\b' + re.escape(self.query) + r'\b', modelo, re.IGNORECASE):    
+                    resultado = {
+                        "uuid": str(uuid.uuid4()),
+                        "lote": item['lotNumber'],
+                        "chassi": None,
+                        "valor_fipe": None,
+                        "valor_atual": valor_atual,
+                        "tipo_veiculo": None,
+                        "marca": marca,
+                        "modelo": modelo,
+                        "monta": monta,
+                        "ano": ano,
+                        "thumb": item['product'].get('thumbnailUrl', 'Imagem não disponível'),
+                        "link": f"https://www.superbid.net/oferta/{item['id']}",
+                        "leiloeiro": "SuperBid",
+                        "ativo": 1,
+                    }
+                    
+
+                    if marca and modelo:
+                        resultados.append(resultado)
                 
 
         return resultados
