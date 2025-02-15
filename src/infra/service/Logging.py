@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 current_dir = os.getcwd()
-EXECUTION_LEVEL = 25  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
-CHECKSITEONLINE_LEVEL = 30  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
-MONITORAMENTO_LEVEL = 31  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
+EXECUTION_LEVEL = 18  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
+CHECKSITEONLINE_LEVEL = 19  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
+MONITORAMENTO_LEVEL = 21  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
 
 def createdExecution(self, message, *args, **kwargs):
   if self.isEnabledFor(EXECUTION_LEVEL):

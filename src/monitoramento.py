@@ -1,10 +1,10 @@
 import psutil
-import smtplib
 import requests
 import sys
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+
+## INFRA
 from src.infra.service.Logging import Log
+from src.infra.service.SMTP import enviar_email
 
 log = Log("")
 
@@ -15,18 +15,17 @@ def contains_sublist(main_list, sublist):
             return True
     return False
 
-
 def monitorar_apiOnline(init_arrematai):
   response = requests.get("https://api.arremataisolucoes.com.br:5001/online")
 
   if response.status_code != 200:
     print(f"Erro ao acessar o site na página: {response.status_code}")
-    enviar_email("Erro na aplicação", f"Erro em acesso a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação não está online")
+    enviar_email("Erro na aplicação", f"Erro em acesso a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação não está online",log)
     log.monitoramento("Aplicação não está funcionando")
     return False
   else:
     if init_arrematai:
-      enviar_email("Aplicação funcionando", f"Sucesso em acessar a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação funcionando")
+      enviar_email("Aplicação funcionando", f"Sucesso em acessar a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação funcionando",log)
     
   log.monitoramento("Aplicação está funcionando")
     
@@ -48,33 +47,6 @@ def monitorar_processos():
             pass
     return None
 
-# Função para enviar e-mail
-def enviar_email(subject = "Monitoramento Arrematai", mensagem: str = "", tipo = ""):
-    try:
-      remetente = "monitoramento@arremataisolucoes.com.br"
-      # destinatarios = ["Campos051192@hotmail.com", "rafaelnetto_@hotmail.com"]
-      destinatarios = ["rafaelnetto_@hotmail.com"]
-      senha = "monitoramento@P1s"
-      
-      # Configuração do servidor SMTP
-      servidor = smtplib.SMTP_SSL('smtp.hostinger.com', 465)
-      servidor.login(remetente, senha)
-      
-      # Criar mensagem
-      msg = MIMEMultipart()
-      msg['From'] = f"Monitoramento Arrematai <{remetente}>"
-      msg['To'] = ", ".join(destinatarios)
-      msg['Subject'] = subject
-      msg.attach(MIMEText(mensagem, 'plain'))
-      
-      # Enviar e-mail
-      servidor.sendmail(remetente, destinatarios, msg.as_string())
-      message = f"Email de notificação disparo com sucesso. - Status: {tipo}"
-      log.monitoramento(message)
-      servidor.quit()
-    except Exception as e:
-      print(e)
-
 # Função principal para monitorar e disparar alerta
 def verificar_erro():
   processo_encontrado = monitorar_processos()
@@ -84,14 +56,14 @@ def verificar_erro():
   if processo_encontrado:
 
     if init_arrematai and init_arrematai == "init_app":
-      enviar_email("Processo funcionando", f"Sucesso em encontrar processo no servidor.", "Processo funcionando")
+      enviar_email("Processo funcionando", f"Sucesso em encontrar processo no servidor.", "Processo funcionando", log)
       log.monitoramento("Processo funcionando")
     
     
     monitorar_apiOnline(init_arrematai)
 
   else:
-    enviar_email("Processo não encontrado ou parado", f"Erro processo não está rodando no servidor.", "Processo não está em execução")
+    enviar_email("Processo não encontrado ou parado", f"Erro processo não está rodando no servidor.", "Processo não está em execução",log)
     log.monitoramento("Processo não encontrado ou parado")
 
 # Executar a verificação
