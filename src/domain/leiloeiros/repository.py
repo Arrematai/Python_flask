@@ -18,6 +18,20 @@ class LeiloeirosRepository:
       except Exception as e:
           print(f"Error: {e}")
           self.database.close()
+
+  def findLeiloeirosWithLogo(self):
+    try:
+      self.database.connection()
+      # Executando uma consulta SELECT
+      query = "SELECT * FROM leiloeiros where logo is not null order by nome"
+      self.database.socket.execute(query)
+
+      # Recuperando os resultados
+      return self.database.socket.fetchall()
+          
+    except Exception as e:
+        print(f"Error: {e}")
+        self.database.close()
           
   def findLeiloeirosStatusSite(self, status = None):
     try:
@@ -91,10 +105,11 @@ class LeiloeirosRepository:
         WHERE nome LIKE %s 
           OR site LIKE %s 
           OR email LIKE %s
+          OR tag LIKE %s
         group by id
         """
       valor = (f"%{wordKey}%")
-      valores = (valor,valor,valor)
+      valores = (valor,valor,valor,valor)
       self.database.socket.execute(query, valores)
 
       # Recuperando os resultados
@@ -114,6 +129,23 @@ class LeiloeirosRepository:
       
       
       valores = (status, id)
+      
+      self.database.socket.execute(query, valores)
+      self.database.conn.commit()
+      
+    except Exception as e:
+        print(f"Error: {e}")
+        self.database.conn.rollback()
+
+  def updateTag(self, newTag, id):
+    try:
+      self.database.connection()
+      
+      query = """ UPDATE leiloeiros 
+      SET tag = %s, updated_at = NOW()
+      WHERE id = %s """
+      
+      valores = (newTag, id)
       
       self.database.socket.execute(query, valores)
       self.database.conn.commit()

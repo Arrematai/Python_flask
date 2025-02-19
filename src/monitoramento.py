@@ -1,12 +1,32 @@
 import psutil
 import requests
 import sys
+import subprocess
+import sys
 
 ## INFRA
 from src.infra.service.Logging import Log
 from src.infra.service.SMTP import enviar_email
 
 log = Log("")
+
+
+def supervisor_process( action = "restart", process_name = ""):
+    try:
+      if sys.platform.startswith("linux"):
+        subprocess.run(
+            ["supervisorctl", action, process_name], 
+            capture_output=False, 
+            text=False, 
+            check=True
+        )
+        print(f"Processo {process_name} reiniciado com sucesso!")
+      else:
+        print(f"Supervisorctl só roda no linux.")
+
+    except subprocess.CalledProcessError as e:
+        print(f"Erro ao reiniciar {process_name}:")
+        print(e.stderr)
 
 ## COMPARA 2 LISTA E VERIFICA SE O RESULTADO DE UMA TEM NA OUTRA 
 def contains_sublist(main_list, sublist):
@@ -16,18 +36,27 @@ def contains_sublist(main_list, sublist):
     return False
 
 def monitorar_apiOnline(init_arrematai):
-  response = requests.get("https://api.arremataisolucoes.com.br:5001/online")
+  try:
+    response = requests.get("https://api.arremataisolucoes.com.br:5001/online", timeout=5)
 
-  if response.status_code != 200:
-    print(f"Erro ao acessar o site na página: {response.status_code}")
+    if response.status_code != 200:
+      print(f"Erro ao acessar o site na página: {response.status_code}")
+      enviar_email("Erro na aplicação", f"Erro em acesso a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação não está online",log)
+      log.monitoramento("Aplicação não está funcionando")
+      supervisor_process("restart", "arrematai_app")
+      return False
+    else:
+      if init_arrematai:
+        enviar_email("Aplicação funcionando", f"Sucesso em acessar a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação funcionando",log)
+      
+    log.monitoramento("Aplicação está funcionando")
+              
+  except Exception as e:
+    print(f"Error: {e}")
     enviar_email("Erro na aplicação", f"Erro em acesso a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação não está online",log)
     log.monitoramento("Aplicação não está funcionando")
-    return False
-  else:
-    if init_arrematai:
-      enviar_email("Aplicação funcionando", f"Sucesso em acessar a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação funcionando",log)
-    
-  log.monitoramento("Aplicação está funcionando")
+    supervisor_process("restart", "arrematai_app")
+  
     
 
 # Função para verificar processos
@@ -65,6 +94,7 @@ def verificar_erro():
   else:
     enviar_email("Processo não encontrado ou parado", f"Erro processo não está rodando no servidor.", "Processo não está em execução",log)
     log.monitoramento("Processo não encontrado ou parado")
+    supervisor_process("start", "arrematai_app")
 
 # Executar a verificação
 def init():

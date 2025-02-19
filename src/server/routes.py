@@ -130,6 +130,16 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           return jsonify({"data": { "success": True, "dados": leiloeiros }}), 200
       except Exception as e:
           return jsonify({"data": { "success": False, }}), 200
+
+  @app.route('/leiloeiros/all/logos', methods=['GET'])
+  @limiter.limit("1000/day;100/minute")
+  def getLeiloeirosWithLogos():
+      try:
+          service = LeiloeirosController(database)
+          leiloeiros = service.getLeiloeirosWithLogo()
+          return jsonify({"data": { "success": True, "dados": leiloeiros }}), 200
+      except Exception as e:
+          return jsonify({"data": { "success": False, }}), 200
       
   @app.route('/leiloeiros/list/estados', methods=['GET'])
   @limiter.limit("1000/day;100/minute")

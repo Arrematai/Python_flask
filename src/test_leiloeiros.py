@@ -21,14 +21,14 @@ def init():
     database = DataBase(dictionary=True)
     controller = LeiloeirosController(database)
     
-    
-    result = controller.getByWordKey("paalciop")
+    result = controller.getByWordKey("www.palaciodoleilao.com.br")
             
   except Exception as e:
       print(f"Error: {e}")
   
 
-  print("Resultados:",len(result or []))
+  # print("Resultados:",len(result or []))
+  print("Resultados:",result)
   end_time = time.time()
   log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time)
   print("Aplicação Finalizada TESTE")
