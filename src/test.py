@@ -46,7 +46,7 @@ def init():
         ServiceClass  = dynamic_import(api["path"], api["class"]) 
         # Verifica se a classe foi carregada corretamente e instancia um objeto
         if ServiceClass:
-          instance = ServiceClass("Ducato", 2000)  # Instancia a classe
+          instance = ServiceClass("Fiat", 2000)  # Instancia a classe
           result = instance.exec() or []
     else:    
       dados = repository.getApis()
