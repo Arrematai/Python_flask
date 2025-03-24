@@ -51,7 +51,7 @@ class ServiceLiderLeiloes:
     
     def _getLink(self, lote):
         link_tag = lote.find("a", href=True)
-        return self.url + link_tag["href"] if link_tag else None
+        return "https://www.liderleiloes.com.br" + link_tag["href"] if link_tag else None
     
     def _getLoteNumero(self, link):
       try:

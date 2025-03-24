@@ -28,6 +28,21 @@ def supervisor_process( action = "restart", process_name = ""):
         print(f"Erro ao reiniciar {process_name}:")
         print(e.stderr)
 
+def processOff():
+  enviar_email("Processo não encontrado ou parado", f"Erro processo não está rodando no servidor.", "Processo não está em execução",log)
+  log.monitoramento("Processo não encontrado ou parado")
+  supervisor_process("start", "arrematai_app")
+
+def aplicacaoOff(response: requests.Response):
+  if response:
+    enviar_email("Erro na aplicação", f"Erro em acesso a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação não está online",log)
+    log.monitoramento("Aplicação não está funcionando")
+    supervisor_process("restart", "arrematai_app")
+  else:
+    enviar_email("Erro na aplicação", f"Erro em acesso a url: https://api.arremataisolucoes.com.br:5001/online", "Aplicação não está online",log)
+    log.monitoramento("Aplicação não está funcionando")
+    supervisor_process("restart", "arrematai_app")
+
 ## COMPARA 2 LISTA E VERIFICA SE O RESULTADO DE UMA TEM NA OUTRA 
 def contains_sublist(main_list, sublist):
     for i in range(len(main_list) - len(sublist) + 1):
@@ -41,9 +56,7 @@ def monitorar_apiOnline(init_arrematai):
 
     if response.status_code != 200:
       print(f"Erro ao acessar o site na página: {response.status_code}")
-      enviar_email("Erro na aplicação", f"Erro em acesso a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação não está online",log)
-      log.monitoramento("Aplicação não está funcionando")
-      supervisor_process("restart", "arrematai_app")
+      aplicacaoOff(response)
       return False
     else:
       if init_arrematai:
@@ -53,9 +66,7 @@ def monitorar_apiOnline(init_arrematai):
               
   except Exception as e:
     print(f"Error: {e}")
-    enviar_email("Erro na aplicação", f"Erro em acesso a url: https://api.arremataisolucoes.com.br:5001/online, status: {response.status_code}", "Aplicação não está online",log)
-    log.monitoramento("Aplicação não está funcionando")
-    supervisor_process("restart", "arrematai_app")
+    aplicacaoOff()
   
     
 
@@ -78,23 +89,29 @@ def monitorar_processos():
 
 # Função principal para monitorar e disparar alerta
 def verificar_erro():
-  processo_encontrado = monitorar_processos()
+  try:
+    processo_encontrado = monitorar_processos()
 
-  init_arrematai = sys.argv[1] if sys.argv and len(sys.argv) == 2 else None
+    init_arrematai = sys.argv[1] if sys.argv and len(sys.argv) == 2 else None
 
-  if processo_encontrado:
+    if processo_encontrado:
 
-    if init_arrematai and init_arrematai == "init_app":
-      enviar_email("Processo funcionando", f"Sucesso em encontrar processo no servidor.", "Processo funcionando", log)
-      log.monitoramento("Processo funcionando")
-    
-    
-    monitorar_apiOnline(init_arrematai)
+      if init_arrematai and init_arrematai == "init_app":
+        enviar_email("Processo funcionando", f"Sucesso em encontrar processo no servidor.", "Processo funcionando", log)
+        log.monitoramento("Processo funcionando")
+      
+      monitorar_apiOnline(init_arrematai)
 
-  else:
-    enviar_email("Processo não encontrado ou parado", f"Erro processo não está rodando no servidor.", "Processo não está em execução",log)
-    log.monitoramento("Processo não encontrado ou parado")
-    supervisor_process("start", "arrematai_app")
+    else:
+      processOff()
+  except Exception as e:
+    print(f"Error: {e}")
+    processo_encontrado = monitorar_processos()
+    if processo_encontrado:
+      processOff()
+    else:
+      aplicacaoOff()
+      
 
 # Executar a verificação
 def init():

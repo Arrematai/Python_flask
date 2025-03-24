@@ -9,7 +9,7 @@ class LeiloeirosRepository:
       try:
         self.database.connection()
         # Executando uma consulta SELECT
-        query = "SELECT * FROM leiloeiros order by nome"
+        query = f"SELECT * FROM leiloeiros ORDER BY LOWER(REPLACE(REPLACE(REPLACE(SUBSTRING_INDEX(site, '://', -1), 'www.', ''), 'http://', ''),'https://', ''))"
         self.database.socket.execute(query)
 
         # Recuperando os resultados
