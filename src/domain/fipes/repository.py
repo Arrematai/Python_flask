@@ -13,7 +13,7 @@ class FipesRepository:
       self.database.socket.execute(query, (marcaId, modeloId, AnoModelo))
 
       # Recuperando os resultados
-      return self.database.socket.fetchall()
+      return self.database.socket.fetchone()
           
     except Exception as e:
         print(f"Error: {e}")
