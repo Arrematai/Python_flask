@@ -3,7 +3,6 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
-import json
 import urllib3
 import uuid
 
@@ -26,32 +25,51 @@ class ServicePalacios:
         self.initValue()
         
     def initValue(self):
-        self.params = {f"quebra": "0.9389920978354351", "opcao": "listar_lote", "categoria_pesquisa": "1",
-                   "subcategoria_pesquisa": "", "marca_pesquisa": "", "situacao_pesquisa": "", "local_pesquisa": "",
-                   "modelo_pesquisa": "", "ano_pesquisa": "", "grupo_site_pesquisa": "", "txt_pesquisa_lote": f"{self.query}",
-                   "leilao_pesquisa": "", "tipo_exibicao": "grid", "paginacao": "-1", "total_paginas": "999",
-                   "somente_pesquisa": "0", "e_categoria": "1", "e_leilao": "1", "e_subcategoria": "0", "e_marca": "0",
-                   "e_modelo": "0", "e_ano": "0", "e_situacao": "0", "e_local": "0", "e_grupo": "0"}
+        print("AQUI",self.query)
+        self.params = {
+                "quebra": "0.22699912025538405",
+                "opcao": "listar_lote",
+                "categoria_pesquisa": "",
+                "subcategoria_pesquisa": "",
+                "marca_pesquisa": "",
+                "situacao_pesquisa": "",
+                "local_pesquisa": "",
+                "modelo_pesquisa": "",
+                "ano_pesquisa": "",
+                "cidade_site_pesquisa": "",
+                "estado_site_pesquisa": "",
+                "grupo_site_pesquisa": "",
+                "txt_pesquisa_lote": {self.query},
+                "leilao_pesquisa": "",
+                "tipo_exibicao": "grid",
+                "paginacao": "0",
+                "total_paginas": "1",
+                "somente_pesquisa": "0",
+                "e_categoria": "1",
+                "e_leilao": "1",
+                "e_subcategoria": "0",
+                "e_marca": "0",
+                "e_modelo": "0",
+                "e_ano": "0",
+                "e_situacao": "0",
+                "e_local": "0",
+                "e_grupo": "0",
+                "e_estado": "0",
+                "e_cidade": "0"
+            }
         
-        self.payload = f"=&opcao=listar_lote&categoria_pesquisa=&subcategoria_pesquisa=&marca_pesquisa=&situacao_pesquisa=&local_pesquisa=&modelo_pesquisa=&ano_pesquisa=&grupo_site_pesquisa=&txt_pesquisa_lote={self.query}&leilao_pesquisa=&tipo_exibicao=grid&paginacao=-1&total_paginas=999&somente_pesquisa=0&e_categoria=1&e_leilao=1&e_subcategoria=0&e_marca=0&e_modelo=0&e_ano=0&e_situacao=0&e_local=0&e_grupo=0"
-        
-        self.headers= {
-        "accept": "*/*",
-        "accept-language": "en-US,en;q=0.9,de;q=0.8,pt-BR;q=0.7,pt;q=0.6",
-        "content-type": "application/x-www-form-urlencoded",
-        "cookie": "_ga=GA1.1.1775081235.1721184961; __goc_session__=lgtxztildbsejasadykrekuopkwnmhwp; PHPSESSID=b2utklkplauluko1j4d8beccf3; _ga_2LQ3Q2WD1F=GS1.1.1731346152.7.0.1731346183.29.0.0",
-        "encoding": "iso-8859-1",
-        "origin": "https://www.palaciodosleiloes.com.br",
-        "priority": "u=1, i",
-        "referer": "https://www.palaciodosleiloes.com.br/site/",
-        "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "\"Windows\"",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
-    }
+        self.headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br, zstd",
+            "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Cache-Control": "no-cache",
+            "Origin": "https://www.palaciodosleiloes.com.br",
+            "Pragma": "no-cache",
+            "Referer": f"https://www.palaciodosleiloes.com.br/site/leilao.php?txt_pesquisa_lote={self.query}",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+            "Cookie": "__goc_session__=celvfgfiytnepjfmgynsnaqowrkxrzvz; PHPSESSID=6mnan0gb5d25jg3ncdr6s5005m; _ga=GA1.1.1981685986.1743706519; _ga_2LQ3Q2WD1F=GS1.1.1743706519.1.1.1743706552.27.0.0"
+        }
         
     def _getModelo(self,lote):
         modelo_completo = lote.select_one(".quebraln").text
@@ -81,7 +99,7 @@ class ServicePalacios:
     def exec(self):
         resultados = []
 
-        response = requests.post(self.url, data=self.payload, headers=self.headers, params=self.params)
+        response = requests.post(self.url, headers=self.headers, data=self.params)
         lotes_html = response.text  # HTML da resposta
 
         soup = BeautifulSoup(lotes_html, 'html.parser')

@@ -9,7 +9,7 @@ class MarcaRepository:
       try:
         self.database.connection()
         # Executando uma consulta SELECT
-        query = "SELECT id, codigo, nome FROM marcas order by nome"
+        query = "SELECT id, codigo, nome, imagem FROM marcas order by nome"
         self.database.socket.execute(query)
 
         # Recuperando os resultados

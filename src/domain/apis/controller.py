@@ -38,7 +38,7 @@ class ApisController(Resource):
       print(f"Query recebida: {query}")
       print(f"Api recebida: {api}")
       start_time = time.time()
-      resultado = []
+      resultados = []
       
       repository = ApisRepository(self.database)
       
@@ -49,7 +49,7 @@ class ApisController(Resource):
               # Verifica se a classe foi carregada corretamente e instancia um objeto
               if ServiceClass:
                   instance = ServiceClass(query, 2000)  # Instancia a classe
-                  resultado = instance.exec() or []
+                  resultados = instance.exec() or []
               else:
                   raise Exception("ServiceClass não foi executada.")
           else:
@@ -59,8 +59,8 @@ class ApisController(Resource):
       
               
       end_time = time.time()
-      self.Log.executionTime(query=query, api=api,end=end_time, start=start_time)
-      return resultado
+      self.Log.executionTime(query=query, api=api,end=end_time, start=start_time, resultados=resultados)
+      return resultados
     except Exception as e:
       print("Error API", e)
       raise Exception("Api não encontrada.")

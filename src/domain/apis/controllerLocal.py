@@ -62,7 +62,7 @@ class ApisController(Resource):
       
               
       end_time = time.time()
-      self.Log.executionTime(query=query, api=api,end=end_time, start=start_time)
+      self.Log.executionTime(query=query, api=api,end=end_time, start=start_time, resultados=resultados)
       return resultados
     except Exception as e:
       print("Error APIS", e)

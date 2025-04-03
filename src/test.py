@@ -15,7 +15,7 @@ from src.domain.apis.repository import ApisRepository
 # from src.domain.apis.services.freitas import ServiceFreitas
 # from src.domain.apis.services.mgl import ServiceMgl
 # from src.domain.apis.services.hasta import ServiceHasta
-from src.domain.apis.services.milan import ServiceMilan
+from src.domain.apis.services.milan import ServiceMilan;
 
 
 ## WORDKEY
@@ -26,7 +26,7 @@ def init():
   print("Inicio Aplicação TESTE")
   start_time = time.time()
   log = Log("TESTE")
-  especifico = "liderleiloes"
+  especifico = "palacio"
   result = []
   
   try:
@@ -46,7 +46,7 @@ def init():
         ServiceClass  = dynamic_import(api["path"], api["class"]) 
         # Verifica se a classe foi carregada corretamente e instancia um objeto
         if ServiceClass:
-          instance = ServiceClass("Fiat", 2000)  # Instancia a classe
+          instance = ServiceClass("fiat", 2000)  # Instancia a classe
           result = instance.exec() or []
     else:    
       dados = repository.getApis()
@@ -60,6 +60,7 @@ def init():
       
 
     print(result)
+    print(len(result))
         
   except Exception as e:
       print(f"Error: {e}")
@@ -67,5 +68,5 @@ def init():
 
   # print("Resultados:",len(result))
   end_time = time.time()
-  log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time)
+  log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time, resultados=result)
   print("Aplicação Finalizada TESTE")

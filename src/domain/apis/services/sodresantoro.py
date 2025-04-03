@@ -108,6 +108,8 @@ class ServiceSantoro:
         data = response.json()
 
         resultados = []
+
+        print(data)
         
 
         for item in data.get('hits', {}).get('hits', []):

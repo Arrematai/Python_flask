@@ -52,14 +52,14 @@ class Log:
     )], level=level, format=formatter, datefmt='%d/%b/%y %H:%M:%S')
   
   
-  def executionTime(cls, start, end, api, query) -> None:
+  def executionTime(cls, start, end, api, query, resultados) -> None:
     execution_time = end - start
     cls.register(
       filename='execution', 
       level=EXECUTION_LEVEL,
       formatter=f"[%(asctime)s] — [{cls.version}] - %(levelname)s — %(message)s"
     )
-    cls.logger.execution(f"API: {api}, Tempo de execução da: {execution_time:.6f} segundos, query: {query}")
+    cls.logger.execution(f"API: {api}, Qnt. Resultados: {resultados}, Tempo de execução da: {execution_time:.6f} segundos, query: {query}")
     
   def checkOnlineSite(cls, start, end, site, status) -> None:
     execution_time = end - start
