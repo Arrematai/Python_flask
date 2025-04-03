@@ -68,5 +68,5 @@ def init():
 
   # print("Resultados:",len(result))
   end_time = time.time()
-  log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time, resultados=result)
+  log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time, resultados=len(result))
   print("Aplicação Finalizada TESTE")
