@@ -19,7 +19,9 @@ proxies = {
 }
 
 class ServiceFreitas:
-    url: Text = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
+    # url: Text = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
+    url: Text = ""
+
     parametros: Text
     headers: Text
 
@@ -31,6 +33,7 @@ class ServiceFreitas:
         self.log = Log("")
         
     def initValue(self):
+        self.url = f"https://api.scrapfly.io/scrape?tags=player%2Cproject%3Adefault&key=scp-live-0f1c0f0c671e457788540b8d2f1636e5&url=https%3A%2F%2Fwww.freitasleiloeiro.com.br%2FLeiloes%2FPesquisarLotes%3FNome%3D{self.query}%26Categoria%3D1%26TipoLoteId%3D0%26FaixaValor%3D0%26Condicao%3D0%26PatioId%3D0%26AnoModeloMin%3D0%26AnoModeloMax%3D0%26ArCondicionado%3Dfalse%26DirecaoAssistida%3Dfalse%26ClienteSclId%3D0%26PageNumber%3D1%26TopRows%3D10&headers[content-type]=application%2Fjson%3B%20charset%3DUTF-8&headers[accept]=application%2Fjson%2C%20text%2Fjavascript%2C%20%2A%2F%2A%3B%20q%3D0.01"
         self.parametros = {
             "Nome": self.query,
             "Categoria": 1,
@@ -106,14 +109,19 @@ class ServiceFreitas:
     def exec(self):
         resultados = []
         
-        response = requests.get(self.url, params=self.parametros, headers=self.headers, proxies=proxies, verify=False)
+        # response = requests.get(self.url, params=self.parametros, headers=self.headers, proxies=proxies, verify=False)
+
+        response = requests.request("GET", self.url)
+        data = response.json()
+        # print(data)
+        lotes_html = data["result"]["content"]
 
         if response.status_code != 200:
             self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
             print(f"Erro ao acessar o site na página: {response.status_code}")
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(lotes_html, "html.parser")
         lotes = soup.find_all("div", class_="cardlote") # Pega cada CARD
     
         for lote in lotes:

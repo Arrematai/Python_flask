@@ -131,12 +131,8 @@ class ServiceMgl:
             "Filtro": {}
         }
         headers = {"content-type": "application/json"}
-        
-        cookies = {
-            "__cflb": "02DiuGPYJjFaVo4MeurXGbbX16pfqMLGyuxL6PSgmPBX2"
-        }
 
-        response = requests.get(url, json=payload, headers=headers,cookies=cookies)
+        response = requests.get(url, json=payload, headers=headers)
         
         print(response.cookies)
         # print(response.text)s

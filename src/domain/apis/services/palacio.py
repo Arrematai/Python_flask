@@ -13,7 +13,8 @@ from src.infra.helpers.Monta import getMonta
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class ServicePalacios:
-    url: Text = "https://www.palaciodosleiloes.com.br/site/camada_ajax/coluna_esquerda_m.php"
+    # url: Text = "https://www.palaciodosleiloes.com.br/site/camada_ajax/coluna_esquerda_m.php"
+    url: Text = "https://api.scrapfly.io/scrape?tags=player%2Cproject%3Adefault&key=scp-live-0f1c0f0c671e457788540b8d2f1636e5&url=https%3A%2F%2Fwww.palaciodosleiloes.com.br%2Fsite%2Fcamada_ajax%2Fcoluna_esquerda_m.php"
     payload: Text
     params: Text
     headers: Text
@@ -25,39 +26,39 @@ class ServicePalacios:
         self.initValue()
         
     def initValue(self):
-        print("AQUI",self.query)
-        self.params = {
-                "quebra": "0.22699912025538405",
-                "opcao": "listar_lote",
-                "categoria_pesquisa": "",
-                "subcategoria_pesquisa": "",
-                "marca_pesquisa": "",
-                "situacao_pesquisa": "",
-                "local_pesquisa": "",
-                "modelo_pesquisa": "",
-                "ano_pesquisa": "",
-                "cidade_site_pesquisa": "",
-                "estado_site_pesquisa": "",
-                "grupo_site_pesquisa": "",
-                "txt_pesquisa_lote": {self.query},
-                "leilao_pesquisa": "",
-                "tipo_exibicao": "grid",
-                "paginacao": "0",
-                "total_paginas": "1",
-                "somente_pesquisa": "0",
-                "e_categoria": "1",
-                "e_leilao": "1",
-                "e_subcategoria": "0",
-                "e_marca": "0",
-                "e_modelo": "0",
-                "e_ano": "0",
-                "e_situacao": "0",
-                "e_local": "0",
-                "e_grupo": "0",
-                "e_estado": "0",
-                "e_cidade": "0"
-            }
-        
+        # self.params = {
+        #         "quebra": "0.22699912025538405",
+        #         "opcao": "listar_lote",
+        #         "categoria_pesquisa": "",
+        #         "subcategoria_pesquisa": "",
+        #         "marca_pesquisa": "",
+        #         "situacao_pesquisa": "",
+        #         "local_pesquisa": "",
+        #         "modelo_pesquisa": "",
+        #         "ano_pesquisa": "",
+        #         "cidade_site_pesquisa": "",
+        #         "estado_site_pesquisa": "",
+        #         "grupo_site_pesquisa": "",
+        #         "txt_pesquisa_lote": {self.query},
+        #         "leilao_pesquisa": "",
+        #         "tipo_exibicao": "grid",
+        #         "paginacao": "0",
+        #         "total_paginas": "1",
+        #         "somente_pesquisa": "0",
+        #         "e_categoria": "1",
+        #         "e_leilao": "1",
+        #         "e_subcategoria": "0",
+        #         "e_marca": "0",
+        #         "e_modelo": "0",
+        #         "e_ano": "0",
+        #         "e_situacao": "0",
+        #         "e_local": "0",
+        #         "e_grupo": "0",
+        #         "e_estado": "0",
+        #         "e_cidade": "0"
+        #     }
+        self.payload = f"quebra=0.22699912025538405&&opcao=listar_lote&categoria_pesquisa=&subcategoria_pesquisa=&marca_pesquisa=&situacao_pesquisa=&local_pesquisa=&modelo_pesquisa=&ano_pesquisa=&cidade_site_pesquisa=&estado_site_pesquisa=&grupo_site_pesquisa=&txt_pesquisa_lote={self.query}&leilao_pesquisa=&tipo_exibicao=grid&paginacao=0&total_paginas=1&somente_pesquisa=0&e_categoria=1&e_leilao=1&e_subcategoria=0&e_marca=0&e_modelo=0&e_ano=0&e_situacao=0&e_local=0&e_grupo=0&e_estado=0&e_cidade=0"
+
         self.headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "*/*",
@@ -98,9 +99,12 @@ class ServicePalacios:
         
     def exec(self):
         resultados = []
+        # response = requests.post(self.url, headers=self.headers, data=self.params)
+        # lotes_html = response.text  # HTML da resposta
 
-        response = requests.post(self.url, headers=self.headers, data=self.params)
-        lotes_html = response.text  # HTML da resposta
+        response = requests.request("POST", self.url, data=self.payload)
+        data = response.json()
+        lotes_html = data["result"]["content"]
 
         soup = BeautifulSoup(lotes_html, 'html.parser')
         lotes = soup.select("div.col-md-3")

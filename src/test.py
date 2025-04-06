@@ -15,25 +15,23 @@ from src.domain.apis.repository import ApisRepository
 # from src.domain.apis.services.freitas import ServiceFreitas
 # from src.domain.apis.services.mgl import ServiceMgl
 # from src.domain.apis.services.hasta import ServiceHasta
-from src.domain.apis.services.milan import ServiceMilan;
+# from src.domain.apis.services.milan import ServiceMilan;
 
 
 ## WORDKEY
 from src.domain.leiloeiros.controller import LeiloeirosController
 
-
 def init():
   print("Inicio Aplicação TESTE")
   start_time = time.time()
   log = Log("TESTE")
-  especifico = "palacio"
+  especifico = "mgl"
   result = []
   
   try:
     
     # service = ServiceMilan("fiat", 500)
     # result = service.exec()
-
     
     if especifico:
       database = DataBase(dictionary=True)
