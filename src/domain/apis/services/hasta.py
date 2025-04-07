@@ -100,7 +100,7 @@ class ServiceHasta:
           
                       
           for lote in listCars:
-            monta = "Não Informada"
+            monta = getMonta("")
             title = lote.find("dd", class_="titleInsideLote").text
             marca = self._getMarca(title)
             modelo = self._getModelo(title,marca)

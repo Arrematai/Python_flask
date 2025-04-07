@@ -102,7 +102,7 @@ class ServiceMilan:
           lote_numero = valores[0]
           title = valores[1]
           url = valores[2]
-          monta = "Não Informada"
+          monta = getMonta("")
           marca = self._getMarca(title.text)
           modelo = self._getModelo(title.text)
           ano = self._getAno(title.text)

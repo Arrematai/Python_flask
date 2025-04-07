@@ -94,7 +94,7 @@ class ServiceGuariglia:
         for lote in lotes:
           body = lote.find("div", class_="body-lote")
           
-          monta = "Não informada"
+          monta = getMonta("")
           marca_modelo = self._getMarcaModelo(body)
           marca = self._getMarca(marca_modelo)
           modelo = self._getModelo(marca_modelo)

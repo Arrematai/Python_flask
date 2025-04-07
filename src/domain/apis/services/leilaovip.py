@@ -79,7 +79,7 @@ class ServiceLeilaoVip:
         lotes = soup.select("div.card-anuncio")
         
         for lote in lotes:
-            monta = "Não Informado"
+            monta = getMonta("")
             title = self._getTitle(lote)            
             marca = self._getMarca(title)
             modelo = self._getModelo(title)

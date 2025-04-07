@@ -27,7 +27,7 @@ def enviar_email(subject: str, mensagem: str, tipo: str, log: Log):
       
       # Criar mensagem
       msg = MIMEMultipart()
-      msg['From'] = f"Monitoramento Arrematai <{remetente}>"
+      msg['From'] = f"{os.getenv("MODE")} - Monitoramento Arrematai <{remetente}>"
       msg['To'] = ", ".join(destinatarios)
       msg['Subject'] = subject
       msg.attach(MIMEText(mensagem, 'plain'))

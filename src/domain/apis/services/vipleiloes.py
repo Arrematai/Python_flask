@@ -5,6 +5,8 @@ import re
 from bs4 import BeautifulSoup
 import urllib3
 
+from src.infra.helpers.Monta import getMonta
+
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -97,7 +99,7 @@ class ServiceVip:
           
           
           for lote in lotes:
-            monta = "Não Informada"
+            monta = getMonta()
             marca = self._getMarca(lote)
             modelo = self._getModelo(lote)
             ano = self._getAno(modelo)

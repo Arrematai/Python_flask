@@ -163,3 +163,19 @@ CREATE TABLE `arrematai`.`apis` (
   UNIQUE INDEX `nome_UNIQUE` (`nome` ASC),
   UNIQUE INDEX `path_UNIQUE` (`path` ASC),
   UNIQUE INDEX `class_UNIQUE` (`class` ASC));
+
+
+
+  CREATE TABLE `arrematai`.`response_apis` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `uuid` VARCHAR(245) NOT NULL,
+  `ip` VARCHAR(245) NOT NULL,
+  `api` VARCHAR(245) NOT NULL,
+  `method` VARCHAR(245) NOT NULL,
+  `http_code` VARCHAR(245) NOT NULL,
+  `duration` VARCHAR(245) NOT NULL,
+  `results` INT NOT NULL DEFAULT 0,
+  `url` VARCHAR(245) NOT NULL,
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));

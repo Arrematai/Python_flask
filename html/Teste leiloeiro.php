@@ -1,4 +1,4 @@
-function lista_leiloeiros_shortcode_Rafael() {
+function lista_leiloeiros_shortcode_paginacao_mobile() {
     ob_start(); 
     ?>
     <!DOCTYPE html>
@@ -7,12 +7,11 @@ function lista_leiloeiros_shortcode_Rafael() {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	
     <style>
      /* Estilo básico */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
             padding: 0;
         }
 		body.no-scroll {
@@ -34,7 +33,17 @@ function lista_leiloeiros_shortcode_Rafael() {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
+		
+		.buttons-leiloeiros {
+		  display: flex;
+		  justify-content: flex-end;
+		  align-items: center;
+		}
+		
+		.buttons-leiloeiros button{
+			margin-right: 8px;
+		}
+		
         table{
             margin-top: 60px;
         }
@@ -59,17 +68,38 @@ function lista_leiloeiros_shortcode_Rafael() {
         input{
             color: #404040 !important
         }
+		
+		/* Responsividade */
+        @media screen and (max-width: 600px) {
+            table {
+                font-size: 14px;
+				min-width: 1000px;
+            }
+			
+			.table-responsive{
+				overflow-x: hidden;
+			}
+
+            th, td {
+                padding: 8px;
+            }
+			
+			.has-global-padding{
+			padding-left: 0 !important;
+			padding-right: 0 !important;
+			}
+        }
 	
     </style>
     </head>
 <body>
 
-    <div class="container">
+    <div class="container" style="margin-top: 80px">
         <div class="row">
-            <div class="col">
-                <input type="text" id="palavra_chave" placeholder="Digite o leiloeiro desejado." min="3" max="30">
+            <div class="col-sm-12 col-md-12 col-lg-9 mt-2">
+                <input type="text" id="palavra_chave" placeholder="Digite o leiloeiro desejado." min="3" max="60">
             </div>
-            <div class="col col-lg-3">
+            <div class="col-sm-12 col-md-12 col-lg-3 mt-2 buttons-leiloeiros">
                 <button type="button" id="buscar" onclick="searchWordKey(this)" disabled>Buscar</button>
                 <button type="button" id="clear" class="btn btn-outline-secondary">Limpar</button>
             </div>
@@ -80,8 +110,55 @@ function lista_leiloeiros_shortcode_Rafael() {
             <div id="alert" class="alert alert-warning" role="alert" style="display: none;">
             </div>
         </div>
+		
 
-        <div class="row"><div id="resultados"></div></div>
+ 	
+		<div id="resultados" class="table-responsive mt-3">
+		</div>
+		
+		
+		<!-- Paginação -->
+		<nav aria-label="Page navigation" class="mt-3">
+		  <ul class="pagination justify-content-center">
+			  <span id="pageNumbers" class="d-flex"></span>
+		  </ul>
+		</nav>
+
+
+        		<!-- Modal -->
+		<div class="modal fade" id="modalLeiloeiro" tabindex="-1" aria-labelledby="modalLeiloeiroLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalLeiloeiro">Leiloeiro</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			  </div>
+			  <div class="modal-body">
+				  <div class='row nome mt-1'>
+					  <h5>Nome</h5>
+					  <text></text>
+				  </div>
+				  <div class='row email mt-1'>
+					  <h5>Email</h5>
+					   <text></text>
+				  </div>
+				  <div class='row site mt-1'>
+					  <h5>Site</h5>
+					   <text></text>
+				  </div>
+				  <div class='row confiavel mt-1'>
+					  <h5>Confiável</h5>
+					   <text></text>
+				  </div>
+				 	<div class='row status mt-1'>
+					  <h5>Status site</h5>
+					<text></text>
+				  </div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
 
 
     </div>
@@ -94,13 +171,34 @@ function lista_leiloeiros_shortcode_Rafael() {
         let resultFiltrados = []
         let resultNotFiltrados = []
         let filtred = false
+		let currentPage = 1;
+        let rowsPerPage = 100;
+		let totalPages = 0;
+    	let maxPagesToShow = 5;
+        let isMobile = window.matchMedia("(max-width: 768px)").matches;
 
         const wordKeyEl = document.getElementById("palavra_chave")
         const content = document.querySelector("#resultados")
+		const pagination = document.querySelector(".pagination")
         const button = document.getElementById('buscar');
         const clearButton = document.getElementById('clear');
 
 		var URL = "https://api.arremataisolucoes.com.br:5001"
+
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth <= 768) {
+                console.log("Mobile!");
+                isMobile = true;
+                createdTableMobile()
+                renderRowsMobile(1)
+            } else {
+                console.log("Desktop!");
+                isMobile = false;
+                createdTable()
+                renderRows(1)
+            }
+        });
 
 
 
@@ -113,14 +211,24 @@ function lista_leiloeiros_shortcode_Rafael() {
 			if (!queryParam) {
 				document.getElementById('loader').style.display = 'block';
 
-                createdTable()
+                if(isMobile){
+                    createdTableMobile()
+                }else{
+                    createdTable()
+                }
+
 
                 // Carregado dados iniciais
                 getLeiloeiros().then(leiloeiros => {
                     resultNotFiltrados = leiloeiros
-                    maxLinhas = resultNotFiltrados.length
-                    renderRows(resultNotFiltrados)
 
+                    if(isMobile){
+                        renderRowsMobile(1)
+                    }else{
+                        renderRows(1)
+                    }
+
+                    
                 }).finally(() => document.getElementById('loader').style.display = 'none')
 
                 wordKeyEl.addEventListener("change", () => {
@@ -136,10 +244,16 @@ function lista_leiloeiros_shortcode_Rafael() {
 
                 clearButton.addEventListener("click", () => {
                     if(filtred){
-                        createdTable()
+                        if(isMobile){
+                            createdTableMobile()
+                            renderRowsMobile(1)
+                        }else{
+                            createdTable()
+                            renderRows(1)
+                        }
+
                         document.getElementById('loader').style.display = 'block';
                         filtred = false
-                        renderRows(resultNotFiltrados)
                         document.getElementById('loader').style.display = 'none'
                     }
                 });
@@ -192,10 +306,14 @@ function lista_leiloeiros_shortcode_Rafael() {
 
                     if(dados.length > 0){
                         resultFiltrados = dados
-                        maxLinhas = resultFiltrados.length
                         filtred = true
-                        createdTable()
-                        renderRows(resultFiltrados)
+                        if(isMobile){
+                            createdTableMobile()
+                            renderRowsMobile(1)
+                        }else{
+                            createdTable()
+                            renderRows(1)
+                        }
                     }
 
 
@@ -214,54 +332,189 @@ function lista_leiloeiros_shortcode_Rafael() {
 		}
 
 
-        function renderRows(leiloeiros){
-
-            if(!leiloeiros || leiloeiros.length === 0){
+        function renderRows(page){
+			tbody.innerHTML = "";
+			let data = filtred ? resultFiltrados : resultNotFiltrados;
+            if(!data || data.length === 0){
                 return
             }
+			let inicio = (page - 1) * rowsPerPage;
+            let fim = inicio + rowsPerPage;
+            let paginatedItems = data.slice(inicio,fim);
 
-            tbody.innerHTML += leiloeiros.map(leiloeiro => `
-                <tr>
-                    <th scope="row">${leiloeiro.nome.trim()}</th>
-                    <td>${leiloeiro.email.trim()}</td>
-                    <td><a target="_blank" href="https://${leiloeiro.site.trim().toLowerCase()}">${leiloeiro.site.trim().toLowerCase()}</a></td>
-                    <td>${leiloeiro.estado}</td>
-                    <td>${leiloeiro.confiavel ? '<span class="badge text-bg-primary">Confiável</span>' : '<span class="badge text-bg-warning">Perigoso</span>'}</td>
-                    <td>${leiloeiro.status_site ? '<span class="badge text-bg-success">Online</span>' : '<span class="badge text-bg-danger">Offline</span>'}</td>
-                </tr>
-            `).join('');
+            paginatedItems.forEach(leiloeiro => {
+                let row = ` 
+                    <tr>
+						<td><a target="_blank" href="https://${leiloeiro.site.trim().toLowerCase()}">${leiloeiro.site.trim().toLowerCase()}</a></td>
+                        <th scope="row">${leiloeiro.nome.trim()}</th>
+                        <td>${leiloeiro.email.trim()}</td>
+                        <td>${leiloeiro.estado}</td>
+                        <td>${leiloeiro.confiavel ? '<span class="badge bg-primary">Confiável</span>' : '<span class="badge bg-warning">Perigoso</span>'}</td>
+                        <td>${leiloeiro.status_site ? '<span class="badge bg-success">Online</span>' : '<span class="badge bg-danger">Offline</span>'}</td>
+                    </tr>`;
+                tbody.innerHTML += row;
+            });
+			
+			console.log('AQUI',rowsPerPage, data.length)
+			totalPages = Math.ceil(data.length / rowsPerPage);
 
 
-            table.appendChild(tbody)
-            content.appendChild(table)
+            
+			table.appendChild(tbody);
+			updatePagination(data.length, page);
 
+
+        }
+
+
+        function renderRowsMobile(page){
+			tbody.innerHTML = "";
+			let data = filtred ? resultFiltrados : resultNotFiltrados;
+            if(!data || data.length === 0){
+                return
+            }
+			let inicio = (page - 1) * rowsPerPage;
+            let fim = inicio + rowsPerPage;
+            let paginatedItems = data.slice(inicio,fim);
+
+            paginatedItems.forEach(leiloeiro => {
+                let row = `
+                    <tr data-bs-toggle="modal" data-bs-target="#modalLeiloeiro" onClick='renderModal(${leiloeiro.id})'>
+						<th scope="row" data-bs-toggle="modal" data-bs-target="#modalLeiloeiro" onClick='renderModal(${leiloeiro.id})' style="text-align: center;"><i class="fa-solid fa-eye" style="color: #85c226;"></i></th>
+						<td>${leiloeiro.status_site ? '<span class="badge bg-success">Online</span>' : '<span class="badge bg-danger">Offline</span>'}</td>
+                        <td data-bs-toggle="modal" data-bs-target="#modalLeiloeiro" onClick='renderModal(${leiloeiro.id})'>${renderSiteOrNomeOrEmail(leiloeiro)}</td>
+						
+                    </tr>`;
+                tbody.innerHTML += row;
+            });
+			
+			console.log('AQUI',rowsPerPage, data.length)
+			totalPages = Math.ceil(data.length / rowsPerPage);
+
+			table.appendChild(tbody);
+			updatePagination(data.length, page);
+
+
+        }
+				
+		function renderSiteOrNomeOrEmail(leiloeiro){
+			
+				if(leiloeiro.site){
+					return `<a target="_blank" href="https://${leiloeiro.site.trim().toLowerCase()}">${leiloeiro.site.trim().toLowerCase()}</a>`
+				}else if(leiloeiro.nome){
+					return leiloeiro.nome.trim()
+				}else{
+					return leiloeiro.email.trim()
+				}
+				
+		}
+
+
+        function renderModal(leiloeiroId){
+			let data = filtred ? resultFiltrados : resultNotFiltrados;
+			
+			const leiloeiro = data.find(e => e.id === leiloeiroId)
+			
+			
+			if(leiloeiro){
+				console.log(leiloeiro)
+				const modal = document.querySelector("#modalLeiloeiro")
+				const nome = modal.querySelector('.nome text') 
+				const email = modal.querySelector('.email text') 
+				const site = modal.querySelector('.site text') 
+				const confiavel = modal.querySelector('.confiavel text') 
+				const status = modal.querySelector('.status text') 
+				
+				nome.innerText = !leiloeiro.nome || leiloeiro.nome === "" ? " - " : leiloeiro.nome
+				email.innerText = !leiloeiro.email || leiloeiro.email === "" ? " - " : leiloeiro.email
+				site.innerHTML = !leiloeiro.email || leiloeiro.email === "" ? "-" : `<a target="_blank" href="https://${leiloeiro.site.trim().toLowerCase()}">${leiloeiro.site.trim().toLowerCase()}</a>`
+				confiavel.innerHTML = leiloeiro.confiavel ? '<span class="badge bg-primary">Confiável</span>' : '<span class="badge bg-warning">Perigoso</span>'
+				status.innerHTML = leiloeiro.status_site ? '<span class="badge bg-success">Online</span>' : '<span class="badge bg-danger">Offline</span>'
+			}
+			
+		}
+		
+	
+		function updatePagination(totalItems, currentPage) {
+			let paginationNumbers = document.getElementById("pageNumbers");
+			paginationNumbers.innerHTML = "";
+
+			let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+			let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+			if (endPage - startPage + 1 < maxPagesToShow) {
+				startPage = Math.max(1, endPage - maxPagesToShow + 1);
+			}
+		
+
+			for (let i = startPage; i <= endPage; i++) {
+				let pageItem = document.createElement("li");
+				pageItem.classList.add("page-item");
+				if (i === currentPage) pageItem.classList.add("active");
+
+				let pageLink = document.createElement("a");
+				pageLink.classList.add("page-link");
+				pageLink.href = "#";
+				pageLink.innerText = i;
+				pageLink.onclick = function () { isMobile ? renderRowsMobile(i) : renderRows(i); };
+
+				pageItem.appendChild(pageLink);
+				paginationNumbers.appendChild(pageItem);
+			}
         }
 
 
         function createdTable(){
             // Remove todas as tabelas se tiver
-            document.querySelectorAll("table").forEach(el => el.remove())
+            document.querySelectorAll("#resultados > .table-responsive").forEach(el => el.remove())
+			
+			let tableWrapper = document.createElement("div");
+			tableWrapper.classList.add("table-responsive");
 
             table = document.createElement("table")
             table.setAttribute("id", "sortableTable")
             table.setAttribute("data-order", "asc")
-            table.classList.add("table")
-            table.classList.add("table-striped")
-            table.classList.add("table-hover")
-            table.classList.add("table-responsive")
+    		table.classList.add("table", "table-striped", "table-hover");
             const thead = document.createElement("thead");
             tbody = document.createElement("tbody");
             thead.innerHTML = `
                     <tr>
-                        <th onclick="sortTable(this, 0)" scope="col" class="sortable desc">Nome</th>
-                        <th onclick="sortTable(this, 1)" scope="col" class="sortable">Email</th>
-                        <th onclick="sortTable(this, 2)" scope="col" class="sortable">Site</th>
-                        <th onclick="sortTable(this, 3)" scope="col" class="sortable">Estado</th>
-                        <th scope="col">Confiavel</th>
-                        <th scope="col">Status</th>
+						<th onclick="sortTable(this, 0)" scope="col" class="sortable">Site</th>
+                        <th onclick="sortTable(this, 1)" scope="col" class="sortable">Nome</th>
+                        <th onclick="sortTable(this, 2)" scope="col" class="sortable">Email</th>
+                        <th onclick="sortTable(this, 3)" scope="col" class="col-1 sortable">Estado</th>
+                        <th scope="col" class="col-1">Confiável</th>
+                        <th scope="col" class="col-1">Status</th>
                     </tr>
                 `;
             table.appendChild(thead)
+			tableWrapper.appendChild(table);
+			content.appendChild(tableWrapper);
+        }
+
+        function createdTableMobile(){
+            // Remove todas as tabelas se tiver
+            document.querySelectorAll("#resultados > .table-responsive").forEach(el => el.remove())
+			
+			
+			let tableWrapper = document.createElement("div");
+			tableWrapper.classList.add("table-responsive");
+
+            table = document.createElement("table")
+            table.setAttribute("id", "sortableTable")
+            table.setAttribute("data-order", "asc")
+    		table.classList.add("table", "table-striped", "table-hover");
+            const thead = document.createElement("thead");
+            tbody = document.createElement("tbody");
+            thead.innerHTML = `
+                    <tr>
+ 						<th class="col-1">Detalhes</th>
+						<th class="sortable col-1">Status</th>
+						<th onclick="sortTable(this, 0)" class="sortable col-9">Site/Nome/Email</th>
+                    </tr>
+                `;
+            table.appendChild(thead)
+			tableWrapper.appendChild(table);
+			content.appendChild(tableWrapper);
         }
 
 
@@ -318,4 +571,4 @@ function lista_leiloeiros_shortcode_Rafael() {
     <?php
     return ob_get_clean(); // Retorna o conteúdo do buffer
 }
-add_shortcode('lista_leiloeiros_Rafael', 'lista_leiloeiros_shortcode_Rafael');
+add_shortcode('lista_leiloeiros_paginacao_mobile', 'lista_leiloeiros_shortcode_paginacao_mobile');
