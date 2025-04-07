@@ -11,7 +11,9 @@ from src.infra.service.Logging import Log
 # Função para enviar e-mail
 def enviar_email(subject: str, mensagem: str, tipo: str, log: Log):
     try:
-      
+      ## MODE
+      mode = os.getenv("MODE") or ""
+
       emails = [email.strip().strip('"') for email in os.getenv("SMTP_DESTINATARIOS").split(",")]
 
       print(emails)
@@ -27,7 +29,7 @@ def enviar_email(subject: str, mensagem: str, tipo: str, log: Log):
       
       # Criar mensagem
       msg = MIMEMultipart()
-      msg['From'] = f"{os.getenv("MODE")} - Monitoramento Arrematai <{remetente}>"
+      msg['From'] = f"{mode} - Monitoramento Arrematai <{remetente}>"
       msg['To'] = ", ".join(destinatarios)
       msg['Subject'] = subject
       msg.attach(MIMEText(mensagem, 'plain'))
