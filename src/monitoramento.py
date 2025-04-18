@@ -31,7 +31,7 @@ def supervisor_process( action = "restart", process_name = ""):
 def processOff():
   enviar_email("Processo não encontrado ou parado", f"Erro processo não está rodando no servidor.", "Processo não está em execução",log)
   log.monitoramento("Processo não encontrado ou parado")
-  supervisor_process("start", "arrematai_app")
+  supervisor_process("restart", "arrematai_app")
 
 def aplicacaoOff(response: requests.Response):
   if response:
