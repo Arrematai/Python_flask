@@ -4,6 +4,8 @@ from typing import Text
 import uuid
 
 from src.infra.helpers.Monta import getMonta
+from src.infra.service.Logging import Log
+
 
 
 class ServiceJoaoEmilio:
@@ -14,7 +16,9 @@ class ServiceJoaoEmilio:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.resultados = []
         self.initValue()
+        self.log = Log("")
         
     def initValue(self):
         self.params = {}
@@ -69,12 +73,16 @@ class ServiceJoaoEmilio:
 
         response = requests.request("GET", self.url, headers=self.headers, params=self.params)
 
+        if response.status_code != 200:
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": resultados, "http_code": response.status_code }
+
+
         html_content = response.text
 
         # Extraindo dados com expressões regulares ou buscas de string
         lotes = re.findall(r'<div class="lote ">.*?</div> <!-- ./card -->', html_content, re.DOTALL)
 
-        resultados = []
         for html in lotes:
             lote = self._getLote(html)
             title = self._getTitle(html)
@@ -102,9 +110,9 @@ class ServiceJoaoEmilio:
                 "leiloeiro":"João Emilio",
                 "ativo": 1,
             }
-            resultados.append(resultado)
+            self.resultados.append(resultado)
         
-        return resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }
 
 
 

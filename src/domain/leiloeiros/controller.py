@@ -63,6 +63,7 @@ class LeiloeirosController:
       print("Palavra Chave", wordKey)
       newListLeiloeiros = self.repository.getLeiloeirosByWordKey(wordKey)
       
+      
       ## BANCO DE DADOS
       if newListLeiloeiros and len(newListLeiloeiros) > 0:
         return ("banco", newListLeiloeiros)

@@ -9,62 +9,76 @@ from src.infra.database.mysql import DataBase
 
 ## APIS
 from src.domain.apis.repository import ApisRepository
-# from src.domain.apis.services.kuss import ServiceKuss
-# from src.domain.apis.services.megaleiloes import ServiceMega
-# from src.domain.apis.services.leilaovip import ServiceLeilaoVip
-# from src.domain.apis.services.freitas import ServiceFreitas
-# from src.domain.apis.services.mgl import ServiceMgl
-# from src.domain.apis.services.hasta import ServiceHasta
-# from src.domain.apis.services.milan import ServiceMilan;
+from src.domain.log.repository import LogsRepository
 
-
-## WORDKEY
-from src.domain.leiloeiros.controller import LeiloeirosController
 
 def init():
   print("Inicio Aplicação TESTE")
-  start_time = time.time()
   log = Log("TESTE")
-  especifico = "mgl"
-  result = []
+  especifico = "freitasleiloeiro"
+  query = "palio"
+  resultados = []
   
   try:
-    
-    # service = ServiceMilan("fiat", 500)
-    # result = service.exec()
-    
+
+    database = DataBase(dictionary=True)
+    repository = ApisRepository(database)
+    repositoryLog = LogsRepository(database)
+        
     if especifico:
-      database = DataBase(dictionary=True)
-      repository = ApisRepository(database)
+      start_time = time.time()
       api = repository.getApi(especifico)
-      
-      print(api)
 
       if api:
         ServiceClass  = dynamic_import(api["path"], api["class"]) 
         # Verifica se a classe foi carregada corretamente e instancia um objeto
         if ServiceClass:
-          instance = ServiceClass("fiat", 2000)  # Instancia a classe
-          result = instance.exec() or []
+          instance = ServiceClass(query, 2000)  # Instancia a classe
+          response = instance.exec()
+          resultados = response["resultados"] or []
+          print(resultados)
+          # print(len(resultados))
+          end_time = time.time()
+          log.executionTime(query=query, api=especifico,end=end_time, start=start_time, resultados=len(resultados))
+          repositoryLog.insertApis({
+            "ip": "TESTE",
+            "api": api["nome"],
+            "query": query,
+            "duration": end_time - start_time,
+            "http_code": response["http_code"],
+            "results": len(resultados)
+          })
     else:    
       dados = repository.getApis()
       for api in dados:
+          
+          print(api)
+          start_time = time.time()
       
           ServiceClass  = dynamic_import(api["path"], api["class"]) 
           # Verifica se a classe foi carregada corretamente e instancia um objeto
           if ServiceClass:
-            instance = ServiceClass("onix", 2000)  # Instancia a classe
-            result = instance.exec() or []
-      
+            instance = ServiceClass(query, 2000)  # Instancia a classe
+            response = instance.exec()
+            resultados = response["resultados"] or []
+            # print(result)
+            print(len(resultados))
+            end_time = time.time()
+            log.executionTime(query=query, api=especifico,end=end_time, start=start_time, resultados=len(resultados))
+            repositoryLog.insertApis({
+              "ip": "TESTE",
+              "api": api["nome"],
+              "query": query,
+              "duration": end_time - start_time,
+              "http_code": response["http_code"],
+              "results": len(resultados)
+            })
 
-    print(result)
-    print(len(result))
+
         
   except Exception as e:
       print(f"Error: {e}")
   
 
-  # print("Resultados:",len(result))
-  end_time = time.time()
-  log.executionTime(query="fiat", api="TESTE",end=end_time, start=start_time, resultados=len(result))
+
   print("Aplicação Finalizada TESTE")

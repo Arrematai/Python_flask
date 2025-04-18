@@ -7,6 +7,7 @@ import uuid
 from bs4 import BeautifulSoup
 
 from src.infra.helpers.Monta import getMonta
+from src.infra.service.Logging import Log
 
 class ServiceLeilaoVip:
     url: Text = 'https://www.leilaovip.com.br'
@@ -18,6 +19,7 @@ class ServiceLeilaoVip:
         self.query = query
         self.size = size
         self.resultados = []
+        self.log = Log("")
         self.initValue()
     
     def initValue(self):
@@ -72,7 +74,7 @@ class ServiceLeilaoVip:
         
         if response.status_code != 200:
             self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
-            print(f"Erro ao acessar o site na página: {response.status_code}")
+            return { "resultados": resultados, "http_code": response.status_code }
             
 
         soup = BeautifulSoup(response.text, "html.parser")
@@ -107,4 +109,4 @@ class ServiceLeilaoVip:
 
             self.resultados.append(resultado)
 
-        return self.resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }

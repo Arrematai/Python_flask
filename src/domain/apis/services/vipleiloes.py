@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import urllib3
 
 from src.infra.helpers.Monta import getMonta
+from src.infra.service.Logging import Log
 
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -18,7 +19,9 @@ class ServiceVip:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.resultados = []
         self.initValue()
+        self.log = Log("")
         
     def initValue(self):
         self.parametros = {
@@ -77,15 +80,19 @@ class ServiceVip:
     
     def exec(self):
         run = True
-        resultados = []
+
+        response = requests.get(self.url + "/Veiculos/ListarVeiculos", params=self.parametros, headers=self.headers, verify=False)
+
+        if response.status_code != 200:
+          self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+          return { "resultados": self.resultados, "http_code": response.status_code }
 
         while run:
           
           response = requests.get(self.url + "/Veiculos/ListarVeiculos", params=self.parametros, headers=self.headers, verify=False)
 
           if response.status_code != 200:
-              print(f"Erro ao acessar o site na página: {response.status_code}")
-              return []
+            continue
 
           soup = BeautifulSoup(response.text, "html.parser")
           
@@ -99,7 +106,7 @@ class ServiceVip:
           
           
           for lote in lotes:
-            monta = getMonta()
+            monta = getMonta("")
             marca = self._getMarca(lote)
             modelo = self._getModelo(lote)
             ano = self._getAno(modelo)
@@ -124,14 +131,14 @@ class ServiceVip:
                 "leiloeiro":"Vip Leilões",
                 "ativo": 1,
             }
-            resultados.append(resultado)
+            self.resultados.append(resultado)
           
           self.parametros["Pagina"] = self.parametros["Pagina"] + 1
             
 
         # # Imprimindo os resultados em formato JSON
         # # print(json.dumps(resultados, indent=2, ensure_ascii=False))
-        return resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }
 
 
 

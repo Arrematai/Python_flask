@@ -7,6 +7,7 @@ import uuid
 
 from src.infra.helpers.Monta import getMonta
 from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
+from src.infra.service.Logging import Log
 
 class ServiceKuss:
     url: Text = "https://www.claudiokussleiloes.com.br/json_edital.php"
@@ -20,6 +21,7 @@ class ServiceKuss:
         self.Marcas = obter_marcas()
         self.leiloes = []
         self.resultados = []
+        self.log = Log("")
         
     def initValue(self):
         self.data = {
@@ -53,14 +55,19 @@ class ServiceKuss:
         
     def exec (self):
       self._getLeiloesCurr()
+
+      response = requests.post(self.url, headers=self.headers, data=self.data)
+      if response.status_code != 200:
+        self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+        return { "resultados": self.resultados, "http_code": response.status_code }
+
       
       for leilao in self.leiloes:
         self.data["leilaoID"] = leilao
         response = requests.post(self.url, headers=self.headers, data=self.data)
         
         if response.status_code != 200:
-            print(f"Erro ao acessar o site na página: {response.status_code}")
-            return []
+          continue
           
         data = response.json()
         
@@ -91,4 +98,4 @@ class ServiceKuss:
 
         # Exibe os resultados
         # print(self.resultados[0])
-        return self.resultados
+      return { "resultados": self.resultados, "http_code": response.status_code }

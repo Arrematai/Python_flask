@@ -9,6 +9,8 @@ import uuid
 
 from src.infra.helpers.MarcaCarros import obter_marcas, match_marca
 from src.infra.helpers.Monta import getMonta
+from src.infra.service.Logging import Log
+
 
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -21,9 +23,10 @@ class ServiceMega:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.resultados = []
         self.Marcas = obter_marcas()
         self.initValue()
-        self.resultados = []
+        self.log = Log("")
         
     def initValue(self):
         self.data = {"params":f"query={self.query}&page=0&hitsPerPage={self.size}"}
@@ -61,58 +64,57 @@ class ServiceMega:
     
         
     def exec(self):
-
-        response = requests.post(self.url, json=self.data, headers=self.headers)
-        
-        
-        if response.status_code != 200:
-          print(f"Erro ao acessar o site na página: {response.status_code}")
-          return []
-        
-        data = response.json()
-        
-        if not data: 
-          return []
-        
-        ## filtra categoria carro "category": "Veículos"
-        carros = list(filter(lambda x: x['category'] == "Veículos", data.get("hits")))
-        
-        
-        ## filtra batch_status 0(Em breve) e 1(Aberto para lances)
-        carros = list(filter(lambda x: x["batch_status"] == 0 or x['batch_status'] == 1, carros))
-                
+      response = requests.post(self.url, json=self.data, headers=self.headers)
       
-        for carro in carros:
-          title = carro["headline"]
-          valor_inicial = carro["first_instance_value"]
-          link = carro["url"]
-          thumb = carro["image_path"]
-          lote = carro["batch_id"]
-          marca = self._getMarca(title)
-          modelo = self._getModelo(title, marca)
-          ano = self._getAno(title)
-          
+      
+      if response.status_code != 200:
+          self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+          return { "resultados": self.resultados, "http_code": response.status_code }
+      
+      data = response.json()
+      
+      if not data: 
+        return []
+      
+      ## filtra categoria carro "category": "Veículos"
+      carros = list(filter(lambda x: x['category'] == "Veículos", data.get("hits")))
+      
+      
+      ## filtra batch_status 0(Em breve) e 1(Aberto para lances)
+      carros = list(filter(lambda x: x["batch_status"] == 0 or x['batch_status'] == 1, carros))
+              
+    
+      for carro in carros:
+        title = carro["headline"]
+        valor_inicial = carro["first_instance_value"]
+        link = carro["url"]
+        thumb = carro["image_path"]
+        lote = carro["batch_id"]
+        marca = self._getMarca(title)
+        modelo = self._getModelo(title, marca)
+        ano = self._getAno(title)
         
-          resultado = {
-                "uuid": str(uuid.uuid4()),
-                "lote": lote,
-                "chassi": None,
-                "valor_fipe": None,
-                "valor_atual":  valor_inicial,
-                "tipo_veiculo": None,
-                "marca": marca,
-                "modelo": modelo,
-                "monta": getMonta(""),
-                "ano": ano,
-                "thumb": thumb,
-                "link": link,
-                "leiloeiro":"Mega Leilões",
-                "ativo": 1,
-            }
-            
-          #Adiciona o dicionário à lista de resultados
-          self.resultados.append(resultado)
+      
+        resultado = {
+              "uuid": str(uuid.uuid4()),
+              "lote": lote,
+              "chassi": None,
+              "valor_fipe": None,
+              "valor_atual":  valor_inicial,
+              "tipo_veiculo": None,
+              "marca": marca,
+              "modelo": modelo,
+              "monta": getMonta(""),
+              "ano": ano,
+              "thumb": thumb,
+              "link": link,
+              "leiloeiro":"Mega Leilões",
+              "ativo": 1,
+          }
+          
+        #Adiciona o dicionário à lista de resultados
+        self.resultados.append(resultado)
 
 
-        return self.resultados
+      return { "resultados": self.resultados, "http_code": response.status_code }
 

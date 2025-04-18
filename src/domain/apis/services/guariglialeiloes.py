@@ -20,6 +20,7 @@ class ServiceGuariglia:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.resultados = []
         self.initValue()
         self.Marcas = obter_marcas()
         self.log = Log("")
@@ -78,14 +79,12 @@ class ServiceGuariglia:
             return None
     
     def exec(self):
-        resultados = []
 
         response = requests.get(self.url, headers=self.headers, verify=False)
 
         if response.status_code != 200:
             self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
-            print(f"Erro ao acessar o site na página: {response.status_code}")
-            return []
+            return { "resultados": self.resultados, "http_code": response.status_code }
 
         soup = BeautifulSoup(response.text, "html.parser")
         lotes = soup.find_all("div", class_="lote") # Pega cada CARD
@@ -124,12 +123,12 @@ class ServiceGuariglia:
           }
         
 
-          resultados.append(resultado)
+          self.resultados.append(resultado)
             
 
         # Imprimindo os resultados em formato JSON
         # print(json.dumps(resultados, indent=2, ensure_ascii=False))
-        return resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }
 
 
 

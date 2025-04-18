@@ -166,16 +166,47 @@ CREATE TABLE `arrematai`.`apis` (
 
 
 
-  CREATE TABLE `arrematai`.`response_apis` (
+  CREATE TABLE `arrematai`.`log_apis` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `uuid` VARCHAR(245) NOT NULL,
   `ip` VARCHAR(245) NOT NULL,
   `api` VARCHAR(245) NOT NULL,
-  `method` VARCHAR(245) NOT NULL,
-  `http_code` VARCHAR(245) NOT NULL,
-  `duration` VARCHAR(245) NOT NULL,
+  `query` VARCHAR(245) NOT NULL,
+  `http_code` INT NOT NULL DEFAULT 0,
+  `duration` FLOAT NOT NULL DEFAULT 0,
   `results` INT NOT NULL DEFAULT 0,
-  `url` VARCHAR(245) NOT NULL,
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+   CREATE TABLE `arrematai`.`log_leiloeiros` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `uuid` VARCHAR(245) NOT NULL,
+  `ip` VARCHAR(245) NOT NULL,
+  `palavra` VARCHAR(245) NOT NULL,
+  `tipo` VARCHAR(245) NOT NULL,
+  `duration` FLOAT NOT NULL,
+  `results` INT NOT NULL DEFAULT 0,
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+
+  CREATE TABLE `arrematai`.`log_calc` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `uuid` VARCHAR(245) NOT NULL,
+  `ip` VARCHAR(245) NOT NULL,
+  `uso` VARCHAR(245) NULL,
+  `fipe` DECIMAL(11) NULL,
+  `monta` DECIMAL(11) NULL,
+  `comissao` DECIMAL(11) NULL,
+  `despesa` DECIMAL(11) NULL,
+  `disponivel` DECIMAL(11) NULL,
+  `lance_max` DECIMAL(11) NULL,
+  `venda` DECIMAL(11) NULL,
+  `lucro` DECIMAL(11) NULL,
   `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));

@@ -5,16 +5,19 @@ import re
 from bs4 import BeautifulSoup
 import urllib3
 import uuid
+from scrapfly import ScrapeApiResponse
 
 from src.infra.helpers.MarcaCarros import obter_marcas
 from src.infra.helpers.Monta import getMonta
+from src.infra.service.Logging import Log
+from src.infra.service.Scrapfly import ScrapflyScrape
 
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
 class ServicePalacios:
-    # url: Text = "https://www.palaciodosleiloes.com.br/site/camada_ajax/coluna_esquerda_m.php"
-    url: Text = "https://api.scrapfly.io/scrape?tags=player%2Cproject%3Adefault&key=scp-live-0f1c0f0c671e457788540b8d2f1636e5&url=https%3A%2F%2Fwww.palaciodosleiloes.com.br%2Fsite%2Fcamada_ajax%2Fcoluna_esquerda_m.php"
+    url: Text = "https://www.palaciodosleiloes.com.br/site/camada_ajax/coluna_esquerda_m.php"
     payload: Text
     params: Text
     headers: Text
@@ -23,41 +26,12 @@ class ServicePalacios:
         self.query = query
         self.size = size
         self.Marcas = obter_marcas()
+        self.resultados = []
         self.initValue()
+        self.log = Log("")
         
     def initValue(self):
-        # self.params = {
-        #         "quebra": "0.22699912025538405",
-        #         "opcao": "listar_lote",
-        #         "categoria_pesquisa": "",
-        #         "subcategoria_pesquisa": "",
-        #         "marca_pesquisa": "",
-        #         "situacao_pesquisa": "",
-        #         "local_pesquisa": "",
-        #         "modelo_pesquisa": "",
-        #         "ano_pesquisa": "",
-        #         "cidade_site_pesquisa": "",
-        #         "estado_site_pesquisa": "",
-        #         "grupo_site_pesquisa": "",
-        #         "txt_pesquisa_lote": {self.query},
-        #         "leilao_pesquisa": "",
-        #         "tipo_exibicao": "grid",
-        #         "paginacao": "0",
-        #         "total_paginas": "1",
-        #         "somente_pesquisa": "0",
-        #         "e_categoria": "1",
-        #         "e_leilao": "1",
-        #         "e_subcategoria": "0",
-        #         "e_marca": "0",
-        #         "e_modelo": "0",
-        #         "e_ano": "0",
-        #         "e_situacao": "0",
-        #         "e_local": "0",
-        #         "e_grupo": "0",
-        #         "e_estado": "0",
-        #         "e_cidade": "0"
-        #     }
-        self.payload = f"quebra=0.22699912025538405&&opcao=listar_lote&categoria_pesquisa=&subcategoria_pesquisa=&marca_pesquisa=&situacao_pesquisa=&local_pesquisa=&modelo_pesquisa=&ano_pesquisa=&cidade_site_pesquisa=&estado_site_pesquisa=&grupo_site_pesquisa=&txt_pesquisa_lote={self.query}&leilao_pesquisa=&tipo_exibicao=grid&paginacao=0&total_paginas=1&somente_pesquisa=0&e_categoria=1&e_leilao=1&e_subcategoria=0&e_marca=0&e_modelo=0&e_ano=0&e_situacao=0&e_local=0&e_grupo=0&e_estado=0&e_cidade=0"
+        self.payload = f"quebra=0.22699912025538405&&opcao=listar_lote&categoria_pesquisa=1&subcategoria_pesquisa=&marca_pesquisa=&situacao_pesquisa=&local_pesquisa=&modelo_pesquisa=&ano_pesquisa=&cidade_site_pesquisa=&estado_site_pesquisa=&grupo_site_pesquisa=&txt_pesquisa_lote={self.query}&leilao_pesquisa=&tipo_exibicao=grid&paginacao=0&total_paginas=1&somente_pesquisa=0&e_categoria=1&e_leilao=1&e_subcategoria=0&e_marca=0&e_modelo=0&e_ano=0&e_situacao=0&e_local=0&e_grupo=0&e_estado=0&e_cidade=0"
 
         self.headers = {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -85,7 +59,7 @@ class ServicePalacios:
         div = monta.find('div', class_="float-right")
         if div:
           div.extract()
-        return getMonta(monta.get_text(strip=True))
+        return getMonta(monta.get_text(strip=True) or "")
     
     def _getValorInicial(self, lote):
         try: 
@@ -98,13 +72,16 @@ class ServicePalacios:
         
         
     def exec(self):
-        resultados = []
-        # response = requests.post(self.url, headers=self.headers, data=self.params)
-        # lotes_html = response.text  # HTML da resposta
+        #response = requests.request("POST", self.url, data=self.payload)
 
-        response = requests.request("POST", self.url, data=self.payload)
-        data = response.json()
-        lotes_html = data["result"]["content"]
+        scrape: ScrapeApiResponse = ScrapflyScrape("POST", self.url, self.payload, self.headers)
+
+  
+        if scrape.status_code != 200:
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {scrape.status_code}")
+            return { "resultados": self.resultados, "http_code": scrape.status_code }
+
+        lotes_html = scrape.content
 
         soup = BeautifulSoup(lotes_html, 'html.parser')
         lotes = soup.select("div.col-md-3")
@@ -116,17 +93,16 @@ class ServicePalacios:
             marca = self._getMarca(lote)
             monta = self._getMonta(lote)
             
-            # # Se nao tem marca nem modelo
+            # Se nao tem marca nem modelo
             if not marca and not modelo or (not modelo):
                 continue
             
-            # Se tem Marca
+            # # Se tem Marca
             existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
             
             if existeMarca:
                 marca = existeMarca["nome"].capitalize()
             
-        
             if not existeMarca:
                 existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
                 marca = existeInModelo["nome"].capitalize()
@@ -150,10 +126,10 @@ class ServicePalacios:
             }
             
             # Adiciona o dicionário à lista de resultados
-            resultados.append(resultado)
+            self.resultados.append(resultado)
 
 
-        print(len(resultados))
+        # print(len(resultados))
         # return jsonify(resultados)
-        return resultados
+        return { "resultados": self.resultados, "http_code": scrape.status_code }
 

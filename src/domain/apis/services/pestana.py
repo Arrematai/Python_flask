@@ -6,6 +6,8 @@ import uuid
 from requests.exceptions import HTTPError
 
 from src.infra.helpers.Monta import getMonta
+from src.infra.service.Logging import Log
+
 
 
 class ServicePestana:
@@ -19,20 +21,17 @@ class ServicePestana:
         self.size = size
         self.resultados = []
         self.initValue()
+        self.log = Log("")
         
     def initValue(self):
         self.headers= {}
         
     def exec (self):
-        try:
-          response = requests.get(self.url, headers=self.headers)
-          response.raise_for_status()
-        except HTTPError as http_err:
-          print(f"HTTP error occurred: {http_err}") 
-        
+        response = requests.get(self.url, headers=self.headers)
         if response.status_code != 200:
-          print(f"Erro ao acessar o site na página: {response.status_code}")
-          return []
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": self.resultados, "http_code": response.status_code }
+        
           
         data = response.json()
         
@@ -99,4 +98,4 @@ class ServicePestana:
         # Exibe os resultados
         # print(len(self.resultados))
         # return jsonify(resultados)
-        return self.resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }

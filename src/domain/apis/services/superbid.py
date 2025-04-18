@@ -7,6 +7,8 @@ import uuid
 
 from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
 from src.infra.helpers.Monta import getMonta
+from src.infra.service.Logging import Log
+
 
 class ServiceSuperBid:
     url: Text = "https://api.sbwebservices.net/offer-query/seo/offers"
@@ -17,7 +19,9 @@ class ServiceSuperBid:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.resultados = []
         self.initValue()
+        self.log = Log("")
         self.Marcas = obter_marcas()
         
     def initValue(self):
@@ -123,9 +127,13 @@ class ServiceSuperBid:
     def exec(self):
         response = requests.request("GET", self.url, headers=self.headers, params=self.params)
 
+
+        if response.status_code != 200:
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": self.resultados, "http_code": response.status_code }
+
         data = response.json()
 
-        resultados = []
         
         # print(data['offers'][131])
         # exit(0)
@@ -182,9 +190,9 @@ class ServiceSuperBid:
                     
 
                     if marca and modelo:
-                        resultados.append(resultado)
+                        self.resultados.append(resultado)
                 
 
-        return resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }
 
 

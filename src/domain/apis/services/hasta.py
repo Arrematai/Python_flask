@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 
 from src.infra.helpers.Monta import getMonta
 from src.infra.helpers.MarcaCarros import marcaIsExiste
+from src.infra.service.Logging import Log
 
 
 
@@ -20,6 +21,8 @@ class ServiceHasta:
         self.query = query
         self.size = size
         self.initValue()
+        self.resultados = []
+        self.log = Log("")
         self.pagina = 0
         
     def initValue(self):
@@ -81,15 +84,14 @@ class ServiceHasta:
     
     def exec(self):
         run = True
-        resultados = []
 
         while run:
           
           response = requests.get(self.url + str(self.pagina), params=self.parametros, headers=self.headers)
 
           if response.status_code != 200:
-              print(f"Erro ao acessar o site na página: {response.status_code}")
-              return []
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": self.resultados, "http_code": response.status_code }
           
           soup = BeautifulSoup(response.text, "html.parser")
           listCars = soup.find_all("li", class_="card-leilao") # Pega cada CARD
@@ -125,14 +127,14 @@ class ServiceHasta:
                 "leiloeiro":"Hasta Pública",
                 "ativo": 1,
             }
-            resultados.append(resultado)
+            self.resultados.append(resultado)
           
           self.pagina = self.pagina + 9
             
 
         # # Imprimindo os resultados em formato JSON
         # # print(json.dumps(resultados, indent=2, ensure_ascii=False))
-        return resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }
 
 
 

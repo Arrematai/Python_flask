@@ -3,23 +3,18 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
+from scrapfly import ScrapeApiResponse
 
 from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
 from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
+from src.infra.service.Scrapfly import ScrapflyScrape
 from urllib3.exceptions import InsecureRequestWarning
 
 # Suppress the warnings from urllib3
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
-
-proxies = {
-    "http": "http://gzetzlso:nezwqwqqxumm@161.123.152.115:6360",
-    "https": "http://gzetzlso:nezwqwqqxumm@161.123.152.115:6360",
-}
-
 class ServiceFreitas:
-    # url: Text = "https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes"
     url: Text = ""
 
     parametros: Text
@@ -28,12 +23,13 @@ class ServiceFreitas:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.resultados = []
         self.initValue()
         self.Marcas = obter_marcas()
         self.log = Log("")
         
     def initValue(self):
-        self.url = f"https://api.scrapfly.io/scrape?tags=player%2Cproject%3Adefault&key=scp-live-0f1c0f0c671e457788540b8d2f1636e5&url=https%3A%2F%2Fwww.freitasleiloeiro.com.br%2FLeiloes%2FPesquisarLotes%3FNome%3D{self.query}%26Categoria%3D1%26TipoLoteId%3D0%26FaixaValor%3D0%26Condicao%3D0%26PatioId%3D0%26AnoModeloMin%3D0%26AnoModeloMax%3D0%26ArCondicionado%3Dfalse%26DirecaoAssistida%3Dfalse%26ClienteSclId%3D0%26PageNumber%3D1%26TopRows%3D10&headers[content-type]=application%2Fjson%3B%20charset%3DUTF-8&headers[accept]=application%2Fjson%2C%20text%2Fjavascript%2C%20%2A%2F%2A%3B%20q%3D0.01"
+        self.url = f"https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes?Nome={self.query}&Categoria=1&TipoLoteId=0&FaixaValor=0&Condicao=0&PatioId=0&AnoModeloMin=0&AnoModeloMax=0&ArCondicionado=false&DirecaoAssistida=false&ClienteSclId=0&PageNumber=1&TopRows={self.size}"
         self.parametros = {
             "Nome": self.query,
             "Categoria": 1,
@@ -107,19 +103,15 @@ class ServiceFreitas:
             return None
     
     def exec(self):
-        resultados = []
-        
-        # response = requests.get(self.url, params=self.parametros, headers=self.headers, proxies=proxies, verify=False)
+    
+        scrape: ScrapeApiResponse = ScrapflyScrape("GET", self.url, self.parametros, self.headers)
 
-        response = requests.request("GET", self.url)
-        data = response.json()
-        # print(data)
-        lotes_html = data["result"]["content"]
+  
+        if scrape.status_code != 200:
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {scrape.status_code}")
+            return { "resultados": self.resultados, "http_code": scrape.status_code }
 
-        if response.status_code != 200:
-            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
-            print(f"Erro ao acessar o site na página: {response.status_code}")
-            return []
+        lotes_html = scrape.content
 
         soup = BeautifulSoup(lotes_html, "html.parser")
         lotes = soup.find_all("div", class_="cardlote") # Pega cada CARD
@@ -170,12 +162,12 @@ class ServiceFreitas:
             }
         
 
-            resultados.append(resultado)
+            self.resultados.append(resultado)
             
 
         # Imprimindo os resultados em formato JSON
         # print(json.dumps(resultados, indent=2, ensure_ascii=False))
-        return resultados
+        return { "resultados": self.resultados, "http_code": scrape.status_code }
 
 
 

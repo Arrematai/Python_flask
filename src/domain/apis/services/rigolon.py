@@ -8,6 +8,7 @@ import uuid
 
 from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
 from src.infra.helpers.Monta import getMonta
+from src.infra.service.Logging import Log
 
 
 class ServiceRigolon:
@@ -21,7 +22,9 @@ class ServiceRigolon:
         self.query = query
         self.size = size
         self.Marcas = obter_marcas()
+        self.resultados = []
         self.initValue()
+        self.log = Log("")
         
     def initValue(self):
         self.url = f"{self.url}?tipo=1&palavra_chave={self.query}"
@@ -49,13 +52,12 @@ class ServiceRigolon:
             return match.group(1).strip()
         
     def exec (self):
-        resultados = []
         items = []
         response = requests.post(self.url, headers=self.headers, verify=False)
                 
         if response.status_code != 200:
-            print(f"Erro ao acessar o site na página: {response.status_code}")
-            return []
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": self.resultados, "http_code": response.status_code }
         
         
         data = response.json()
@@ -94,10 +96,10 @@ class ServiceRigolon:
                     "ativo": 1,
                 }
                 
-                resultados.append(resultado)   
+                self.resultados.append(resultado)   
         
 
         # Exibe os resultados
         # print(len(resultados))
         # return jsonify(resultados)
-        return resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }

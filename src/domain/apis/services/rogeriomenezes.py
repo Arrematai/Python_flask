@@ -6,6 +6,8 @@ import uuid
 
 from src.infra.helpers.Monta import getMonta
 from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
+from src.infra.service.Logging import Log
+
 
 class ServiceRogerio:
     url: Text = "https://www.rogeriomenezes.com.br/busca"
@@ -17,7 +19,9 @@ class ServiceRogerio:
         self.query = query
         self.size = size
         self.Marcas = obter_marcas()
+        self.resultados = []
         self.initValue()
+        self.log = Log("")
 
     def initValue(self):
         self.params = {"interesse": self.query}
@@ -68,15 +72,14 @@ class ServiceRogerio:
         response = requests.get(self.url, headers=self.headers, params=self.params)
 
         if response.status_code != 200:
-            print(f"Erro ao acessar o site: Status {response.status_code}")
-            return []
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": self.resultados, "http_code": response.status_code }
 
         # Parsear o HTML
         soup = BeautifulSoup(response.text, "html.parser")
         lotes = soup.select(".lote-item")
 
         # Encontrar os itens
-        resultados = []
         for lote in lotes:
             try:
                 
@@ -107,7 +110,7 @@ class ServiceRogerio:
                 #     marca = existeInModelo["nome"].capitalize()
             
                 # Adicionar ao resultado
-                resultados.append({
+                self.resultados.append({
                     "uuid": str(uuid.uuid4()),
                     "lote": lote_numero,
                     "chassi": None,
@@ -128,6 +131,6 @@ class ServiceRogerio:
 
 
         # print(json_output)
-        return resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }
 
 

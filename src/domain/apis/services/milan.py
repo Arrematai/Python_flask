@@ -3,11 +3,11 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
-
+import cloudscraper
 
 from src.infra.helpers.Monta import getMonta
 from src.infra.helpers.MarcaCarros import marcaIsExiste,replace_marcas
-
+from src.infra.service.Logging import Log
 
 
 class ServiceMilan:
@@ -19,7 +19,9 @@ class ServiceMilan:
     def __init__(self, query, size):
         self.query = query
         self.size = size
+        self.resultados = []
         self.initValue()
+        self.log = Log("")
         
     def initValue(self):
         self.parametros = {
@@ -72,18 +74,23 @@ class ServiceMilan:
       
     
     def exec(self):
-        resultados = []
 
-        response = requests.post(self.url, params=self.parametros, headers=self.headers)
+        # response = requests.post(self.url, params=self.parametros, headers=self.headers)
+
+        scraper = cloudscraper.create_scraper()
+        response = scraper.get("https://api.scrapfly.io/scrape?tags=player%2Cproject%3Adefault&key=scp-live-0f1c0f0c671e457788540b8d2f1636e5&url=https%3A%2F%2Fmilanleiloes.com.br%2FBusca%2FBusca.asp")
+
 
         if response.status_code != 200:
-            print(f"Erro ao acessar o site na página: {response.status_code}")
-            return []
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": self.resultados, "http_code": response.status_code }
         
         
         soup = BeautifulSoup(response.text, "html.parser")
         tables = soup.find_all("table")
         table = []
+
+        print(tables)
 
 
         if tables and len(tables) > 2:
@@ -126,11 +133,11 @@ class ServiceMilan:
               "ativo": 1,
           }
 
-          resultados.append(resultado)
+          self.resultados.append(resultado)
       
             
 
-        return resultados
+        return { "resultados": self.resultados, "http_code": response.status_code }
 
 
 

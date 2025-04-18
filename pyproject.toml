@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "arrematai"
-version = "1.0.47"
+version = "1.0.53"
 description = ""
 authors = ["rafaelnr <rafaelnetto_@hotmail.com>"]
 packages = [
@@ -27,6 +27,7 @@ levenshtein = "^0.26.1"
 cloudscraper = "^1.2.71"
 cfscrape = "^2.1.1"
 psutil = "^7.0.0"
+scrapfly-sdk = "^0.8.21"
 
 [tool.poetry.scripts]
 arrematai = "src.__main__:server_init"
