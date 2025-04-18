@@ -62,8 +62,12 @@ class LeiloeirosController:
       resultados = []
       start_time = time.time()
       if self.is_url(wordKey) or "www" in wordKey:
-        wordKey = self.clean_url(wordKey).replace(".", "-")
+        wordKey = self.clean_url(wordKey).replace(".", " ").replace("-"," ")
+      if '.' in wordKey:
+        wordKey = wordKey.split('.')
+        wordKey = wordKey[0]
 
+      print(wordKey)
 
       print("Palavra Chave", wordKey)
       newListLeiloeiros = self.repository.getLeiloeirosByWordKey(wordKey)
@@ -108,6 +112,8 @@ class LeiloeirosController:
 
     # Remove tudo depois do primeiro domínio de nível superior (TLD)
     domain = re.sub(r"\..*$", "", domain)
+
+    print('aqui',domain)
 
     # Remove qualquer barra final
     return domain.strip("/")

@@ -15,7 +15,7 @@ def init():
     controller = LeiloeirosController(database)
     
     # result = controller.getByWordKey("www.palaciodoleilao.com.br")
-    result = controller.getByWordKey("","https://galli.app")
+    result = controller.getByWordKey("","galli.site")
 
     print(result)
 

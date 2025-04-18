@@ -13,8 +13,8 @@ def UseCaseWordKey(wordKey: str, listLeiloeiros):
     cutoff = 0.71
     
     resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "site",cutoff)))
-    resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "email",cutoff )))
-    resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "nome", cutoff)))
+    # resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "email",cutoff )))
+    # resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "nome", cutoff)))
     resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "tag", cutoff)))
     if len(resultados) > 0:
       for obj in resultados:
@@ -30,8 +30,8 @@ def UseCaseWordKey(wordKey: str, listLeiloeiros):
     while cutoff >= 0.51:
       ## search NOME OR EMAIL OR SITE  
       resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "site", cutoff)))
-      resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "email", cutoff)))
-      resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "nome", cutoff)))
+      # resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "email", cutoff)))
+      # resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "nome", cutoff)))
       resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "tag", cutoff)))
       
       for obj in resultados:

@@ -4,15 +4,14 @@ meta {
   seq: 12
 }
 
-get {
-  url: {{URL}}/leiloeiros/palavra/paracios
-  body: none
+post {
+  url: {{URL}}/leiloeiros/palavra
+  body: json
   auth: none
 }
 
 body:json {
   {
-    "api": "copart",
-    "query": "fiat"
+    "word_key": "https://galli.app/inicial/"
   }
 }

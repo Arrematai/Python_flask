@@ -182,10 +182,13 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
       
       
   ## Leiloeiros By Estado
-  @app.route('/leiloeiros/palavra/<word_key>', methods=['GET'])
+  @app.route('/leiloeiros/palavra/', methods=['POST'])
   @limiter.limit("1000/day;100/minute")
-  def getLeiloeirosByWordKey(word_key):
+  def getLeiloeirosByWordKey():
       try:
+          dados = request.get_json()
+          word_key = dados.get("word_key")
+
           if not word_key:
               raise Exception("Estado deve ser enviado.") 
           
