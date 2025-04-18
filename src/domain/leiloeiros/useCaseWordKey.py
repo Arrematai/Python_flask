@@ -10,11 +10,11 @@ def UseCaseWordKey(wordKey: str, listLeiloeiros):
     resultadosUniques = []
     resultados = []
     chaves_vistas = set()
-    cutoff = 0.7
+    cutoff = 0.71
     
-    # resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "site",cutoff)))
-    # resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "email",cutoff )))
-    # resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "nome", cutoff)))
+    resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "site",cutoff)))
+    resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "email",cutoff )))
+    resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "nome", cutoff)))
     resultados = list(chain(resultados, moreSimilarWord(wordKey, listLeiloeiros, "tag", cutoff)))
     if len(resultados) > 0:
       for obj in resultados:
@@ -27,11 +27,11 @@ def UseCaseWordKey(wordKey: str, listLeiloeiros):
         "tipo": 'algoritmo-lvl1',
         'leiloeiros': sorted(resultadosUniques, key=lambda x: x['nota'], reverse=True),
       }
-    while cutoff >= 0.5:
+    while cutoff >= 0.51:
       ## search NOME OR EMAIL OR SITE  
-      # resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "site", cutoff)))
-      # resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "email", cutoff)))
-      # resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "nome", cutoff)))
+      resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "site", cutoff)))
+      resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "email", cutoff)))
+      resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "nome", cutoff)))
       resultados = list(chain(resultados, moreSimilarWordsCutOff(wordKey, listLeiloeiros, "tag", cutoff)))
       
       for obj in resultados:

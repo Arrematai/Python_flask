@@ -12,10 +12,12 @@ def init():
   try:
     
     database = DataBase(dictionary=True)
-    controller = LeiloeirosController('TESTE',database)
+    controller = LeiloeirosController(database)
     
     # result = controller.getByWordKey("www.palaciodoleilao.com.br")
-    result = controller.getByWordKey("paracios")
+    result = controller.getByWordKey("","https://galli.app")
+
+    print(result)
 
           
   except Exception as e:
