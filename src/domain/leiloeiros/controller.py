@@ -1,17 +1,21 @@
 
 import re
 from urllib.parse import urlparse
+import time
 
 
 from src.infra.database.mysql import DataBase
 from src.domain.leiloeiros.repository import LeiloeirosRepository
+from src.domain.log.repository import LogsRepository
 from src.domain.leiloeiros.useCaseWordKey import UseCaseWordKey
 
 class LeiloeirosController:
 
-  def __init__(self, database: DataBase):
+  def __init__(self, ip, database: DataBase):
+    self.ip = ip
     self.database = database
     self.repository = LeiloeirosRepository(self.database)
+    self.repositoryLog = LogsRepository(self.database)
   
   def getLeiloeiros(self):  
       try:
@@ -56,6 +60,8 @@ class LeiloeirosController:
         
   def getByWordKey(self, wordKey: str):
     try:
+      resultados = []
+      start_time = time.time()
       if self.is_url(wordKey) or "www" in wordKey:
         wordKey = self.clean_url(wordKey).replace(".", "-")
 
@@ -66,10 +72,23 @@ class LeiloeirosController:
       
       ## BANCO DE DADOS
       if newListLeiloeiros and len(newListLeiloeiros) > 0:
-        return ("banco", newListLeiloeiros)
-      
-      listLeiloeiros = self.getLeiloeiros()
-      return UseCaseWordKey(wordKey, listLeiloeiros)
+        resultados = {
+           "tipo": 'banco',
+           'leiloeiros': newListLeiloeiros,
+        }
+      else:
+        listLeiloeiros = self.getLeiloeiros()
+        resultados = UseCaseWordKey(wordKey, listLeiloeiros)
+    
+      end_time = time.time()
+      self.repositoryLog.insertLeiloeiros({
+         "ip": self.ip,
+         "palavra": wordKey,
+         'tipo': resultados["tipo"],
+         "duration": end_time - start_time,
+         "results": len(resultados["leiloeiros"])
+      })
+      return resultados
     except Exception as e:
       print("ERROR:",e)
       raise Exception("Nem um leiloeiro encontrado na busca.")

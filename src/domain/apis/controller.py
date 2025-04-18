@@ -43,18 +43,20 @@ class ApisController(Resource):
 
       start_time = time.time()
       resultados = []
+      currApi = None
       
       repository = ApisRepository(self.database)
       repositoryLog = LogsRepository(self.database)
       
       if api:
-          dado = repository.getApi(api)
-          if dado:
-              ServiceClass  = dynamic_import(dado["path"], dado["class"]) 
+          currApi = repository.getApi(api)
+          if currApi:
+              ServiceClass  = dynamic_import(currApi["path"], currApi["class"]) 
               # Verifica se a classe foi carregada corretamente e instancia um objeto
               if ServiceClass:
                   instance = ServiceClass(query, 2000)  # Instancia a classe
                   response = instance.exec()
+
                   resultados = response["resultados"] or []
               else:
                   raise Exception("ServiceClass não foi executada.")
@@ -70,7 +72,7 @@ class ApisController(Resource):
       self.Log.executionTime(query=query, api=api,end=end_time, start=start_time, resultados=len(resultados))
       repositoryLog.insertApis({
          "ip": self.ip,
-         "api": api["nome"],
+         "api": currApi["nome"] or None,
          "query": query,
          "duration": end_time - start_time,
          "http_code": response["http_code"],

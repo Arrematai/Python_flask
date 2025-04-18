@@ -1,11 +1,36 @@
 from src.infra.database.mysql import DataBase
+from src.domain.log.repository import LogsRepository
 
 class CalcController:
 
-  def __init__(self, database: DataBase):
-    self.database = database
+   def __init__(self, database: DataBase):
+      self.database = database
+      self.repositoryLog = LogsRepository(self.database)
+
+
+   def calcViabilidade(self,dados,ip):
+      try:
+
+         self.repositoryLog.insertCalc({
+            "ip": ip,
+            "uso": dados.get("uso") or None,
+            "fipe": dados.get("fipe") or None,
+            "monta": dados.get("monta") or None,
+            "comissao": dados.get("comissao") or None,
+            "despesa": dados.get("despesa") or None,
+            "disponivel": dados.get("disponivel") or None,
+            "lance_max": dados.get("lance_max") or None,
+            'venda': dados.get("venda") or None,
+            "lucro": dados.get("lucro") or None
+         })
+         self.database.close();
+         return;
+   
+      except Exception as e:
+          print(f"Error: {e}")
+          self.database.close()
   
-  def calSimplificado(self, dados):
+   def calSimplificado(self, dados):
       try:
         # Desestruturação (extração de campos específicos)
         fipeId = dados.get("fipeId")

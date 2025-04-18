@@ -42,14 +42,27 @@ class LogsRepository:
 
   def insertLeiloeiros(self, dados):
     try:
+      print(dados)
       self.database.connection()
       # Executando uma consulta SELECT
-      query = "INSERT INTO `log_leiloeiros` " \
-      "(`uuid`, `ip`, `palavra`, `tipo`, `duration`, `results`) " \
-      "VALUES %s, %s, %s, %s,%s, %i)"
+      query = """
+      INSERT INTO `log_leiloeiros` 
+      (`uuid`, `ip`, `palavra`,`tipo`, `duration`, `results`) 
+      VALUES (%s, %s, %s, %s, %s, %s)
+      """
 
-      self.database.socket.execute(query, 
-                                   (str(uuid.uuid4()), dados["ip"]), dados["palavra"], dados["tipo"],dados["duration"], dados["results"])
+      self.database.socket.execute(
+          query,
+          (
+              str(uuid.uuid4()),
+              dados["ip"],
+              dados["palavra"],
+              dados["tipo"],
+              dados["duration"],
+              dados["results"],
+          )
+      )
+        
 
       # Recuperando os resultados
       self.database.conn.commit()
@@ -63,12 +76,27 @@ class LogsRepository:
     try:
       self.database.connection()
       # Executando uma consulta SELECT
-      query = "INSERT INTO `log_leiloeiros` " \
-      "(`uuid`, `ip`, `uso`, `fipe`, `monta`, `comissao`, `despesa`, `disponivel`, `lance_max`,`venda`,`lucro`) " \
-      "VALUES %s, %s, %s, %i,%i, %i,%i,%i,%i,%i,%i)"
-
-      self.database.socket.execute(query, 
-                                   (str(uuid.uuid4()), dados["ip"]), dados["uso"], dados["fipe"],dados["monta"], dados["comissao"], dados["despesa"], dados["disponivel"],dados['lance_max'],dados["venda"],dados["lucro"])
+      query = """
+      INSERT INTO `log_calc` 
+      (`uuid`, `ip`, `uso`, `fipe`, `monta`, `comissao`, `despesa`, `disponivel`, `lance_max`,`venda`,`lucro`) 
+      VALUES (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s)
+      """
+      self.database.socket.execute(
+          query,
+          (
+              str(uuid.uuid4()),
+              dados["ip"],
+              dados["uso"],
+              dados["fipe"],
+              dados["monta"],
+              dados["comissao"],
+              dados["despesa"],
+              dados["disponivel"],
+              dados["lance_max"],
+              dados["venda"],
+              dados["lucro"],
+          )
+      )
 
       # Recuperando os resultados
       self.database.conn.commit()

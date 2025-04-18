@@ -1,0 +1,25 @@
+meta {
+  name: CALC VIABILIDADE
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{URL}}/calc/viabilidade
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "uso": "venda",
+    "fipe": 125223.55,
+    "monta": 0.157,
+    "comissao": 5,
+    "despesa": 10000,
+    "disponivel": 0,
+    "lance_max": 82655,
+    "venda": 108255,
+    "lucro": 10000
+  }
+}

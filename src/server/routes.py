@@ -108,6 +108,20 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           return jsonify({"data": { "success": True, "dados": valor }}), 200
       except Exception as e:
           return jsonify({"data": { "success": False, "message": e }}), 200
+      
+
+  ## Retorna os dados do carro
+  @app.route('/calc/viabilidade', methods=['POST'])
+  @limiter.limit("1000/day;100/minute")
+  def calcViabilidade():
+      try:
+
+          service = CalcController(database)
+          service.calcViabilidade(request.get_json(),get_remote_address())
+          return jsonify({"data": { "success": True }}), 200
+      except Exception as e:
+          print(e)
+          return jsonify({"data": { "success": False }}), 200
 
   # ## Retorna os dados do carro
   # @app.route('/fipe/marcas/<marcaID>/modelos/<modeloID>/anos/<ano>', methods=['GET'])
@@ -174,7 +188,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           if not word_key:
               raise Exception("Estado deve ser enviado.") 
           
-          service = LeiloeirosController(database)
+          service = LeiloeirosController(get_remote_address(),database)
           leiloeiros = service.getByWordKey(word_key)
           return jsonify({"data": { "success": True, "dados": leiloeiros }}), 200
       except Exception as e:
