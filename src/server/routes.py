@@ -143,6 +143,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           leiloeiros = service.getLeiloeiros()
           return jsonify({"data": { "success": True, "dados": leiloeiros }}), 200
       except Exception as e:
+          print(e)
           return jsonify({"data": { "success": False, }}), 200
 
   @app.route('/leiloeiros/all/logos', methods=['GET'])
@@ -188,10 +189,11 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
           if not word_key:
               raise Exception("Estado deve ser enviado.") 
           
-          service = LeiloeirosController(get_remote_address(),database)
-          leiloeiros = service.getByWordKey(word_key)
+          service = LeiloeirosController(database)
+          leiloeiros = service.getByWordKey(get_remote_address(),word_key)
           return jsonify({"data": { "success": True, "dados": leiloeiros }}), 200
       except Exception as e:
+          print(e)
           return jsonify({"data": { "success": False, }}), 200
 
 

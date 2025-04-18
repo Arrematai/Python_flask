@@ -42,7 +42,6 @@ class LogsRepository:
 
   def insertLeiloeiros(self, dados):
     try:
-      print(dados)
       self.database.connection()
       # Executando uma consulta SELECT
       query = """

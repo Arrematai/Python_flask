@@ -11,8 +11,7 @@ from src.domain.leiloeiros.useCaseWordKey import UseCaseWordKey
 
 class LeiloeirosController:
 
-  def __init__(self, ip, database: DataBase):
-    self.ip = ip
+  def __init__(self, database: DataBase):
     self.database = database
     self.repository = LeiloeirosRepository(self.database)
     self.repositoryLog = LogsRepository(self.database)
@@ -58,7 +57,7 @@ class LeiloeirosController:
           raise Exception("Estados não encontrados.")
         
         
-  def getByWordKey(self, wordKey: str):
+  def getByWordKey(self, ip, wordKey: str):
     try:
       resultados = []
       start_time = time.time()
@@ -82,7 +81,7 @@ class LeiloeirosController:
     
       end_time = time.time()
       self.repositoryLog.insertLeiloeiros({
-         "ip": self.ip,
+         "ip": ip,
          "palavra": wordKey,
          'tipo': resultados["tipo"],
          "duration": end_time - start_time,
