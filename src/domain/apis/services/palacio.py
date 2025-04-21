@@ -5,12 +5,15 @@ import re
 from bs4 import BeautifulSoup
 import urllib3
 import uuid
-from scrapfly import ScrapeApiResponse
+from urllib.parse import parse_qs
+
+
 
 from src.infra.helpers.MarcaCarros import obter_marcas
 from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
 from src.infra.service.Scrapfly import ScrapflyScrape
+from src.infra.service.Scrapingbee import ScrapingbeeScrape
 
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -31,7 +34,7 @@ class ServicePalacios:
         self.log = Log("")
         
     def initValue(self):
-        self.payload = f"quebra=0.22699912025538405&&opcao=listar_lote&categoria_pesquisa=1&subcategoria_pesquisa=&marca_pesquisa=&situacao_pesquisa=&local_pesquisa=&modelo_pesquisa=&ano_pesquisa=&cidade_site_pesquisa=&estado_site_pesquisa=&grupo_site_pesquisa=&txt_pesquisa_lote={self.query}&leilao_pesquisa=&tipo_exibicao=grid&paginacao=0&total_paginas=1&somente_pesquisa=0&e_categoria=1&e_leilao=1&e_subcategoria=0&e_marca=0&e_modelo=0&e_ano=0&e_situacao=0&e_local=0&e_grupo=0&e_estado=0&e_cidade=0"
+        self.payload = f"?quebra=0.22699912025538405&&opcao=listar_lote&categoria_pesquisa=1&subcategoria_pesquisa=&marca_pesquisa=&situacao_pesquisa=&local_pesquisa=&modelo_pesquisa=&ano_pesquisa=&cidade_site_pesquisa=&estado_site_pesquisa=&grupo_site_pesquisa=&txt_pesquisa_lote={self.query}&leilao_pesquisa=&tipo_exibicao=grid&paginacao=0&total_paginas=1&somente_pesquisa=0&e_categoria=1&e_leilao=1&e_subcategoria=0&e_marca=0&e_modelo=0&e_ano=0&e_situacao=0&e_local=0&e_grupo=0&e_estado=0&e_cidade=0"
 
         self.headers = {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -74,14 +77,15 @@ class ServicePalacios:
     def exec(self):
         #response = requests.request("POST", self.url, data=self.payload)
 
-        scrape: ScrapeApiResponse = ScrapflyScrape("POST", self.url, self.payload, self.headers)
+        # response = ScrapflyScrape("POST", self.url, self.payload, self.headers
+        response = ScrapingbeeScrape("POST", self.url, self.payload, self.headers)
 
   
-        if scrape.status_code != 200:
-            self.log.messageError(f"Erro em acesso site {self.url}, status code : {scrape.status_code}")
-            return { "resultados": self.resultados, "http_code": scrape.status_code }
+        if response.status_code != 200:
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": self.resultados, "http_code": response.status_code }
 
-        lotes_html = scrape.content
+        lotes_html = response.content
 
         soup = BeautifulSoup(lotes_html, 'html.parser')
         lotes = soup.select("div.col-md-3")
@@ -131,5 +135,5 @@ class ServicePalacios:
 
         # print(len(resultados))
         # return jsonify(resultados)
-        return { "resultados": self.resultados, "http_code": scrape.status_code }
+        return { "resultados": self.resultados, "http_code": response.status_code }
 

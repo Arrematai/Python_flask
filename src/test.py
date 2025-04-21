@@ -16,6 +16,7 @@ def init():
   print("Inicio Aplicação TESTE")
   log = Log("TESTE")
   especifico = "freitasleiloeiro"
+  # especifico = "palacio"
   query = "palio"
   resultados = []
   

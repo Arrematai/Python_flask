@@ -989,6 +989,20 @@ scrapy = ["scrapy (>=2.4.0)"]
 speedups = ["brotlipy", "msgpack"]
 
 [[package]]
+name = "scrapingbee"
+version = "2.0.1"
+description = "ScrapingBee Python SDK"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "scrapingbee-2.0.1-py3-none-any.whl", hash = "sha256:55c7eca71f5be891718795750b3149a2aead1458b0ae6716fdefeb6cf8e81e82"},
+    {file = "scrapingbee-2.0.1.tar.gz", hash = "sha256:b33622d4c6111c0ae454fa23398a43dccf7b7e126cc44ac498d3411a8514069f"},
+]
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "shellingham"
 version = "1.5.4"
 description = "Tool to Detect Surrounding Shell"
@@ -1188,4 +1202,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a77db41cfe62dd821f35a4aa38fa6b384c6d13128753a057dd952d5417e6c2f3"
+content-hash = "8733337e6362ac3a2ee7679298cb6cac833036aa9b0d93a2f5bc25477611f448"

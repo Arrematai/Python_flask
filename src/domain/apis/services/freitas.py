@@ -3,13 +3,13 @@ from typing import Text
 import requests
 import re
 from bs4 import BeautifulSoup
-from scrapfly import ScrapeApiResponse
 
 from src.infra.helpers.MarcaCarros import obter_marcas, replace_marcas
 from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
-from src.infra.service.Scrapfly import ScrapflyScrape
 from urllib3.exceptions import InsecureRequestWarning
+from src.infra.service.Scrapfly import ScrapflyScrape
+from src.infra.service. Scrapingbee import ScrapingbeeScrape
 
 # Suppress the warnings from urllib3
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
@@ -104,14 +104,15 @@ class ServiceFreitas:
     
     def exec(self):
     
-        scrape: ScrapeApiResponse = ScrapflyScrape("GET", self.url, self.parametros, self.headers)
+        # response = ScrapflyScrape("GET", self.url, self.parametros, self.headers)
+        response = ScrapingbeeScrape("GET", self.url, self.parametros, self.headers)
 
   
-        if scrape.status_code != 200:
-            self.log.messageError(f"Erro em acesso site {self.url}, status code : {scrape.status_code}")
-            return { "resultados": self.resultados, "http_code": scrape.status_code }
+        if response.status_code != 200:
+            self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
+            return { "resultados": self.resultados, "http_code": response.status_code }
 
-        lotes_html = scrape.content
+        lotes_html = response.content
 
         soup = BeautifulSoup(lotes_html, "html.parser")
         lotes = soup.find_all("div", class_="cardlote") # Pega cada CARD
@@ -167,7 +168,7 @@ class ServiceFreitas:
 
         # Imprimindo os resultados em formato JSON
         # print(json.dumps(resultados, indent=2, ensure_ascii=False))
-        return { "resultados": self.resultados, "http_code": scrape.status_code }
+        return { "resultados": self.resultados, "http_code": response.status_code }
 
 
 

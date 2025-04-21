@@ -5,9 +5,9 @@ load_dotenv()
 
 
 
-def ScrapflyScrape(method, url,body,header):
-  scrapfly = ScrapflyClient(key=os.getenv("PROXY_API_KEY"))
-  return scrapfly.scrape(ScrapeConfig(
+def ScrapflyScrape(method, url,body,header) :
+  scrapfly = ScrapflyClient(key=os.getenv("PROXY_API_KEY_SCRAPFLY"))
+  response = scrapfly.scrape(ScrapeConfig(
             tags=[
             "player","project:default"
             ],
@@ -18,3 +18,5 @@ def ScrapflyScrape(method, url,body,header):
             method=method,
             headers=header
         ))
+  
+  return response
