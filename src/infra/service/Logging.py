@@ -8,10 +8,15 @@ current_dir = os.getcwd()
 CHECKSITEONLINE_LEVEL = 19  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
 MONITORAMENTO_LEVEL = 21  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
 EXECUTION_LEVEL = 22  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
+SCHEDULER_LEVEL = 23  # Escolha um valor entre os níveis existentes (10 DEBUG, 20 INFO)
 
 def createdExecution(self, message, *args, **kwargs):
   if self.isEnabledFor(EXECUTION_LEVEL):
       self._log(EXECUTION_LEVEL, message, args, **kwargs)
+
+def createdScheduler(self, message, *args, **kwargs):
+  if self.isEnabledFor(SCHEDULER_LEVEL):
+      self._log(SCHEDULER_LEVEL, message, args, **kwargs)
       
 def createdCheckSiteOnline(self, message, *args, **kwargs):
   if self.isEnabledFor(CHECKSITEONLINE_LEVEL):
@@ -39,6 +44,8 @@ class Log:
     cls.logging.addLevelName(EXECUTION_LEVEL, "EXECUTION")
     cls.logging.addLevelName(CHECKSITEONLINE_LEVEL, "CHECKSITE")
     cls.logging.addLevelName(MONITORAMENTO_LEVEL, "MONITORAMENTO")
+    cls.logging.addLevelName(SCHEDULER_LEVEL, "SCHEDULER")
+    cls.logging.Logger.scheduler = createdScheduler
     cls.logging.Logger.execution = createdExecution
     cls.logging.Logger.checkonline = createdCheckSiteOnline
     cls.logging.Logger.monitoramento = monitoramento
@@ -51,6 +58,24 @@ class Log:
       encoding='utf-8', 
     )], level=level, format=formatter, datefmt='%d/%b/%y %H:%M:%S')
   
+
+  def SchedulerLog(cls, start, end, scheduler, resultados) -> None:
+    execution_time = end - start
+    cls.register(
+      filename='scheduler', 
+      level=SCHEDULER_LEVEL,
+      formatter=f"[%(asctime)s] — [{cls.version}] - %(levelname)s — %(message)s"
+    )
+    cls.logger.scheduler(f"Scheduler: {scheduler}, Qnt. Resultados: {resultados}, Tempo de execução da: {execution_time:.6f} segundos.")
+
+
+  def SchedulerError(cls, scheduler, status_code) -> None:
+    cls.register(
+      filename='scheduler', 
+      level=SCHEDULER_LEVEL,
+      formatter=f"[%(asctime)s] — [{cls.version}] - %(levelname)s — %(message)s"
+    )
+    cls.logger.scheduler(f"Scheduler: {scheduler}, status code: {status_code}")
   
   def executionTime(cls, start, end, api, query, resultados) -> None:
     execution_time = end - start

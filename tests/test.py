@@ -15,9 +15,9 @@ from src.domain.log.repository import LogsRepository
 def init():
   print("Inicio Aplicação TESTE")
   log = Log("TESTE")
-  especifico = "freitasleiloeiro"
-  # especifico = "palacio"
-  query = "palio"
+  # especifico = "freitasleiloeiro"
+  especifico = "receitafederal"
+  query = "FIAT"
   resultados = []
   
   try:

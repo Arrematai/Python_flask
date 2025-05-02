@@ -3,16 +3,20 @@
     "nome": "Volkswagen",
     "lista": [
       "VW",
+      "WV",
       "Volks",
       "VW - Volkswagen",
-      "IMP VW"
+      "IMP VW",
+      "IMP/VW",
+      "IMP"
     ]
   },
   {
     "nome": "FIAT",
     "lista": [
       "IMP FIAT",
-      "I/FIAT"
+      "I/FIAT",
+      "FIAT FIAT"
     ]
   },
   {
@@ -23,7 +27,8 @@
       "GM - Chevrolet",
       "GM Chevrolet",
       "GM",
-      "CHEV"
+      "CHEV",
+      "GM I/GM"
     ]
   },
   {
@@ -33,7 +38,8 @@
       "M.Bens",
       "M-Bens",
       "M-Benz",
-      "Mercedes"
+      "Mercedes",
+      "M."
     ]
   },
   {
@@ -55,6 +61,30 @@
     "nome": "HITECH ELECTRIC",
     "lista": [
       "HE"
+    ]
+  },
+  {
+    "nome": "HYUNDAI",
+    "lista": [
+      "I"
+    ]
+  },
+  {
+    "nome": "FORD",
+    "lista": [
+      "FORD FORD"
+    ]
+  },
+  {
+    "nome": "KIA",
+    "lista": [
+      "KIA/BONGO"
+    ]
+  },
+  {
+    "nome": "Mitsubishi",
+    "lista": [
+      "MMC"
     ]
   }
 ]

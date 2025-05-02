@@ -34,8 +34,16 @@ class ServicePalacios:
         self.log = Log("")
         
     def initValue(self):
-        self.payload = f"?quebra=0.22699912025538405&&opcao=listar_lote&categoria_pesquisa=1&subcategoria_pesquisa=&marca_pesquisa=&situacao_pesquisa=&local_pesquisa=&modelo_pesquisa=&ano_pesquisa=&cidade_site_pesquisa=&estado_site_pesquisa=&grupo_site_pesquisa=&txt_pesquisa_lote={self.query}&leilao_pesquisa=&tipo_exibicao=grid&paginacao=0&total_paginas=1&somente_pesquisa=0&e_categoria=1&e_leilao=1&e_subcategoria=0&e_marca=0&e_modelo=0&e_ano=0&e_situacao=0&e_local=0&e_grupo=0&e_estado=0&e_cidade=0"
+        self.payload = {f"quebra": "0.9389920978354351", "opcao": "listar_lote", "categoria_pesquisa": "1",
+                   "subcategoria_pesquisa": "", "marca_pesquisa": "", "situacao_pesquisa": "", "local_pesquisa": "",
+                   "modelo_pesquisa": "", "ano_pesquisa": "", "grupo_site_pesquisa": "", "txt_pesquisa_lote": f"{self.query}",
+                   "leilao_pesquisa": "", "tipo_exibicao": "grid", "paginacao": "-1", "total_paginas": "999",
+                   "somente_pesquisa": "0", "e_categoria": "1", "e_leilao": "1", "e_subcategoria": "0", "e_marca": "0",
+                   "e_modelo": "0", "e_ano": "0", "e_situacao": "0", "e_local": "0", "e_grupo": "0"}
+        
+        self.params = f"=&opcao=listar_lote&categoria_pesquisa=&subcategoria_pesquisa=&marca_pesquisa=&situacao_pesquisa=&local_pesquisa=&modelo_pesquisa=&ano_pesquisa=&grupo_site_pesquisa=&txt_pesquisa_lote={self.query}&leilao_pesquisa=&tipo_exibicao=grid&paginacao=-1&total_paginas=999&somente_pesquisa=0&e_categoria=1&e_leilao=1&e_subcategoria=0&e_marca=0&e_modelo=0&e_ano=0&e_situacao=0&e_local=0&e_grupo=0"
 
+        
         self.headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "*/*",
@@ -80,6 +88,8 @@ class ServicePalacios:
         # response = ScrapflyScrape("POST", self.url, self.payload, self.headers
         response = ScrapingbeeScrape("POST", self.url, self.payload, self.headers)
 
+
+
   
         if response.status_code != 200:
             self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")
@@ -101,15 +111,18 @@ class ServicePalacios:
             if not marca and not modelo or (not modelo):
                 continue
             
-            # # Se tem Marca
-            existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
+            # # # Se tem Marca
+            # existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
+
+
+            # if existeMarca:
+            #     marca = existeMarca["nome"].capitalize()
             
-            if existeMarca:
-                marca = existeMarca["nome"].capitalize()
-            
-            if not existeMarca:
-                existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
-                marca = existeInModelo["nome"].capitalize()
+            # print(marca)
+
+            # if not existeMarca:
+            #     existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
+            #     marca = existeInModelo["nome"].capitalize()
             
             
             resultado = {

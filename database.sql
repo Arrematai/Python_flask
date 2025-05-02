@@ -153,6 +153,7 @@ CREATE TABLE `arrematai`.`apis` (
   `nome` VARCHAR(245) NOT NULL,
   `path` VARCHAR(245) NOT NULL,
   `class` VARCHAR(245) NOT NULL,
+  `db_lotes` TINYINT(1) NOT NULL DEFAULT '0',
   `ativo` TINYINT(1) NOT NULL DEFAULT '1',
   `status_site` TINYINT(1) ZEROFILL NOT NULL DEFAULT '1',
   `obs` MEDIUMTEXT NULL,
@@ -210,3 +211,57 @@ CREATE TABLE `arrematai`.`apis` (
   `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+  CREATE TABLE `arrematai`.`schedulers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(245) NOT NULL,
+  `path` VARCHAR(245) NOT NULL,
+  `class` VARCHAR(245) NOT NULL,
+  `hora` INT(2) NULL,
+  `minuto` INT(2) NULL,
+  `segundo` INT(2) NULL,
+  `status` VARCHAR(245) NOT NULL,
+  `ativo` TINYINT(1) NOT NULL DEFAULT '1',
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+  CREATE TABLE `arrematai`.`log_schedulers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(245) NOT NULL,
+  `duration` FLOAT NOT NULL DEFAULT 0,
+  `results` INT NOT NULL DEFAULT 0,
+  `status` VARCHAR(245) NOT NULL,
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+  CREATE TABLE `arrematai`.`lotes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `uuid` VARCHAR(245) NOT NULL,
+  `lote` VARCHAR(245) NULL,
+  `leilao` VARCHAR(245) NULL,
+  `data_leilao` DATETIME(3) NUll,
+  `marca` VARCHAR(245) NULL,
+  `modelo` VARCHAR(245) NULL,
+  `chassi` VARCHAR(245) NULL,
+  `ano` VARCHAR(245) NULL,
+  `valor_fipe` VARCHAR(245) NULL,
+  `valor_atual` VARCHAR(245) NULL,
+  `tipo_veiculo` VARCHAR(245) NULL,
+  `monta` VARCHAR(245) NULL,
+  `estado` VARCHAR(245) NULL,
+  `cidade` VARCHAR(245) NULL,
+  `thumb` VARCHAR(245) NULL,
+  `link` VARCHAR(245) NULL,
+  `leiloeiro` VARCHAR(245) NOT NULL,
+  `api` VARCHAR(245) NOT NULL,
+  `ativo` TINYINT(1) NOT NULL DEFAULT '1',
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3) NUll,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
