@@ -43,10 +43,11 @@ PALAVRAS_REMOVER = [
     r'[0-9]{4,30}',                       # números longos (RENAVAM, motor)
     r'\.[0-9]+/[A-Z]{2}',                 # .01154070724/SP
     r'\b(19[8-9][0-9]|20[0-2][0-9]|2030)\b',  # anos de 1980 a 2030
-    r'\bANO\b',                           # palavra "ANO"
-    r'\bMOTOR\b',                         # palavra "MOTOR"
+    r'\b(ANO|MARCA|MODELO|CHASSI|CH|NÃO TRANSFERÍVEL|////:)\b',     # palavras
     r'\s{2,}',                            # múltiplos espaços
-    r'[\$\%@#¨!\*]'                       # Caracteres especiais
+    r'\bI/?\b',                            # I/ ou I isolado
+    r'[\$\%@#¨!,\*]'                       # Caracteres especiais
+    r'\bMOTOR\b.*'                        # remove motor de tudo depois
 ]
 
 class SchedulerReceitaFederal:
@@ -144,9 +145,15 @@ class SchedulerReceitaFederal:
       return None
     
     def _getChassi(self, lote):
-      chassi_match = re.search(r'CHASSI[:\s]*([A-Z0-9]+)', lote)
+      chassi_match = re.search(r'\b[A-HJ-NPR-Z0-9]{17}\b', lote,flags=re.IGNORECASE)
       if chassi_match:
-          return chassi_match.group(1)
+          return chassi_match.group()
+      return None
+    
+    def _getPlaca(self, lote):
+      placa_match = re.search(r'\b[A-Z]{3}-?[0-9][A-Z0-9][0-9]{2}\b', lote,flags=re.IGNORECASE)
+      if placa_match:
+          return placa_match.group()
       return None
       
     def extrair_tipo(self,texto):
@@ -159,13 +166,14 @@ class SchedulerReceitaFederal:
     def limpar_modelo_marca(self, texto):
       texto_limpo = texto
       for padrao in PALAVRAS_REMOVER:
-          texto_limpo = re.sub(padrao, '', texto_limpo)
+          texto_limpo = re.sub(padrao, '', texto_limpo,flags=re.IGNORECASE)
       return texto_limpo.strip(" /-.,")
     
     def sincronizar(self, dados_db, dados_novos):
 
       def chave_composta(item):
-        return (item['lote'], item['leilao'], item["marca"], item["modelo"], item['ano'], item["chassi"])
+        # return (item['lote'], item['leilao'], item["marca"], item["modelo"], item['ano'], item["chassi"])
+        return (item['descricao'])
 
       db_map = {chave_composta(item): item for item in dados_db}
       novos_map = {chave_composta(item): item for item in dados_novos}
@@ -174,7 +182,8 @@ class SchedulerReceitaFederal:
       atualizar = []
       remover = []
 
-      campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
+      # campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
+      campos_para_verificar = ['descricao',"ativo"]
 
       for chave, novo in novos_map.items():
           if chave not in db_map:
@@ -197,6 +206,8 @@ class SchedulerReceitaFederal:
       return inserir, atualizar, remover
 
     def exec(self):
+      print("INICIADO SCHEDULER")
+
       response = requests.get(self.url, params=self.parametros, headers=self.headers)
 
       if response.status_code != 200:
@@ -236,7 +247,7 @@ class SchedulerReceitaFederal:
                 "lote": edital.get("lote"),
                 "url": edital.get("url"),
                 "descricao": lote.get("descricao"),
-                "imagem": f"http://arquivosleilao.receita.fazenda.gov.br/arquivos/images/{imagens[0]["src"]}" if len(lotes) == 1 and len(imagens) > 0 else None
+                "imagem": f"http://arquivosleilao.receita.fazenda.gov.br/arquivos/images/{imagens[0]['src']}" if len(lotes) == 1 and len(imagens) > 0 else None
             })
             
 
@@ -263,14 +274,17 @@ class SchedulerReceitaFederal:
 
         ano = self._getAno(lote)
         chassi = self._getChassi(lote)
+        placa = self._getPlaca(lote)
 
   
         resultado = {
           "uuid": str(uuid.uuid4()),
+          "descricao": lote,
           "lote": str(valor.get("lote")),
           "leilao": str(valor.get("leilao")),
           'data_leilao': valor.get("data_leilao"),
           "chassi": chassi or None,
+          "placa": placa or None,
           "valor_fipe": None,
           "valor_atual": None,
           "tipo_veiculo": tipo,
@@ -279,7 +293,7 @@ class SchedulerReceitaFederal:
           "monta": getMonta(""),
           "ano": str(ano),
           "thumb": valor.get("imagem"),
-          "link": f"http://www25.receita.fazenda.gov.br/sle-sociedade/portal/edital/{valor.get("leilao")}/lote/{valor.get("lote")}",
+          "link": f"http://www25.receita.fazenda.gov.br/sle-sociedade/portal/edital/{valor.get('leilao')}/lote/{valor.get('lote')}",
           "leiloeiro":"Receita Federal",
           "api":"receitafederal",
           "ativo": 1,
@@ -293,9 +307,9 @@ class SchedulerReceitaFederal:
 
       inserir,atualizar, remover = self.sincronizar(dbLotes, self.resultados)
 
-      print(len(inserir))
-      print(len(atualizar))
-      print(len(remover))
+      print("Insert: ",len(inserir))
+      print("Updates: ",len(atualizar))
+      print("Desativados: ", len(remover))
 
       
       if len(inserir) > 0:

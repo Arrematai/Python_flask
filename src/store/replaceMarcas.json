@@ -8,7 +8,8 @@
       "VW - Volkswagen",
       "IMP VW",
       "IMP/VW",
-      "IMP"
+      "IMP",
+      "VW VW"
     ]
   },
   {
@@ -39,7 +40,9 @@
       "M-Bens",
       "M-Benz",
       "Mercedes",
-      "M."
+      "M.BENZ",
+      "M. BENZ",
+      "MERCEDES BENZ"
     ]
   },
   {
@@ -58,21 +61,24 @@
     ]
   },
   {
+    "nome": "HYUNDAI",
+    "lista": [
+      "I/HYUNDAI",
+      "HYUNDAI HYUNDAI",
+      "I HYUNDAI"
+    ]
+  },
+  {
     "nome": "HITECH ELECTRIC",
     "lista": [
       "HE"
     ]
   },
   {
-    "nome": "HYUNDAI",
-    "lista": [
-      "I"
-    ]
-  },
-  {
     "nome": "FORD",
     "lista": [
-      "FORD FORD"
+      "FORD FORD",
+      "I/FORD"
     ]
   },
   {

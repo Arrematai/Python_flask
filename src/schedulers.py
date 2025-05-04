@@ -24,7 +24,7 @@ def Schedulers():
   if not scheduler.get_job('receitafederal'):
     job = scheduler.add_job(
       func=instance.exec,
-      trigger=CronTrigger(hour=9, minute=30),
+      trigger=CronTrigger(hour=3, minute=30),
       replace_existing=True,
       # args=["receitafederal",schedulersLog,lotesRepository],
       id='receitafederal'

@@ -242,6 +242,7 @@ CREATE TABLE `arrematai`.`apis` (
   CREATE TABLE `arrematai`.`lotes` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `uuid` VARCHAR(245) NOT NULL,
+  `descricao` TEXT NOT NULL,
   `lote` VARCHAR(245) NULL,
   `leilao` VARCHAR(245) NULL,
   `data_leilao` DATETIME(3) NUll,
@@ -264,4 +265,9 @@ CREATE TABLE `arrematai`.`apis` (
   `updated_at` DATETIME(3) NUll,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+ALTER TABLE `arrematai`.`lotes` 
+ADD COLUMN `descricao` TEXT NOT NULL AFTER `uuid`,
+ADD UNIQUE INDEX `uuid_UNIQUE` (`uuid` ASC);
 

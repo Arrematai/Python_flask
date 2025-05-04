@@ -160,5 +160,14 @@
       "ativo": 1,
       "status_site": 1,
       "obs": "None"
+   },
+   {
+      "id": 19,
+      "nome": "receitafederal",
+      "path": "src.domain.apis.services.receitafederal",
+      "class": "ServiceReceitaFederal",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    }
 ]
