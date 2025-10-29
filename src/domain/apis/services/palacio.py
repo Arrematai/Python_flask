@@ -83,7 +83,9 @@ class ServicePalacios:
             return None
         
     def _getLink(self,lote):
-        onclick = lote.get('onclick')
+        div = lote.find("div", class_="i-c")
+        onclick = div.get('onclick')
+                    
         if(onclick):
             return onclick.split('(')[-1].split(',')[0]
         
@@ -120,6 +122,7 @@ class ServicePalacios:
             # Se nao tem marca nem modelo
             if not marca and not modelo or (not modelo):
                 continue
+
             
             # # # Se tem Marca
             # existeMarca = next((m for m in self.Marcas if m["nome"].lower() in marca.lower()), None)
@@ -134,8 +137,6 @@ class ServicePalacios:
             #     existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
             #     marca = existeInModelo["nome"].capitalize()
             
-            # print(lote)
-            # exit(0)
             
             resultado = {
                 "uuid": str(uuid.uuid4()),
