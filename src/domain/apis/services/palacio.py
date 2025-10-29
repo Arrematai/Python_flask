@@ -14,6 +14,7 @@ from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
 from src.infra.service.Scrapfly import ScrapflyScrape
 from src.infra.service.Scrapingbee import ScrapingbeeScrape
+from src.infra.service.ScrapeDo import ScrapeDo
 
 # Desativando avisos de InsecureRequestWarning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -81,12 +82,20 @@ class ServicePalacios:
         except Exception as e:
             return None
         
+    def _getLink(self,lote):
+        onclick = lote.get('onclick')
+        if(onclick):
+            return onclick.split('(')[-1].split(',')[0]
+        
+        return None
+        
         
     def exec(self):
         #response = requests.request("POST", self.url, data=self.payload)
 
         # response = ScrapflyScrape("POST", self.url, self.payload, self.headers
-        response = ScrapingbeeScrape("POST", self.url, self.payload, self.headers)
+        # response = ScrapingbeeScrape("POST", self.url, self.payload, self.headers)
+        response = ScrapeDo("POST", self.url, self.payload, self.headers)
 
 
 
@@ -99,6 +108,7 @@ class ServicePalacios:
 
         soup = BeautifulSoup(lotes_html, 'html.parser')
         lotes = soup.select("div.col-md-3")
+        
         
 
         for lote in lotes:
@@ -124,6 +134,8 @@ class ServicePalacios:
             #     existeInModelo = next((m for m in self.Marcas if m["nome"].lower() in modelo.lower()), None)
             #     marca = existeInModelo["nome"].capitalize()
             
+            # print(lote)
+            # exit(0)
             
             resultado = {
                 "uuid": str(uuid.uuid4()),
@@ -135,9 +147,9 @@ class ServicePalacios:
                 "marca": marca,
                 "modelo": modelo,
                 "monta": monta,
-                "ano": lote.select_one(".my-0.h6.mb-2").text,
+                "ano": lote.select_one(".my-0.h6").text,
                 "thumb": f"https://www.palaciodosleiloes.com.br/site/{lote.select_one('img').get('src')}",
-                "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={lote.get('onclick').split('(')[-1].split(',')[0]}",
+                "link": f"https://www.palaciodosleiloes.com.br/site/lotem.php?cl={self._getLink(lote)}",
                 "leiloeiro":"Palácio dos Leilões",
                 "ativo": 1,
             }

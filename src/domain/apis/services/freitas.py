@@ -10,6 +10,8 @@ from src.infra.service.Logging import Log
 from urllib3.exceptions import InsecureRequestWarning
 from src.infra.service.Scrapfly import ScrapflyScrape
 from src.infra.service. Scrapingbee import ScrapingbeeScrape
+from src.infra.service.ScrapeDo import ScrapeDo
+
 
 # Suppress the warnings from urllib3
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
@@ -32,18 +34,18 @@ class ServiceFreitas:
         self.url = f"https://www.freitasleiloeiro.com.br/Leiloes/PesquisarLotes?Nome={self.query}&Categoria=1&TipoLoteId=0&FaixaValor=0&Condicao=0&PatioId=0&AnoModeloMin=0&AnoModeloMax=0&ArCondicionado=false&DirecaoAssistida=false&ClienteSclId=0&PageNumber=1&TopRows={self.size}"
         self.parametros = {
             "Nome": self.query,
-            "Categoria": 1,
-            "TipoLoteId": 0,
-            "FaixaValor": 0,
-            "Condicao": 0,
-            "PatioId": 0,
-            "AnoModeloMin": 0,
-            "AnoModeloMax": 0,
+            "Categoria": '1',
+            "TipoLoteId": '0',
+            "FaixaValor": "0",
+            "Condicao": '0',
+            "PatioId": '0',
+            "AnoModeloMin": '0',
+            "AnoModeloMax": '0',
             "ArCondicionado": "false",
             "DirecaoAssistida": "false",
-            "ClienteSclId": 0,
-            "PageNumber": 1,
-            "TopRows": self.size
+            "ClienteSclId": '0',
+            "PageNumber": '1',
+            "TopRows": f'{self.size}'
         }
         self.headers= {
             'accept': "*/*",
@@ -106,7 +108,10 @@ class ServiceFreitas:
     
         # response = ScrapflyScrape("GET", self.url, self.parametros, self.headers)
         response = ScrapingbeeScrape("GET", self.url, self.parametros, self.headers)
+        # response = ScrapeDo("GET", self.url, self.parametros, self.headers)
 
+    
+        print(response.text)
   
         if response.status_code != 200:
             self.log.messageError(f"Erro em acesso site {self.url}, status code : {response.status_code}")

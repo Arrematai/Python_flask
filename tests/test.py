@@ -1,4 +1,5 @@
 import time
+import traceback
 
 ## INFRA
 from src.infra.service.Logging import Log
@@ -15,13 +16,15 @@ from src.domain.log.repository import LogsRepository
 def init():
   print("Inicio Aplicação TESTE")
   log = Log("TESTE")
-  # especifico = "freitasleiloeiro"
-  especifico = "receitafederal"
+  especifico = "freitasleiloeiro"
+  # especifico = "receitafederal"
+  # especifico = "palacio"
   query = "FIAT"
   resultados = []
   
   try:
 
+    print(especifico)
     database = DataBase(dictionary=True)
     repository = ApisRepository(database)
     repositoryLog = LogsRepository(database)
@@ -29,6 +32,7 @@ def init():
     if especifico:
       start_time = time.time()
       api = repository.getApi(especifico)
+      
 
       if api:
         ServiceClass  = dynamic_import(api["path"], api["class"]) 
@@ -79,6 +83,7 @@ def init():
         
   except Exception as e:
       print(f"Error: {e}")
+      traceback.print_exc()  # <-- Mostra o traceback completo no terminal
   
 
 
