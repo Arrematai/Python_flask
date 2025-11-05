@@ -30,11 +30,13 @@ psutil = "^7.0.0"
 scrapfly-sdk = "^0.8.21"
 scrapingbee = "^2.0.1"
 apscheduler = "^3.11.0"
+playwright = "^1.55.0"
 
 [tool.poetry.scripts]
 arrematai = "src.__main__:server_init"
 seed = "seeds.__seed__:init"
 test = "tests.__test__:init"
+teste2 = "tests.teste2:init"
 test_le = "tests.test_leiloeiros:init"
 checkOnline = "src.checkSiteOnline:init"
 monitoramento = "src.monitoramento:init"

@@ -18,8 +18,11 @@ def init():
   # especifico = "freitasleiloeiro"
   log = Log("TESTE")
   # especifico = "receitafederal"
-  especifico = "palacio"
+  # especifico = "palacio"
+  especifico = "sodresantoro"
+  # especifico = "mgl"
   query = "bmw"
+  # query = "fiat"
   resultados = []
   
   try:

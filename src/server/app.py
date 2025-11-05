@@ -35,7 +35,8 @@ def server_init():
     ## DATABASE
     database = DataBase(dictionary=True)  
 
-    ## ROTAS  
+    ## ROTAS 
+    print("________________ INIT ROUTES _______________________________")
     Routes(app=app,limiter=limiter,database=database)
     context = ('fullchain.pem', 'privkey.pem')#certificate and key files
 
@@ -49,6 +50,12 @@ def server_init():
       log.monitoramento("Monitoramento Online não foi executado")
 
     ## SERVER
+    print("MODE",os.getenv("MODE"))
+    print("DATABASE_DB",os.getenv("DATABASE_DB"))
+    print("DATABASE_USER",os.getenv("DATABASE_USER"))
+    print("DATABASE_PASSWORD",os.getenv("DATABASE_PASSWORD"))
+    print("DATABASE_IP",os.getenv("DATABASE_IP"))
+    print("DATABASE_PORT",os.getenv("DATABASE_PORT"))
     app.run(host='0.0.0.0', port=5001, ssl_context=context)
 
 

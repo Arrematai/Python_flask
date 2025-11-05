@@ -169,5 +169,14 @@
       "ativo": 1,
       "status_site": 1,
       "obs": "None"
+   },
+   {
+      "id": 20,
+      "nome": "mgl",
+      "path": "src.domain.apis.services.mgl",
+      "class": "ServiceMgl",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    }
 ]
