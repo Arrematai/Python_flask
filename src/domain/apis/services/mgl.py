@@ -16,7 +16,7 @@ class ServiceMgl:
     headers: Text
 
     def __init__(self, query, size):
-        self.HEADLESS = False   
+        self.HEADLESS = True   
         self.query = query
         self.size = size
         self.initValue()
@@ -143,20 +143,35 @@ class ServiceMgl:
             page.goto("https://www.mgl.com.br/quem-somos/", timeout=60000)
             page.wait_for_timeout(200)  # espera 3s para Cloudflare liberar
 
+            # (opcional) definir headers, user-agent, etc. se o site for sensível
+            page.set_extra_http_headers({
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122 Safari/537.36",
+                "Accept-Language": "pt-BR,pt;q=0.9"
+            })
+
             print("📡 Enviando requisição para API da MGL...")
             result = page.evaluate(
                 """async ([payload, url]) => {
-                    const res = await fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Accept": "application/json, text/plain, */*",
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(payload),
-                        credentials: "include"
-                    });
-                    if (!res.ok) throw new Error("Erro HTTP " + res.status);
-                    return await res.json();
+                    try {
+                        const res = await fetch(url, {
+                            method: "POST",
+                            headers: {
+                                "Accept": "application/json, text/plain, */*",
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(payload),
+                            credentials: "include"
+                        });
+
+                        if (!res.ok) {
+                            const text = await res.text();
+                            throw new Error(`Erro HTTP ${res.status}: ${text}`);
+                        }
+
+                        return await res.json();
+                    } catch (e) {
+                        return { error: e.message };
+                    }
                 }""",
                 [self.payload, self.url]
             )

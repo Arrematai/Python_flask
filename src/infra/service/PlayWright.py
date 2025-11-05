@@ -1,126 +1,81 @@
+import os
+import sys
+import subprocess
 import json
 import time
-from playwright.sync_api import sync_playwright, TimeoutError as PWTimeoutError
 
+from playwright.sync_api import sync_playwright
 
-def build_payload(query = "",size=20,playload = {}):
-    p = playload.copy()
-    # Deep copy safer for nested structures
-    p = json.loads(json.dumps(playload))
-    p["size"] = size
-    # p["query"]["bool"]["must"][0]["match_phrase_prefix"]["search_terms"] = query
-    return p
+def run(self, headless):
+    with sync_playwright() as p:
+        # 🚀 Inicia navegador com perfil persistente
+        context = p.chromium.launch_persistent_context(
+            user_data_dir="/tmp/playwright-sodre",
+            headless=False,  # ⚠️ Cloudflare precisa do modo visível
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+                "--disable-gpu",
+                "--disable-dev-shm-usage",
+                "--window-position=-32000,-32000",  # esconde janela
+            ],
+        )
 
-
-def run_search(query: str, size: int = 20, headless: bool = True, retries: int = 0, playload = {}):
-    base_list_url = f"https://www.sodresantoro.com.br/atendimento"
-    api_url = "https://www.sodresantoro.com.br/api/search-lots"
-
-    payload = build_payload(query="",size=size, playload=playload)
-
-    # Ajuste: se quiser enviar query string no corpo, pode adaptar aqui.
-    # payload["query_string"] = query  # caso necessário
-
-    attempt = 0
-    last_error = None
-
-    with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=headless)
-        context = browser.new_context()  # cria contexto limpo (cookies isolados)
         page = context.new_page()
 
-        try:
-            # Acesse a página de listagem para que os cookies/JS carreguem
-            # print(f"[+] Navigating to {base_list_url} to initialize session...")
-            page.goto(base_list_url, timeout=30000)
-            # Espera um pouco para o JS estabelecer cookies/tokens; ajuste se necessário
-            page.wait_for_timeout(1000)
+        # 🕵️ Disfarça automação
+        page.add_init_script("""
+        Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+        window.chrome = { runtime: {} };
+        Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+        Object.defineProperty(navigator, 'languages', {get: () => ['pt-BR', 'pt']});
+        Object.defineProperty(navigator, 'platform', {get: () => 'Win32'});
+        """)
 
-            # opcional: aceitar popups/consent banners (exemplo genérico)
-            # tentar clicar em botões comuns (não garantido em todo site)
-            try:
-                page.locator("button:has-text('Aceitar'), button:has-text('Aceito'), button:has-text('OK')").first.click(timeout=1000)
-                # print("[*] Possible cookie banner closed")
-            except Exception:
-                pass
+        print("🌐 Acessando Sodré Santoro...")
+        page.goto("https://www.sodresantoro.com.br/veiculos", timeout=90000)
+        page.wait_for_load_state("networkidle")
 
-            while attempt <= retries:
-                attempt += 1
-                print(f"[+] Attempt {attempt} to fetch API inside page context...")
-
-                try:
-                    # Executa fetch dentro do navegador (herda cookies e contexto)
-                    result = page.evaluate(
-                        """async ({api_url, payload}) => {
-                            try {
-                                const res = await fetch(api_url, {
-                                    method: "POST",
-                                    headers: {
-                                        "accept": "application/json, text/plain, */*",
-                                        "content-type": "application/json",
-                                        // note: não setamos cookies aqui — o browser já envia
-                                    },
-                                    body: JSON.stringify(payload),
-                                    credentials: 'include',
-                                });
-                                const text = await res.text();
-                                let json = null;
-                                try {
-                                    json = JSON.parse(text);
-                                } catch(e) {
-                                    // pode não ser JSON
-                                    return { ok: false, status: res.status, text };
-                                }
-                                return { ok: true, status: res.status, json };
-                            } catch (err) {
-                                return { ok: false, error: String(err) };
-                            }
-                        }""",
-                        {"api_url": api_url, "payload": payload},
-                    )
-
-                    if not isinstance(result, dict):
-                        last_error = f"Unexpected result type: {type(result)}"
-                        print("[-]", last_error)
-                        time.sleep(2)
-                        continue
-
-                    if result.get("ok"):
-                        status = result.get("status")
-                        data = result.get("json")
-                        # print(f"[+] API returned status {status}.")
-                        if data:
-                            return data
-                        # resumir e sair
-                        total_hits = None
-                        try:
-                            # estrutura pode variar, tentamos encontrar total hits
-                            if isinstance(data, dict):
-                                if "hits" in data and isinstance(data["hits"], dict):
-                                    total_hits = data["hits"].get("total")
-                                elif "total" in data:
-                                    total_hits = data.get("total")
-                        except Exception:
-                            total_hits = None
-                        print(f"[+] Total hits (possible): {total_hits}")
-                        browser.close()
-                        return data
-                    else:
-                        # resultado de erro (resposta não JSON ou status != 200)
-                        last_error = result
-                        print("[-] Fetch returned not ok:", result)
-                        # aguardar backoff e tentar novamente
-                        time.sleep(2 ** attempt)
-                except PWTimeoutError as e:
-                    last_error = e
-                    print("[-] Playwright timeout:", str(e))
-                    time.sleep(2 ** attempt)
-                except Exception as e:
-                    last_error = e
-                    print("[-] Unexpected error:", str(e))
-                    time.sleep(2 ** attempt)
-
-            browser.close()
-            raise RuntimeError(f"Failed to fetch API after {retries+1} attempts. Last error: {last_error}")
-        finally:
+        # ⏳ Espera Cloudflare liberar cookie cf_clearance
+        for _ in range(15):
+            cookies = context.cookies()
+            if any("cf_clearance" in c["name"] for c in cookies):
+                print("✅ Cloudflare liberou acesso.")
+                break
+            time.sleep(1)
+        else:
+            print("⚠️ Cloudflare ainda não liberou. Encerrando.")
             context.close()
+            return
+
+        cookie_header = "; ".join(f"{c['name']}={c['value']}" for c in cookies)
+        print(f"🍪 {len(cookies)} cookies carregados")
+
+        # 📡 Faz a requisição real
+        print("📡 Enviando requisição para /api/search-lots...")
+        response = context.request.post(
+            "https://www.sodresantoro.com.br/api/search-lots",
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Origin": "https://www.sodresantoro.com.br",
+                "Referer": "https://www.sodresantoro.com.br/veiculos",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                            "AppleWebKit/537.36 (KHTML, like Gecko) "
+                            "Chrome/142.0.0.0 Safari/537.36",
+                "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+                "Cookie": cookie_header,
+            },
+            data=json.dumps(self.payload),
+        )
+
+        print("🔎 Status:", response.status)
+        if response.status == 200:
+            print(json.dumps(response.json(), indent=2, ensure_ascii=False))
+        else:
+            print("❌ Erro:", response.text())
+
+        context.close()
+        print(response)
+        
+        return response
