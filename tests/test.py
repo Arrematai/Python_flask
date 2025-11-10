@@ -15,14 +15,15 @@ from src.domain.log.repository import LogsRepository
 
 def init():
   print("Inicio Aplicação TESTE")
-  # especifico = "freitasleiloeiro"
   log = Log("TESTE")
+  # especifico = "freitasleiloeiro"
   # especifico = "receitafederal"
   # especifico = "palacio"
-  especifico = "sodresantoro"
+  # especifico = "sodresantoro"
   # especifico = "mgl"
+  especifico = "pestanaleiloes"
+  # query = "bmw"
   query = "bmw"
-  # query = "fiat"
   resultados = []
   
   try:

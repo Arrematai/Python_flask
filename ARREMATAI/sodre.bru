@@ -23,5 +23,394 @@ headers {
 }
 
 body:json {
-  {"indices":["veiculos"],"query":{"bool":{"filter":[{"bool":{"should":[{"bool":{"must":[{"term":{"auction_status":"online"}}]}},{"bool":{"must":[{"term":{"auction_status":"aberto"}}],"must_not":[{"terms":{"lot_status_id":[5,7]}}]}},{"bool":{"must":[{"term":{"auction_status":"encerrado"}},{"terms":{"lot_status_id":[6]}}]}}],"minimum_should_match":1}},{"bool":{"should":[{"bool":{"must_not":{"term":{"lot_status_id":6}}}},{"bool":{"must":[{"term":{"lot_status_id":6}},{"term":{"segment_id":1}}]}}],"minimum_should_match":1}},{"bool":{"should":[{"bool":{"must_not":[{"term":{"lot_test":true}}]}}],"minimum_should_match":1}},{"term":{"lot_test":false}},{"terms":{"segment_id":[1,2,3,4,5]}},{"terms":{"lot_status_id":[1,8]}}]}},"sort":[{"lot_status_id_order":{"order":"asc"}},{"lot_visits":{"order":"desc"}}],"size":20}
+  {
+      "indices": [
+          "veiculos",
+          "judiciais-veiculos"
+      ],
+      "query": {
+          "bool": {
+              "must": [
+                  {
+                      "match_phrase_prefix": {
+                          "search_terms": "fiat"
+                      }
+                  }
+              ],
+              "filter": [
+                  {
+                      "bool": {
+                          "should": [
+                              {
+                                  "bool": {
+                                      "must": [
+                                          {
+                                              "term": {
+                                                  "auction_status": "online"
+                                              }
+                                          }
+                                      ]
+                                  }
+                              },
+                              {
+                                  "bool": {
+                                      "must": [
+                                          {
+                                              "term": {
+                                                  "auction_status": "aberto"
+                                              }
+                                          }
+                                      ],
+                                      "must_not": [
+                                          {
+                                              "terms": {
+                                                  "lot_status_id": [
+                                                      5,
+                                                      7
+                                                  ]
+                                              }
+                                          }
+                                      ]
+                                  }
+                              },
+                              {
+                                  "bool": {
+                                      "must": [
+                                          {
+                                              "term": {
+                                                  "auction_status": "encerrado"
+                                              }
+                                          },
+                                          {
+                                              "terms": {
+                                                  "lot_status_id": [
+                                                      6
+                                                  ]
+                                              }
+                                          }
+                                      ]
+                                  }
+                              }
+                          ],
+                          "minimum_should_match": 1
+                      }
+                  },
+                  {
+                      "bool": {
+                          "should": [
+                              {
+                                  "bool": {
+                                      "must_not": {
+                                          "term": {
+                                              "lot_status_id": 6
+                                          }
+                                      }
+                                  }
+                              },
+                              {
+                                  "bool": {
+                                      "must": [
+                                          {
+                                              "term": {
+                                                  "lot_status_id": 6
+                                              }
+                                          },
+                                          {
+                                              "term": {
+                                                  "segment_id": 1
+                                              }
+                                          }
+                                      ]
+                                  }
+                              }
+                          ],
+                          "minimum_should_match": 1
+                      }
+                  },
+                  {
+                      "bool": {
+                          "should": [
+                              {
+                                  "bool": {
+                                      "must_not": [
+                                          {
+                                              "term": {
+                                                  "lot_test": true
+                                              }
+                                          }
+                                      ]
+                                  }
+                              }
+                          ],
+                          "minimum_should_match": 1
+                      }
+                  }
+              ]
+          }
+      },
+      "from": 0,
+      "size": 9999,
+      "aggs": {
+          "lot_financeable": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_financeable": {
+                      "terms": {
+                          "field": "lot_financeable",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_category": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_category": {
+                      "terms": {
+                          "field": "lot_category",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_origin": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_origin": {
+                      "terms": {
+                          "field": "lot_origin",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_sinister": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_sinister": {
+                      "terms": {
+                          "field": "lot_sinister",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_brand": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_brand": {
+                      "terms": {
+                          "field": "lot_brand",
+                          "size": 500,
+                          "order": {
+                              "_key": "asc"
+                          }
+                      },
+                      "aggs": {
+                          "lot_model": {
+                              "terms": {
+                                  "field": "lot_model",
+                                  "size": 1500,
+                                  "order": {
+                                      "_key": "asc"
+                                  },
+                                  "min_doc_count": 1
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "client_name": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "client_name": {
+                      "terms": {
+                          "field": "client_name",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_year_model": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_year_model": {
+                      "stats": {
+                          "field": "lot_year_model"
+                      }
+                  }
+              }
+          },
+          "lot_km": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_km": {
+                      "stats": {
+                          "field": "lot_km"
+                      }
+                  }
+              }
+          },
+          "lot_fuel": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_fuel": {
+                      "terms": {
+                          "field": "lot_fuel",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_transmission": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_transmission": {
+                      "terms": {
+                          "field": "lot_transmission",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_optionals": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_optionals": {
+                      "terms": {
+                          "field": "lot_optionals",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_location": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_location": {
+                      "terms": {
+                          "field": "lot_location",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          },
+          "lot_praca_label": {
+              "filter": {
+                  "bool": {
+                      "must": []
+                  }
+              },
+              "aggs": {
+                  "lot_praca_label": {
+                      "terms": {
+                          "field": "lot_praca_label",
+                          "size": 100,
+                          "order": {
+                              "_key": "asc"
+                          },
+                          "min_doc_count": 0
+                      }
+                  }
+              }
+          }
+      },
+      "sort": [
+          {
+              "lot_status_id_order": {
+                  "order": "asc"
+              }
+          },
+          {
+              "auction_date_init": {
+                  "order": "asc"
+              }
+          }
+      ]
+  }
 }

@@ -1,5 +1,6 @@
 import os
 # import logging
+import re
 from typing import Text
 import requests
 import uuid
@@ -26,6 +27,20 @@ class ServicePestana:
     def initValue(self):
         self.headers= {}
         
+    def _getModelo(self, descricao:str):
+        padrao = re.compile(
+            r"(?:Sucata\s+)?Fiat\s+(.*?)\s+\d{4}\s+\d{4}",
+             re.VERBOSE | re.IGNORECASE
+        )
+        match = padrao.search(descricao)
+        if match:
+            modelo = match.group("modelo").strip(" ,.-").title()
+            #print(f"✅ Success: {loteNome}")
+            return modelo
+        else:
+            #print(f"⚠️ Error: {loteNome}")
+            return None
+        
     def exec (self):
         response = requests.get(self.url, headers=self.headers)
         if response.status_code != 200:
@@ -41,59 +56,53 @@ class ServicePestana:
         
         if automoveis and len(automoveis) > 0:
           for automovel in automoveis:
+              
+              
+            descricao = automovel.get("descricao")
+            valor_atual = automovel.get("valorInicial")
+            leilao = automovel.get("leilao")
+            lote = automovel.get("id")
+            link = f"https://www.pestanaleiloes.com.br/agenda-de-leiloes/{leilao}/{lote}"
             
-            # Marca
-            marca = next(filter(lambda item: item["tipo"] == 1733520656132, automovel["bens"][0]["caracteristicas"]), "Não Informado")
-            marca = marca["valor"] if "valor" in marca else None
-            # Modelo
-            carro = next(filter(lambda item: item["tipo"] == 1733520657548, automovel["bens"][0]["caracteristicas"]), "")
-            versao = next(filter(lambda item: item["tipo"] == 1733520660276, automovel["bens"][0]["caracteristicas"]), "")
-            combustivel = next(filter(lambda item: item["tipo"] == 1733520672455, automovel["bens"][0]["caracteristicas"]), "")
-            
-            carro = carro["valor"] if "valor" in carro else None
-            versao = versao["valor"] if "valor" in versao else None
-            combustivel = combustivel["valor"] if "valor" in combustivel else None
-            
-            modelo = f"{carro} {versao} {combustivel}"
-            
-            # query enviada não é igual ao modelo e marca
-            if (marca.lower() != self.query.lower()) and (self.query.lower() not in modelo.lower()):
-              continue
+
+            thumb = None
+            try:
+                thumb = automovel["bens"][0]["imagens"][0]["original"]
+            except (KeyError, IndexError, TypeError):
+                thumb = None
             
             
-            monta = next(filter(lambda item: item["tipo"] == 1733520634927, automovel["bens"][0]["caracteristicas"]), "Não Informado")
-            ano_inicial = next(filter(lambda item: item["tipo"] == 12345, automovel["bens"][0]["caracteristicas"]), "")
-            ano_final = next(filter(lambda item: item["tipo"] == 1733520664332, automovel["bens"][0]["caracteristicas"]), "")
-            thumb = automovel["bens"][0]["imagens"][0]["original"]
             
-            
-            ano_inicial = ano_inicial["valor"] if "valor" in ano_inicial else None
-            ano_final = ano_final["valor"] if "valor" in ano_final else None
-            
-            ano = f"{ano_inicial}/{ano_final}" if ano_inicial and ano_final else f"{ano_inicial}" if ano_inicial else f"{ano_final}" if ano_final else ""
-            monta = monta["valor"] if "valor" in monta else None
-            lote = automovel["id"]
-            leilao = automovel["leilao"]
-            valor_atual = automovel["valorInicial"]
-            
-            resultado = {
-                "uuid": str(uuid.uuid4()),
-                "lote":  lote,
-                "chassi": "",
-                "valor_fipe": None,
-                "valor_atual": valor_atual,
-                "tipo_veiculo": "",
-                "marca": marca,
-                "modelo": modelo,
-                "monta": getMonta(monta),
-                "ano": ano,
-                "thumb": f"https://ged.pestanaleiloes.com.br/ged/{thumb}",
-                "link": f"https://www.pestanaleiloes.com.br/agenda-de-leiloes/{leilao}/{lote}",
-                "leiloeiro":"Pestana Leilões",
-                "ativo": 1,
-            }
-            
-            self.resultados.append(resultado)
+            if descricao and self.query.lower() in descricao.lower():
+                
+                padrao = re.compile(
+                    r"^(?:-?\s*Sucata\s+)?(?P<marca>[A-Z][a-zçéèãâêôí]+)\s+(?P<modelo>.*?)\s+(?P<ano1>\d{4})(?:\s+(?P<ano2>\d{4}))?\s+(?P<combustivel>[A-Za-z/çéÉãÃôÔíÍ\s]+)$",
+                    re.IGNORECASE
+                )
+                
+                for linha in descricao.strip().splitlines():
+                    m = padrao.search(linha.strip())
+                    if m:
+                        resultado = {
+                            "uuid": str(uuid.uuid4()),
+                            "lote":  lote,
+                            "chassi": "",
+                            "valor_fipe": None,
+                            "valor_atual": valor_atual,
+                            "tipo_veiculo": "",
+                            "marca": m.group("marca"),
+                            "modelo": m.group("modelo").strip(),
+                            "monta": getMonta(None),
+                            "ano": f"{m.group("ano1")}/{m.group("ano2")}",
+                            "thumb": f"https://ged.pestanaleiloes.com.br/ged/{thumb}",
+                            "link": link,
+                            "combustivel": m.group("combustivel").strip(),
+                            "leiloeiro":"Pestana Leilões",
+                            "ativo": 1,
+                        }
+
+              
+                        self.resultados.append(resultado)
 
         # Exibe os resultados
         # print(len(self.resultados))

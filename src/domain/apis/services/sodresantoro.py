@@ -418,13 +418,12 @@ class ServiceSantoro:
                 ]
             }
 
-    
     def run(self, headless):
         with sync_playwright() as p:
             # 🚀 Inicia navegador com perfil persistente
             context = p.chromium.launch_persistent_context(
                 user_data_dir="/tmp/playwright-sodre",
-                headless=False,  # ⚠️ Cloudflare precisa do modo visível
+                headless=headless,  # ⚠️ Cloudflare precisa do modo visível
                 args=[
                     "--disable-blink-features=AutomationControlled",
                     "--no-sandbox",
@@ -449,20 +448,6 @@ class ServiceSantoro:
             page.goto("https://www.sodresantoro.com.br/veiculos", timeout=90000)
             page.wait_for_load_state("networkidle")
 
-            # ⏳ Espera Cloudflare liberar cookie cf_clearance
-            for _ in range(15):
-                cookies = context.cookies()
-                if any("cf_clearance" in c["name"] for c in cookies):
-                    print("✅ Cloudflare liberou acesso.")
-                    break
-                time.sleep(1)
-            else:
-                print("⚠️ Cloudflare ainda não liberou. Encerrando.")
-                context.close()
-                return
-
-            cookie_header = "; ".join(f"{c['name']}={c['value']}" for c in cookies)
-            print(f"🍪 {len(cookies)} cookies carregados")
 
             # 📡 Faz a requisição real
             print("📡 Enviando requisição para /api/search-lots...")
@@ -477,7 +462,6 @@ class ServiceSantoro:
                                 "AppleWebKit/537.36 (KHTML, like Gecko) "
                                 "Chrome/142.0.0.0 Safari/537.36",
                     "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-                    "Cookie": cookie_header,
                 },
                 data=json.dumps(self.payload),
             )
@@ -489,62 +473,63 @@ class ServiceSantoro:
                 print("❌ Erro:", response.text())
 
             context.close()
-            print(response)
+            return response
         
     def exec(self):
+        response = None
         display = os.environ.get("DISPLAY")
         if not display:
             print("🖥️ Nenhum display detectado. Iniciando via xvfb-run...")
 
-            cmd = ["xvfb-run", "-a", "python3", "src/infra/service/PlayWright.py"]
+            cmd = ["xvfb-run", "-a", "python3", "src/infra/service/PlayWright.py", self.query, str(self.size)]
             # roda xvfb-run e espera terminar
             result = subprocess.run(cmd, capture_output=True, text=True)
-            print("📤 Saída:")
-            print(result.stdout)
+            # print("📤 Saída:")
+            # print(result)
             if result.stderr.strip():
                 print("⚠️ Erro:")
                 print(result.stderr)
 
-            print("📦 Código de saída:", result.returncode)
 
-            return result.returncode
+            response = json.loads(result.stdout)
             
                        
         else:
             print(f"✅ Display detectado: {display}")
-            self.run(headless=False)
+            response = self.run(headless=False)
+            
+        
+        for item in response["results"]:
+            
+            lote = item["lot_id"] 
+            valor_atual = item["bid_actual"] or None
+            tipo_veiculo = item["lot_category"] or None
+            marca = item["lot_brand"] or None
+            modelo = item["lot_title"] or None
+            monta = getMonta(item["lot_sinister"]) or None
+            ano = f'{item["lot_year_manufacture"]}/{item["lot_year_model"]}'
+            thumb = item["lot_pictures"][0] if item["lot_pictures"] else None,
+            link = f"https://leilao.sodresantoro.com.br/leilao/{item['auction_id']}/lote/{item['lot_id']}/",
+            
+            
+            resultado = {
+                "uuid": str(uuid.uuid4()),
+                "lote": lote,
+                "chassi": None,
+                "valor_fipe": None,
+                "valor_atual":  valor_atual,
+                "tipo_veiculo": tipo_veiculo,
+                "marca": marca,
+                "modelo": modelo,
+                "monta": monta,
+                "ano": ano,
+                "thumb": thumb,
+                "link": link,
+                "leiloeiro":"Sodré Santoro",
+                "ativo": 1,
 
-        # for item in data["results"]:
-            
-        #     lote = item["lot_id"] 
-        #     valor_atual = item["bid_actual"] or None
-        #     tipo_veiculo = item["lot_category"] or None
-        #     marca = item["lot_brand"] or None
-        #     modelo = item["lot_title"] or None
-        #     monta = getMonta(item["lot_sinister"]) or None
-        #     ano = f'{item["lot_year_manufacture"]}/{item["lot_year_model"]}'
-        #     thumb = item["lot_pictures"][0] if item["lot_pictures"] else None,
-        #     link = f"https://leilao.sodresantoro.com.br/leilao/{item['auction_id']}/lote/{item['lot_id']}/",
-            
-            
-        #     resultado = {
-        #         "uuid": str(uuid.uuid4()),
-        #         "lote": lote,
-        #         "chassi": None,
-        #         "valor_fipe": None,
-        #         "valor_atual":  valor_atual,
-        #         "tipo_veiculo": tipo_veiculo,
-        #         "marca": marca,
-        #         "modelo": modelo,
-        #         "monta": monta,
-        #         "ano": ano,
-        #         "thumb": thumb,
-        #         "link": link,
-        #         "leiloeiro":"Sodré Santoro",
-        #         "ativo": 1,
-
-        #     }# Adiciona o dicionário à lista de resultados
-        #     self.resultados.append(resultado)
+            }# Adiciona o dicionário à lista de resultados
+            self.resultados.append(resultado)
 
         # Exibe os resultados
         # print(len(resultados))

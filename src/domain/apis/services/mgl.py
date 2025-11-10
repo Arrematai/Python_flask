@@ -141,7 +141,7 @@ class ServiceMgl:
             page = context.new_page()
             # print("🌐 Acessando site principal para obter cookies...")
             page.goto("https://www.mgl.com.br/quem-somos/", timeout=60000)
-            page.wait_for_timeout(200)  # espera 3s para Cloudflare liberar
+            page.wait_for_load_state("networkidle")
 
             # (opcional) definir headers, user-agent, etc. se o site for sensível
             page.set_extra_http_headers({
@@ -175,6 +175,8 @@ class ServiceMgl:
                 }""",
                 [self.payload, self.url]
             )
+            
+            print(result)
             
             browser.close()
             
