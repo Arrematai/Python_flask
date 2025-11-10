@@ -178,5 +178,14 @@
       "ativo": 1,
       "status_site": 1,
       "obs": "None"
+   },
+   {
+      "id": 21,
+      "nome": "e-leiloes",
+      "path": "src.domain.apis.services.eleiloes",
+      "class": "ServiceEleiloes",
+      "ativo": 1,
+      "status_site": 1,
+      "obs": "None"
    }
 ]

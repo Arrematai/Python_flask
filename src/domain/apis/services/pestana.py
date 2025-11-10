@@ -93,7 +93,7 @@ class ServicePestana:
                             "marca": m.group("marca"),
                             "modelo": m.group("modelo").strip(),
                             "monta": getMonta(None),
-                            "ano": f"{m.group("ano1")}/{m.group("ano2")}",
+                            "ano": f'{m.group("ano1")}/{m.group("ano2")}',
                             "thumb": f"https://ged.pestanaleiloes.com.br/ged/{thumb}",
                             "link": link,
                             "combustivel": m.group("combustivel").strip(),

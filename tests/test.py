@@ -21,7 +21,8 @@ def init():
   # especifico = "palacio"
   # especifico = "sodresantoro"
   # especifico = "mgl"
-  especifico = "pestanaleiloes"
+  # especifico = "pestanaleiloes"
+  especifico = "eleiloes"
   # query = "bmw"
   query = "bmw"
   resultados = []
@@ -36,7 +37,6 @@ def init():
     if especifico:
       start_time = time.time()
       api = repository.getApi(especifico)
-      
 
       if api:
         ServiceClass  = dynamic_import(api["path"], api["class"]) 
