@@ -13,7 +13,7 @@ from src.infra.service.Logging import Log
 
 
 class ServiceEleiloes:
-    url: Text = "https://www.e-leiloes.com.br/leilao/automoveis?busca=fiat"
+    url: Text = "https://www.e-leiloes.com.br"
     payload: Text
     headers: Text
     resultados: list = []
@@ -106,6 +106,8 @@ class ServiceEleiloes:
         return BeautifulSoup(lotes_html, "html.parser")
         
     def exec (self):
+        
+        self.url = f"{self.url}/leilao/automoveis?busca={self.query}"
         
         soup = self._getRequest()
         pages = soup.find("ul", class_="default-pagination") 
