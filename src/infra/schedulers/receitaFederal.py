@@ -7,7 +7,7 @@ import re
 from src.infra.helpers.Monta import getMonta
 from src.infra.helpers.MarcaCarros import replace_marcas, obter_marcas
 from src.infra.service.Logging import Log
-from src.infra.schedulers.schedulersLogRepository import SchedulersLogRepository
+from src.infra.schedulers.repository.schedulersLogRepository import SchedulersLogRepository
 from src.domain.lotes.repository import LotesRepository
 
 TIPOS_VEICULO = [
@@ -206,7 +206,7 @@ class SchedulerReceitaFederal:
       return inserir, atualizar, remover
 
     def exec(self):
-      print("INICIADO SCHEDULER")
+      print("INICIADO SCHEDULER RECEITA FEDERAL")
 
       response = requests.get(self.url, params=self.parametros, headers=self.headers)
 
@@ -247,7 +247,7 @@ class SchedulerReceitaFederal:
                 "lote": edital.get("lote"),
                 "url": edital.get("url"),
                 "descricao": lote.get("descricao"),
-                "imagem": f"http://arquivosleilao.receita.fazenda.gov.br/arquivos/images/{imagens[0]['src']}" if len(lotes) == 1 and len(imagens) > 0 else None
+                "imagem": f"https://storagegw.estaleiro.serpro.gov.br/sle-pro-publico/arquivos/images/{imagens[0]['src']}" if len(lotes) == 1 and len(imagens) > 0 else None
             })
             
 
@@ -307,9 +307,9 @@ class SchedulerReceitaFederal:
 
       inserir,atualizar, remover = self.sincronizar(dbLotes, self.resultados)
 
-      print("Insert: ",len(inserir))
-      print("Updates: ",len(atualizar))
-      print("Desativados: ", len(remover))
+      # print("Insert: ",len(inserir))
+      # print("Updates: ",len(atualizar))
+      # print("Desativados: ", len(remover))
 
       
       if len(inserir) > 0:

@@ -22,9 +22,10 @@ def init():
   # especifico = "sodresantoro"
   # especifico = "mgl"
   # especifico = "pestanaleiloes"
-  especifico = "eleiloes"
+  # especifico = "eleiloes"
+  especifico = "claudiokuss"
+  query = "fiat"
   # query = "bmw"
-  query = "bmw"
   resultados = []
   
   try:

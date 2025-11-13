@@ -145,7 +145,7 @@ class ServiceEleiloes:
                     "monta": getMonta(None),
                     "ano": ano,
                     "thumb": thumb,
-                    "link": f"https://www.e-leiloes.com.br/{link}",
+                    "link": f"https://www.e-leiloes.com.br{link}",
                     "leiloeiro":"E-Leilões",
                     "ativo": 1,
                 }

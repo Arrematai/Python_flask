@@ -6,7 +6,7 @@ import time
 from src.infra.database.mysql import DataBase
 from src.infra.schedulers.receitaFederal import SchedulerReceitaFederal
 from src.domain.lotes.repository import LotesRepository
-from src.infra.schedulers.schedulersLogRepository import SchedulersLogRepository
+from src.infra.schedulers.repository.schedulersLogRepository import SchedulersLogRepository
 
 
 scheduler = BackgroundScheduler()
