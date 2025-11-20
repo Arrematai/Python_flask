@@ -15,9 +15,10 @@ class ServiceRogerio:
     params: Text
     headers: Text
     
-    def __init__(self, query, size):
+    def __init__(self, query, size, api):
         self.query = query
         self.size = size
+        self.api = api
         self.Marcas = obter_marcas()
         self.resultados = []
         self.initValue()

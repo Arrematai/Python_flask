@@ -9,7 +9,7 @@ class ApisRepository:
       try:
         self.database.connection()
         # Executando uma consulta SELECT
-        query = "SELECT id,nome,path,class,ativo,status_site,obs FROM apis where ativo = 1 and status_site = 1"
+        query = "SELECT id,nome,path,class,ativo,status_site,banco,obs FROM apis where ativo = 1 and status_site = 1 order by banco desc"
         self.database.socket.execute(query)
 
         # Recuperando os resultados

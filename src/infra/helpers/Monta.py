@@ -1,18 +1,33 @@
 
 
 def getMonta(monta: str):
-     if monta is None or monta == "":
-          return "Não Informada"
-     if 'pequena monta' in monta.lower() or "recuperável" in monta.lower():
-          return 'Pequena Monta'
-     if 'média monta' in monta.lower() or 'media monta' in monta.lower():
-          return 'Média Monta'
-     if 'grande monta' in monta.lower() or  'sucata' in monta.lower():
-          return 'Grande Monta'
-     if "no estado que se encontra" == monta.lower():
-          return "No estado que se encontra"
-     if "Não Informado":
-          return "Não Informada"
-     else:
-          return "Não Informada"
+    if not monta:
+        return "Não Informada"
+
+    texto = monta.lower().strip()
+
+    # categorias diretas
+    if texto in ["pequena", "pequena monta"]:
+        return "Pequena Monta"
+
+    if texto in ["média", "media", "média monta", "media monta"]:
+        return "Média Monta"
+
+    if texto in ["grande", "grande monta"]:
+        return "Grande Monta"
+
+    # padrões compostos
+    if "pequena" in texto or "recuperável" in texto or "conservado" in texto:
+        return "Pequena Monta"
+
+    if "média" in texto or "media" in texto:
+        return "Média Monta"
+
+    if "grande" in texto or "sucata" in texto:
+        return "Grande Monta"
+
+    if texto == "no estado que se encontra":
+        return "No estado que se encontra"
+
+    return "Não Informada"
      

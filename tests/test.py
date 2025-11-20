@@ -18,12 +18,12 @@ def init():
   log = Log("TESTE")
   # especifico = "freitasleiloeiro"
   # especifico = "receitafederal"
-  # especifico = "palacio"
+  especifico = "palacio"
   # especifico = "sodresantoro"
   # especifico = "mgl"
   # especifico = "pestanaleiloes"
   # especifico = "eleiloes"
-  especifico = "claudiokuss"
+  # especifico = "claudiokuss"
   query = "fiat"
   # query = "bmw"
   resultados = []
@@ -40,7 +40,7 @@ def init():
       api = repository.getApi(especifico)
 
       if api:
-        ServiceClass  = dynamic_import(api["path"], api["class"]) 
+        ServiceClass  = dynamic_import(api["path"], api["class"], api["nome"]) 
         # Verifica se a classe foi carregada corretamente e instancia um objeto
         if ServiceClass:
           instance = ServiceClass(query, 2000)  # Instancia a classe

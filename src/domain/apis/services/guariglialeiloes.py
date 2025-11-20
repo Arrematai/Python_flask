@@ -17,9 +17,10 @@ class ServiceGuariglia:
     parametros: Text
     headers: Text
 
-    def __init__(self, query, size):
+    def __init__(self, query, size, api):
         self.query = query
         self.size = size
+        self.api = api
         self.resultados = []
         self.initValue()
         self.Marcas = obter_marcas()

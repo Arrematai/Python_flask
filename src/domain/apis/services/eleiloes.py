@@ -18,9 +18,10 @@ class ServiceEleiloes:
     headers: Text
     resultados: list = []
 
-    def __init__(self, query: str, size: int):
+    def __init__(self, query: str, size: int, api = None):
         self.query = query
         self.size = size
+        self.api = api
         self.resultados = []
         self.initValue()
         self.log = Log("")

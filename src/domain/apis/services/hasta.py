@@ -17,9 +17,10 @@ class ServiceHasta:
     headers: Text
     pagina: Text
 
-    def __init__(self, query, size):
+    def __init__(self, query, size, api):
         self.query = query
         self.size = size
+        self.api = api
         self.initValue()
         self.resultados = []
         self.log = Log("")

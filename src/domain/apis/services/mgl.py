@@ -15,10 +15,11 @@ class ServiceMgl:
     parametros: Text
     headers: Text
 
-    def __init__(self, query, size):
+    def __init__(self, query, size, api):
         self.HEADLESS = True   
         self.query = query
         self.size = size
+        self.api = api
         self.initValue()
         self.resultados = []
         

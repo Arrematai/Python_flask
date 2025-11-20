@@ -7,7 +7,7 @@ import re
 from src.infra.helpers.Monta import getMonta
 from src.infra.helpers.MarcaCarros import replace_marcas, obter_marcas
 from src.infra.service.Logging import Log
-from src.infra.schedulers.repository.schedulersLogRepository import SchedulersLogRepository
+from src.domain.schedulers.repository.schedulersLogRepository import SchedulersLogRepository
 from src.domain.lotes.repository import LotesRepository
 
 TIPOS_VEICULO = [
@@ -55,7 +55,7 @@ class SchedulerReceitaFederal:
     parametros: Text
     headers: Text
 
-    def __init__(self, scheduler: str, schedulerLogRepository: SchedulersLogRepository, lotesRepository: LotesRepository ):
+    def __init__(self, scheduler: str, schedulerLogRepository: SchedulersLogRepository, lotesRepository: LotesRepository):
         self.scheduler = scheduler
         self.schedulerLogRepository = schedulerLogRepository
         self.lotesRepository = lotesRepository
@@ -209,11 +209,12 @@ class SchedulerReceitaFederal:
       print("INICIADO SCHEDULER RECEITA FEDERAL")
 
       response = requests.get(self.url, params=self.parametros, headers=self.headers)
+      
 
       if response.status_code != 200:
           self.log.SchedulerError(self.scheduler, response.status_code)
           self.schedulerLogRepository.insertLog({ 
-              "nome": 'receitafederal',
+              "nome": self.scheduler,
               'status': 'error',
               "duration": 0,
               "results": 0
@@ -223,7 +224,8 @@ class SchedulerReceitaFederal:
       data = response.json()
 
       if not data:
-          return
+        print("SEM DATA NO JSON")
+        return
 
       # Crias as URLS de ACESSO
       self.handleEditais(data.get('editais'))
@@ -301,15 +303,15 @@ class SchedulerReceitaFederal:
 
 
         self.resultados.append(resultado)
-
-
+    
+      
       dbLotes = self.lotesRepository.getLotesByApi("receitafederal")
 
       inserir,atualizar, remover = self.sincronizar(dbLotes, self.resultados)
 
-      # print("Insert: ",len(inserir))
-      # print("Updates: ",len(atualizar))
-      # print("Desativados: ", len(remover))
+      print("Insert: ",len(inserir))
+      print("Updates: ",len(atualizar))
+      print("Desativados: ", len(remover))
 
       
       if len(inserir) > 0:
@@ -337,6 +339,7 @@ class SchedulerReceitaFederal:
         "duration": 0,
         "results": len(self.resultados)
       })
+      print("FINALIZADO SCHEDULER RECEITA FEDERAL")
 
       # Imprimindo os resultados em formato JSON
       # print(self.resultados)

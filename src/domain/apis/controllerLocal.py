@@ -57,7 +57,7 @@ class ApisController(Resource):
               ServiceClass  = dynamic_import(currApi["path"], currApi["class"]) 
               # Verifica se a classe foi carregada corretamente e instancia um objeto
               if ServiceClass:
-                  instance = ServiceClass(query, 2000)  # Instancia a classe
+                  instance = ServiceClass(query, 2000, currApi["nome"])  # Instancia a classe
                   response = instance.exec()
 
                   resultados = response["resultados"] or []

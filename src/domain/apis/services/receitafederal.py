@@ -7,9 +7,10 @@ from src.infra.service.Logging import Log
 
 class ServiceReceitaFederal:
 
-    def __init__(self, query, size):
+    def __init__(self, query, size, api = None):
         self.query = query
         self.size = size
+        self.api = api
         self.resultados = []
         self.log = Log("")
         self.database = DataBase(dictionary=True)
@@ -19,7 +20,7 @@ class ServiceReceitaFederal:
       try:
         repository = LotesRepository(self.database)
 
-        self.resultados = repository.getLotesByQuery("receitafederal",self.query)
+        self.resultados = repository.getLotesByQuery(self.api,self.query)
 
         return { "resultados": self.resultados, "http_code": 200 }
       except Exception as e:

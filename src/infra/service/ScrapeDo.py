@@ -10,9 +10,6 @@ def ScrapeDo(method, url,body,header):
   targetUrl = urllib.parse.quote(url, safe='')
   urlFormat = f"https://api.scrape.do?token={token}&URL={targetUrl}"
   
-  print(targetUrl)
-  print(urlFormat)
-  
   if(method == "GET"):
     response = requests.get(urlFormat, params=body, headers=header, timeout=20)
   else:

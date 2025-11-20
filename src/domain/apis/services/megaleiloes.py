@@ -20,9 +20,10 @@ class ServiceMega:
     payload: Text
     headers: Text
 
-    def __init__(self, query, size):
+    def __init__(self, query, size, api):
         self.query = query
         self.size = size
+        self.api = api
         self.resultados = []
         self.Marcas = obter_marcas()
         self.initValue()

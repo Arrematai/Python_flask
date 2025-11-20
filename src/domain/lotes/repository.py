@@ -56,22 +56,19 @@ class LotesRepository:
 
       self.database.connection()
 
+      # Normalizar para remover tuplas
+      for k, v in dados.items():
+          if isinstance(v, tuple):
+              dados[k] = v[0] if len(v) == 1 else ",".join(map(str, v))
+
       campos = ", ".join(dados.keys())
       valores = ", ".join(["%s"] * len(dados))
 
-      # Executando uma consulta SELECT
       query = f"""
-        INSERT INTO lotes ({campos})
-        VALUES ({valores})
+          INSERT INTO lotes ({campos})
+          VALUES ({valores})
       """
-
-      # Executar com tupla de parâmetros
-      self.database.socket.execute(
-          query,
-          list(dados.values())
-      )
-
-      # Recuperando os resultados
+      self.database.socket.execute(query, list(dados.values()))
       self.database.conn.commit()
            
     except Exception as e:
