@@ -22,6 +22,8 @@ class RastreioRepository:
           
   def insert(self, dados):
     try:
+      
+      codigo = str(uuid.uuid4())
 
       print(dados)
       self.database.connection()
@@ -36,7 +38,7 @@ class RastreioRepository:
       self.database.socket.execute(
           query,
           (
-              str(uuid.uuid4()),
+              codigo,
               dados["ip"],
               dados["url_destino"],
               dados["dados"],
@@ -45,6 +47,13 @@ class RastreioRepository:
 
       # Recuperando os resultados
       self.database.conn.commit()
+      
+      return {
+          "codigo": codigo,
+          "ip": dados["ip"],
+          "url_destino": dados["url_destino"],
+          "dados": dados["dados"]
+      }
            
     except Exception as e:
         print(f"Error: {e}")
