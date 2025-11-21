@@ -1,0 +1,18 @@
+meta {
+  name: GET API RASTREIO CODIFO
+  type: http
+  seq: 29
+}
+
+get {
+  url: https://localhost:5001/rastreio/veiculo/78e1f2d7-571e-48fa-b8d5-1d076d12cf32
+  body: none
+  auth: none
+}
+
+body:json {
+  {
+    "url_destino": "https://www.copart.com.br/lot/815916",
+    "dados": {"ano":"2013","api":"copart","ativo":1,"chassi":"","cidade":"RIBEIRÃO PRETO","combustivel":null,"condicao":"COLISÃO","cor":null,"created_at":"Thu, 20 Nov 2025 19:56:34 GMT","data_leilao":null,"descricao":"BMW - X1 - 2013 - ","estado":"SP","id":5227,"kilometragem":null,"leilao":null,"leiloeiro":"COPART","link":"https:\/\/www.copart.com.br\/lot\/815916","lote":"815916","marca":"BMW","modelo":"X1","monta":"Não Informada","placa":null,"thumb":"https:\/\/brimages.copart.com.br\/Repository\/Fotos\/f819dfe5-8481-42ad-b35b-56cd94afda4d?imageType=vga","tipo_veiculo":"SUV Pequenos","transmissao":null,"updated_at":null,"uuid":"d59f4353-624c-4deb-a6e1-68c0807cbdaa","valor_atual":"0.0","valor_fipe":"0"}
+  }
+}

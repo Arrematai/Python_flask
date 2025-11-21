@@ -42,20 +42,16 @@ def Schedulers():
 
     print("JOB Agendado: ", job.id,job.next_run_time.strftime("%Y-%m-%d %H:%M:%S"))
   
-# Executar Scheduler
 def init():
+    try:
+        print('INICIADO SCHEDULERS')
+        schedulerBackground.start()
+        Schedulers()
 
-  try:
-    print('INICIADO SCHEDULERS')
-    schedulerBackground.start()
-    Schedulers();
+        # Mantém o programa vivo sem ocupar CPU
+        schedulerBackground._event.wait()
 
-    # SERVE PARA MANTER O SCHEDULER ABERTO
-    while True:
-      print('SLEEP SCHEDULERS...')
-      time.sleep(600) # 10 minutos
-
-  except (KeyboardInterrupt, SystemExit):
-    schedulerBackground.shutdown()
+    except (KeyboardInterrupt, SystemExit):
+        schedulerBackground.shutdown()
         
   

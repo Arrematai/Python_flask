@@ -271,9 +271,13 @@ ALTER TABLE `arrematai`.`lotes`
 ADD COLUMN `descricao` TEXT NOT NULL AFTER `uuid`,
 ADD UNIQUE INDEX `uuid_UNIQUE` (`uuid` ASC);
 
-ALTER TABLE `arrematai_api`.`lotes` 
+ALTER TABLE `lotes` 
 ADD COLUMN `cor` VARCHAR(245) NULL AFTER `link`,
 ADD COLUMN `combustivel` VARCHAR(245) NULL AFTER `cor`,
 ADD COLUMN `kilometragem` VARCHAR(245) NULL AFTER `combustivel`,
-ADD COLUMN `transmissao` VARCHAR(245) NULL AFTER `kilometragem`;
-ADD COLUMN `condicao` VARCHAR(245) NULL AFTER `condicao`;
+ADD COLUMN `transmissao` VARCHAR(245) NULL AFTER `kilometragem`,
+ADD COLUMN `condicao` VARCHAR(245) NULL AFTER `kilometragem`;
+
+
+ALTER TABLE `arrematai_api`.`apis` 
+ADD COLUMN `banco` TINYINT(1) NOT NULL DEFAULT 0 AFTER `status_site`;

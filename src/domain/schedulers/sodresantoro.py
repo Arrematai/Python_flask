@@ -540,7 +540,7 @@ class SchedulerSodreSantoro:
                 cmd = ["python", "src/infra/service/PlayWright.py", "0", "9999"]
             else:  # Linux
                 print("➡️ Iniciando via xvfb-run...")
-                cmd = ["xvfb-run", "-a", "python3", "src/infra/service/PlayWright.py", None, "9999"] + cmd
+                cmd = ["xvfb-run", "-a", "python3", "src/infra/service/PlayWright.py", "0", "9999"]
                 
             # roda xvfb-run e espera terminar
             result = subprocess.run(cmd, capture_output=True, text=True)
