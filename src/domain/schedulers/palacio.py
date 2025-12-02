@@ -135,7 +135,7 @@ class SchedulerPalacio:
         remover = []
 
         # campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
-        campos_para_verificar = ['descricao',"ativo"]
+        campos_para_verificar = ['descricao',"lote", "ativo"]
 
         # --- 1) VERIFICAR INSERÇÃO E ATUALIZAÇÃO ---
         for chave, novo in novos_map.items():

@@ -66,16 +66,6 @@ class ServiceSuperBid:
         else:
             ano_match = re.search(r"\b((19|20)?[0-9]{2}(/(19|20)?[0-9]{2})?)\b", title)
             return ano_match.group(0) if ano_match else None
-
-    
-    # def _getMarca(self, marca):
-    #     if not marca: 
-    #         return None
-    #     marca_info = next((m for m in self.Marcas if replace_marcas(m['nome'].lower()) in marca.lower()), None)
-    #     if marca_info:
-    #         return marca_info['nome']
-    #     else:
-    #         return None
         
     def _handleAno(self, item):
         ano = None

@@ -183,7 +183,7 @@ class SchedulerReceitaFederal:
       remover = []
 
       # campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
-      campos_para_verificar = ['descricao',"ativo"]
+      campos_para_verificar = ['descricao',"lote", "ativo"]
 
       for chave, novo in novos_map.items():
           if chave not in db_map:

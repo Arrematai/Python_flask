@@ -41,6 +41,7 @@ def Schedulers():
         )
 
     print("JOB Agendado: ", job.id,job.next_run_time.strftime("%Y-%m-%d %H:%M:%S"))
+    exit(0)
   
 def init():
     try:

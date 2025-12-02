@@ -4,12 +4,21 @@ meta {
   seq: 25
 }
 
-get {
-  url: 
+post {
+  url: https://www.copart.com.br/public/lots/search?page=0&size=1000&freeFormSearch=true&filter[tipovenda]=tipovenda:"Leilão"&filter[upcominglots]=exclude_upcoming_lots:*
   body: none
   auth: inherit
 }
 
+params:query {
+  page: 0
+  size: 1000
+  freeFormSearch: true
+  filter[tipovenda]: tipovenda:"Leilão"
+  filter[upcominglots]: exclude_upcoming_lots:*
+}
+
 settings {
   encodeUrl: true
+  timeout: 0
 }

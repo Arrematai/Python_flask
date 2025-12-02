@@ -488,7 +488,7 @@ class SchedulerSodreSantoro:
         remover = []
 
         # campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
-        campos_para_verificar = ['descricao',"ativo"]
+        campos_para_verificar = ['descricao',"lote", "ativo"]
 
         # --- 1) VERIFICAR INSERÇÃO E ATUALIZAÇÃO ---
         for chave, novo in novos_map.items():
@@ -501,8 +501,7 @@ class SchedulerSodreSantoro:
 
             # Se data de leilão passou → remover
             if data_leilao_dt and data_leilao_dt < agora:
-                remover.append(novo)
-                continue
+                novo["ativo"] = 0
 
             # Caso ainda não exista → inserir
             if chave not in db_map:
@@ -522,6 +521,17 @@ class SchedulerSodreSantoro:
 
         # --- 2) VERIFICAR REMOÇÃO POR NÃO EXISTIR MAIS ---
         for chave, antigo in db_map.items():
+            
+            # Converter string para datetime
+            data_leilao = novo.get("data_leilao")
+            data_leilao_dt = datetime.strptime(data_leilao, "%Y-%m-%d %H:%M:%S")
+            
+            agora = datetime.now()
+
+            # Se data de leilão passou → remover
+            if data_leilao_dt and data_leilao_dt < agora:
+                antigo["ativo"] = 0
+                
             if chave not in novos_map:
                 remover.append(antigo)
 
