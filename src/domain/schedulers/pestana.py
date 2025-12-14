@@ -146,6 +146,7 @@ class SchedulerPestana:
                 "lote":  lote,
                 "chassi": "",
                 "descricao": f"{marca} {modelo} {ano1}/{ano2} {cor}",
+                "data_leilao": None,
                 "valor_fipe": None,
                 "valor_atual": valor_atual,
                 "tipo_veiculo": tipo_veiculo,

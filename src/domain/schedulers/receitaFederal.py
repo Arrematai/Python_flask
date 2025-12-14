@@ -188,10 +188,7 @@ class SchedulerReceitaFederal:
           return
       
       data = response.json()
-      
-      print(data)
-      print(data.get('editais'))
-
+    
       if not data:
         print("SEM DATA NO JSON")
         return
@@ -199,10 +196,10 @@ class SchedulerReceitaFederal:
       # Crias as URLS de ACESSO
       self.handleEditais(data.get('editais'))
       
-      print(self.editais)
+      if(len(self.editais) == 0):
+        print("Sem EDIATAIS no site da receita.")
+            
       
-      
-
       for edital in self.editais:
         try:
           response = requests.get(edital.get("url"))

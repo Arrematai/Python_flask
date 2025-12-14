@@ -59,6 +59,7 @@ class SchedulerCopart:
         data = response.json()
         
         for item in data.get('data', {}).get('results', {}).get('content', []):
+            
             lote = item.get("lotNumberStr", None)
             chassi = item.get("fv", None)
             valor_fipe = item.get("la", None)
@@ -106,7 +107,7 @@ class SchedulerCopart:
             self.resultados.append(resultado)
             
         dbLotes = self.lotesRepository.getLotesByApi(self.scheduler)
-        inserir,atualizar, remover = sincronizar(dbLotes, self.resultados)
+        inserir,atualizar, remover = sincronizar(dbLotes, self.resultados,0)
 
         print("Insert: ",len(inserir))
         print("Updates: ",len(atualizar))

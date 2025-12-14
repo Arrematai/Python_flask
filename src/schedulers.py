@@ -24,6 +24,9 @@ def Schedulers():
   
   schedulers = schedulersRepository.getSchedulers()
   
+  # print(schedulers)
+  # exit(0)
+  
   for scheduler in schedulers:
     SchedulerClass  = dynamic_import(scheduler["path"], scheduler["class"]) 
     
@@ -31,19 +34,21 @@ def Schedulers():
       instance = SchedulerClass(scheduler["nome"],schedulersLog,lotesRepository)  # Instancia a classe
       instance.exec()
       
+      nomeJob = f"{scheduler["nome"]}_{scheduler["hora"]}_{scheduler["minuto"]}"
+      
       # ADD somente se não existe com esse nome
-      if not schedulerBackground.get_job(scheduler["nome"]):
+      if not schedulerBackground.get_job(nomeJob):
         job = schedulerBackground.add_job(
           func=instance.exec,
           trigger=CronTrigger(hour=int(scheduler["hora"]), minute=int(scheduler["minuto"])),
           replace_existing=True,
           # args=["receitafederal",schedulersLog,lotesRepository],
-          id=scheduler["nome"]
+          id=nomeJob
         )
 
-    print("JOB Agendado: ", job.id,job.next_run_time.strftime("%Y-%m-%d %H:%M:%S"))
-    if os.getenv("MODE") == "DEV":
-      exit(0)
+  print("JOB Agendado: ", job.id,job.next_run_time.strftime("%Y-%m-%d %H:%M:%S"))
+  if os.getenv("MODE") == "DEV":
+    exit(0)
   
 def init():
     try:

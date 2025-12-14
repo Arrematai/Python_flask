@@ -196,6 +196,7 @@ class SchedulerSuperBid:
               valor_atual = None
               
             data_leilao = item.get("auction").get("beginDate")
+            data_leilao_final = item.get("auction").get("endDate")
             cidade = item["product"].get("location").get("city", None)
             estado = item["product"].get("location").get("state", None)
             
@@ -249,6 +250,7 @@ class SchedulerSuperBid:
                 "uuid": str(uuid.uuid4()),
                 "descricao": descricao,
                 "data_leilao": data_leilao,
+                "data_leilao_final": data_leilao_final,
                 "cidade": cidade,
                 "estado": estado,
                 "condicao": None,

@@ -46,7 +46,7 @@ def sincronizar(dados_db, dados_novos, dias_remover=7):
     atualizar = []
     remover = []
 
-    campos_para_verificar = ['descricao', "lote"]
+    campos_para_verificar = ['descricao', "lote", "ativo"]
     
 
     # --- 1) INSERÇÃO E ATUALIZAÇÃO ---
@@ -75,7 +75,7 @@ def sincronizar(dados_db, dados_novos, dias_remover=7):
             novo["uuid"] = antigo.get("uuid")
             atualizar.append(novo)
 
-    # --- 2) REMOVER ITENS QUE SUMIRAM ---
+    # --- 2) REMOVER ITENS QUE SUMIRAM NA API ---
     for chave, antigo in antigo_map.items():
 
         # Recalcular ativo do antigo também
