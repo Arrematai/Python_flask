@@ -3,6 +3,7 @@ import re
 from typing import Text
 import requests
 import uuid
+from src.domain.schedulers.sincronizar import sincronizar
 from src.infra.helpers.Monta import getMonta
 
 from src.domain.lotes.repository import LotesRepository
@@ -29,50 +30,9 @@ class SchedulerPestana:
     def initValue(self):
         self.headers= {}
 
-    def sincronizar(self, dados_db, dados_novos):
-
-        def chave_composta(item):
-            return (item['lote'], item["marca"], item["modelo"], item['ano'])
-            # return (item['descricao'])
-
-        db_map = {chave_composta(item): item for item in dados_db}
-        novos_map = {chave_composta(item): item for item in dados_novos}
-
-        inserir = []
-        atualizar = []
-        remover = []
-
-        # campos_para_verificar = ["lote",'marca', 'modelo', 'ano',"ativo"]
-        campos_para_verificar = ['descricao',"lote", "ativo"]
-
-        # --- 1) VERIFICAR INSERÇÃO E ATUALIZAÇÃO ---
-        for chave, novo in novos_map.items():
-
-            # Caso ainda não exista → inserir
-            if chave not in db_map:
-                inserir.append(novo)
-                continue
-
-            # Caso exista → verificar alterações
-            antigo = db_map[chave]
-            diff = any(
-                novo.get(k) != antigo.get(k)
-                for k in campos_para_verificar
-            )
-            if diff:
-                novo["id"] = antigo.get("id")
-                novo["uuid"] = antigo.get("uuid")
-                atualizar.append(novo)
-
-        # --- 2) VERIFICAR REMOÇÃO POR NÃO EXISTIR MAIS ---
-        for chave, antigo in db_map.items():
-            if chave not in novos_map:
-                remover.append(antigo)
-
-        return inserir, atualizar, remover
 
     def exec (self):
-        print("INICIADO SCHEDULER PESTANA")
+        print("INICIADO SCHEDULER PESTANA", datetime.now())
         response = requests.get(self.url, headers=self.headers)
         
         if response.status_code != 200:
@@ -212,7 +172,7 @@ class SchedulerPestana:
             self.resultados.append(resultado)
 
         dbLotes = self.lotesRepository.getLotesByApi(self.scheduler)
-        inserir,atualizar, remover = self.sincronizar(dbLotes, self.resultados)
+        inserir,atualizar, remover = sincronizar(dbLotes, self.resultados)
 
         print("Insert: ",len(inserir))
         print("Updates: ",len(atualizar))

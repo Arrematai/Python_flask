@@ -11,6 +11,7 @@ import uuid
 
 from playwright.sync_api import sync_playwright
 
+from src.domain.schedulers.sincronizar import sincronizar
 from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
 from src.domain.schedulers.repository.schedulersLogRepository import SchedulersLogRepository
@@ -473,72 +474,9 @@ class SchedulerSodreSantoro:
             context.close()
             return response
         
-        
-    def sincronizar(self, dados_db, dados_novos):
-
-        def chave_composta(item):
-            # return (item['lote'], item['leilao'], item["marca"], item["modelo"], item['ano'], item["chassi"])
-            return (item['descricao'])
-
-        db_map = {chave_composta(item): item for item in dados_db}
-        novos_map = {chave_composta(item): item for item in dados_novos}
-
-        inserir = []
-        atualizar = []
-        remover = []
-
-        # campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
-        campos_para_verificar = ['descricao',"lote", "ativo"]
-
-        # --- 1) VERIFICAR INSERÇÃO E ATUALIZAÇÃO ---
-        for chave, novo in novos_map.items():
-
-            # Converter string para datetime
-            data_leilao = novo.get("data_leilao")
-            data_leilao_dt = datetime.strptime(data_leilao, "%Y-%m-%d %H:%M:%S")
-            
-            agora = datetime.now()
-
-            # Se data de leilão passou → remover
-            if data_leilao_dt and data_leilao_dt < agora:
-                novo["ativo"] = 0
-
-            # Caso ainda não exista → inserir
-            if chave not in db_map:
-                inserir.append(novo)
-                continue
-
-            # Caso exista → verificar alterações
-            antigo = db_map[chave]
-            diff = any(
-                novo.get(k) != antigo.get(k)
-                for k in campos_para_verificar
-            )
-            if diff:
-                novo["id"] = antigo.get("id")
-                novo["uuid"] = antigo.get("uuid")
-                atualizar.append(novo)
-
-        # --- 2) VERIFICAR REMOÇÃO POR NÃO EXISTIR MAIS ---
-        for chave, antigo in db_map.items():
-            
-            # Converter string para datetime
-            data_leilao = novo.get("data_leilao")
-            data_leilao_dt = datetime.strptime(data_leilao, "%Y-%m-%d %H:%M:%S")
-            
-            agora = datetime.now()
-
-            # Se data de leilão passou → remover
-            if data_leilao_dt and data_leilao_dt < agora:
-                antigo["ativo"] = 0
                 
-            if chave not in novos_map:
-                remover.append(antigo)
-
-        return inserir, atualizar, remover
-        
     def exec(self):
-        print("INICIADO SCHEDULER SODRE")
+        print("INICIADO SCHEDULER SODRE", datetime.now())
         response = None
         display = os.environ.get("DISPLAY")
         if not display:
@@ -563,14 +501,14 @@ class SchedulerSodreSantoro:
 
             response = json.loads(result.stdout)
             
-                       
+        
         else:
             print(f"✅ Display detectado: {display}")
             response = self.run(headless=False)
             
         
         for item in response["results"]:
-            
+        
             lote = item["lot_id"] 
             valor_atual = item["bid_actual"] or None
             tipo_veiculo = item["lot_category"] or None
@@ -578,23 +516,25 @@ class SchedulerSodreSantoro:
             modelo = item["lot_title"] or None
             descricao = item["lot_description"] or None
             data_leilao = item["auction_date_init"] or None
+            data_leilao_final = item["lot_date_end"] or None
             cor = item.get("lot_color", None)
             combustivel = item.get("lot_fuel", None)
             kilometragem = item["lot_km"] or None
             transmissao = item["lot_transmission"] or None
             monta = getMonta(item["lot_sinister"]) or None
             ano = f'{item["lot_year_manufacture"]}/{item["lot_year_model"]}'
-            thumb = item["lot_pictures"][0] if item["lot_pictures"] else None,
-            link = f"https://leilao.sodresantoro.com.br/leilao/{item['auction_id']}/lote/{item['lot_id']}/",
+            thumb = item["lot_pictures"][0] if item["lot_pictures"] else None
+            link = f"https://leilao.sodresantoro.com.br/leilao/{item['auction_id']}/lote/{item['lot_id']}/"
             
             agora = datetime.now()
-            data_leilao_dt = datetime.strptime(data_leilao, "%Y-%m-%d %H:%M:%S")
+            data_leilao_final_dt = datetime.strptime(data_leilao_final, "%Y-%m-%d %H:%M:%S")
             
             resultado = {
                 "uuid": str(uuid.uuid4()),
                 "descricao": descricao,
                 "lote": lote,
                 "data_leilao": data_leilao,
+                "data_leilao_final": data_leilao_final,
                 "marca": marca,
                 "modelo": modelo,
                 "ano": ano,
@@ -609,18 +549,18 @@ class SchedulerSodreSantoro:
                 "transmissao": transmissao,
                 "leiloeiro":"Sodré Santoro",
                 "api":self.scheduler,
-                "ativo": 1 if data_leilao_dt >= agora else 0,
+                "ativo": 1 if data_leilao_final_dt >= agora else 0,
 
             }# Adiciona o dicionário à lista de resultados
             self.resultados.append(resultado)
 
         dbLotes = self.lotesRepository.getLotesByApi(self.scheduler)
-        inserir,atualizar, remover = self.sincronizar(dbLotes, self.resultados)
+        inserir,atualizar, remover = sincronizar(dbLotes, self.resultados)
 
         print("Insert: ",len(inserir))
         print("Updates: ",len(atualizar))
         print("Desativados: ", len(remover))
-
+        
         if len(inserir) > 0:
             for lote in inserir:
                 self.lotesRepository.insertLote(lote)

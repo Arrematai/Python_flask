@@ -1,9 +1,10 @@
-import datetime
+from datetime import datetime
 import uuid
 from typing import Text
 import requests
 import re
 
+from src.domain.schedulers.sincronizar import sincronizar
 from src.infra.helpers.Monta import getMonta
 from src.infra.helpers.MarcaCarros import replace_marcas, obter_marcas
 from src.infra.service.Logging import Log
@@ -169,44 +170,9 @@ class SchedulerReceitaFederal:
           texto_limpo = re.sub(padrao, '', texto_limpo,flags=re.IGNORECASE)
       return texto_limpo.strip(" /-.,")
     
-    def sincronizar(self, dados_db, dados_novos):
-
-      def chave_composta(item):
-        # return (item['lote'], item['leilao'], item["marca"], item["modelo"], item['ano'], item["chassi"])
-        return (item['descricao'])
-
-      db_map = {chave_composta(item): item for item in dados_db}
-      novos_map = {chave_composta(item): item for item in dados_novos}
-
-      inserir = []
-      atualizar = []
-      remover = []
-
-      # campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
-      campos_para_verificar = ['descricao',"lote", "ativo"]
-
-      for chave, novo in novos_map.items():
-          if chave not in db_map:
-              inserir.append(novo)
-          else:
-            antigo = db_map[chave]
-            diff = any(
-                novo.get(k) != antigo.get(k)
-                for k in campos_para_verificar
-            )
-            if diff:
-                novo["id"] = antigo.get("id")
-                novo["uuid"] = antigo.get("uuid")
-                atualizar.append(novo)
-
-      for chave, antigo in db_map.items():
-          if chave not in novos_map:
-              remover.append(antigo)
-
-      return inserir, atualizar, remover
 
     def exec(self):
-      print("INICIADO SCHEDULER RECEITA FEDERAL")
+      print("INICIADO SCHEDULER RECEITA FEDERAL",datetime.now())
 
       response = requests.get(self.url, params=self.parametros, headers=self.headers)
       
@@ -222,6 +188,9 @@ class SchedulerReceitaFederal:
           return
       
       data = response.json()
+      
+      print(data)
+      print(data.get('editais'))
 
       if not data:
         print("SEM DATA NO JSON")
@@ -229,6 +198,9 @@ class SchedulerReceitaFederal:
 
       # Crias as URLS de ACESSO
       self.handleEditais(data.get('editais'))
+      
+      print(self.editais)
+      
       
 
       for edital in self.editais:
@@ -307,7 +279,7 @@ class SchedulerReceitaFederal:
       
       dbLotes = self.lotesRepository.getLotesByApi("receitafederal")
 
-      inserir,atualizar, remover = self.sincronizar(dbLotes, self.resultados)
+      inserir,atualizar, remover = sincronizar(dbLotes, self.resultados)
 
       print("Insert: ",len(inserir))
       print("Updates: ",len(atualizar))
@@ -320,7 +292,7 @@ class SchedulerReceitaFederal:
 
       if len(atualizar) > 0:
         for lote in atualizar:
-          lote["updated_at"] = datetime.datetime.now()
+          lote["updated_at"] = datetime.now()
           lote["ativo"] = 1
           self.lotesRepository.updateLote(lote)
 
@@ -329,7 +301,7 @@ class SchedulerReceitaFederal:
             self.lotesRepository.updateLote({
                'id': lote.get("id"),
                'ativo': 0,
-               "updated_at": datetime.datetime.now(),
+               "updated_at": datetime.now(),
             })
       
 

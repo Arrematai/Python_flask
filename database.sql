@@ -281,3 +281,6 @@ ADD COLUMN `condicao` VARCHAR(245) NULL AFTER `kilometragem`;
 
 ALTER TABLE `arrematai_api`.`apis` 
 ADD COLUMN `banco` TINYINT(1) NOT NULL DEFAULT 0 AFTER `status_site`;
+
+ALTER TABLE `arrematai_api`.`lotes` 
+ADD COLUMN `data_leilao_final` DATETIME(3) NULL AFTER `data_leilao`;

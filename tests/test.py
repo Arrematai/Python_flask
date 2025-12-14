@@ -18,9 +18,9 @@ def init():
   log = Log("TESTE")
   # especifico = "freitasleiloeiro"
   # especifico = "receitafederal"
-  especifico = "palacio"
-  especifico = "copart"
-  # especifico = "sodresantoro"
+  # especifico = "palacio"
+  # especifico = "copart"
+  especifico = "sodresantoro"
   # especifico = "mgl"
   # especifico = "pestanaleiloes"
   # especifico = "eleiloes"

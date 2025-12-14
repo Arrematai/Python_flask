@@ -8,6 +8,7 @@ from urllib.parse import parse_qs
 
 
 
+from src.domain.schedulers.sincronizar import sincronizar
 from src.infra.helpers.MarcaCarros import obter_marcas
 from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
@@ -120,51 +121,9 @@ class SchedulerPalacio:
             return data[0].text.strip()
 
         return None
-        
-    def sincronizar(self, dados_db, dados_novos):
-
-        def chave_composta(item):
-            return (item['lote'], item['leilao'], item["marca"], item["modelo"], item['ano'])
-            # return (item['descricao'])
-
-        db_map = {chave_composta(item): item for item in dados_db}
-        novos_map = {chave_composta(item): item for item in dados_novos}
-
-        inserir = []
-        atualizar = []
-        remover = []
-
-        # campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
-        campos_para_verificar = ['descricao',"lote", "ativo"]
-
-        # --- 1) VERIFICAR INSERÇÃO E ATUALIZAÇÃO ---
-        for chave, novo in novos_map.items():
-
-            # Caso ainda não exista → inserir
-            if chave not in db_map:
-                inserir.append(novo)
-                continue
-
-            # Caso exista → verificar alterações
-            antigo = db_map[chave]
-            diff = any(
-                novo.get(k) != antigo.get(k)
-                for k in campos_para_verificar
-            )
-            if diff:
-                novo["id"] = antigo.get("id")
-                novo["uuid"] = antigo.get("uuid")
-                atualizar.append(novo)
-
-        # --- 2) VERIFICAR REMOÇÃO POR NÃO EXISTIR MAIS ---
-        for chave, antigo in db_map.items():
-            if chave not in novos_map:
-                remover.append(antigo)
-
-        return inserir, atualizar, remover
-        
+                
     def exec(self):
-        print("INICIADO SCHEDULER PALACIO")
+        print("INICIADO SCHEDULER PALACIO", datetime.now())
         #response = requests.request("POST", self.url, data=self.payload)
 
         # response = ScrapflyScrape("POST", self.url, self.payload, self.headers
@@ -248,7 +207,7 @@ class SchedulerPalacio:
             self.resultados.append(resultado)
 
         dbLotes = self.lotesRepository.getLotesByApi(self.scheduler)
-        inserir,atualizar, remover = self.sincronizar(dbLotes, self.resultados)
+        inserir,atualizar, remover = sincronizar(dbLotes, self.resultados)
 
         print("Insert: ",len(inserir))
         print("Updates: ",len(atualizar))

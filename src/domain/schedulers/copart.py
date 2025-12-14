@@ -6,6 +6,7 @@ import requests
 import uuid
 
 from src.domain.lotes.repository import LotesRepository
+from src.domain.schedulers.sincronizar import sincronizar
 from src.domain.schedulers.repository.schedulersLogRepository import SchedulersLogRepository
 from src.infra.helpers.Monta import getMonta
 from src.infra.service.Logging import Log
@@ -41,74 +42,8 @@ class SchedulerCopart:
             "X-XSRF-TOKEN": "null"
         }
         
-    def sincronizar(self, dados_db, dados_novos):
-
-        def chave_composta(item):
-            # return (item['lote'], item['leilao'], item["marca"], item["modelo"], item['ano'], item["chassi"])
-            return (item['descricao'])
-
-        db_map = {chave_composta(item): item for item in dados_db}
-        novos_map = {chave_composta(item): item for item in dados_novos}
-
-        inserir = []
-        atualizar = []
-        remover = []
-
-        # campos_para_verificar = ['marca', 'modelo', 'ano', 'chassi',"ativo"]
-        campos_para_verificar = ['descricao',"lote", "ativo"]
-
-        # --- 1) VERIFICAR INSERÇÃO E ATUALIZAÇÃO ---
-        for chave, novo in novos_map.items():
-
-            data_str = novo.get("data_leilao")
-            agora = datetime.now()
-
-            # Converter string → datetime
-            data_leilao = None
-            if data_str:
-                try:
-                    data_leilao = datetime.strptime(data_str, "%Y-%m-%d %H:%M:%S")
-                except:
-                    # tenta outro formato se precisar
-                    data_leilao = datetime.strptime(data_str, "%Y-%m-%d")
-
-            # Se passaram mais de 7 dias desde o leilão → remover
-            if data_leilao and data_leilao + timedelta(days=7) < agora:
-                novo["ativo"] = 0
-
-            # Caso ainda não exista → inserir
-            if chave not in db_map:
-                inserir.append(novo)
-                continue
-
-            # Caso exista → verificar alterações
-            antigo = db_map[chave]
-            diff = any(
-                novo.get(k) != antigo.get(k)
-                for k in campos_para_verificar
-            )
-            if diff:
-                novo["id"] = antigo.get("id")
-                novo["uuid"] = antigo.get("uuid")
-                atualizar.append(novo)
-
-        # --- 2) VERIFICAR REMOÇÃO POR NÃO EXISTIR MAIS ---
-        for chave, antigo in db_map.items():
-            
-            data_leilao = antigo.get("data_leilao")
-            agora = datetime.now()
-
-            # Se passaram mais de 7 dias desde o leilão → remover
-            if data_leilao and data_leilao + timedelta(days=7) < agora:
-                antigo["ativo"] = 0
-                
-            if chave not in novos_map:
-                remover.append(antigo)
-
-        return inserir, atualizar, remover
-        
     def exec (self):
-        print("INICIADO SCHEDULER COPART")
+        print("INICIADO SCHEDULER COPART", datetime.now())
         response = requests.post(self.url, data=self.payload, headers=self.headers)
         
         if response.status_code != 200:
@@ -171,7 +106,7 @@ class SchedulerCopart:
             self.resultados.append(resultado)
             
         dbLotes = self.lotesRepository.getLotesByApi(self.scheduler)
-        inserir,atualizar, remover = self.sincronizar(dbLotes, self.resultados)
+        inserir,atualizar, remover = sincronizar(dbLotes, self.resultados)
 
         print("Insert: ",len(inserir))
         print("Updates: ",len(atualizar))

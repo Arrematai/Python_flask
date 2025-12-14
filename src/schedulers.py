@@ -1,3 +1,4 @@
+import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 import time
@@ -41,7 +42,8 @@ def Schedulers():
         )
 
     print("JOB Agendado: ", job.id,job.next_run_time.strftime("%Y-%m-%d %H:%M:%S"))
-    exit(0)
+    if os.getenv("MODE") == "DEV":
+      exit(0)
   
 def init():
     try:
