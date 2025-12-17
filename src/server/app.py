@@ -28,7 +28,7 @@ def server_init():
   try:
     print("Inicio Aplicação")
 
-    ## MIDDLES
+    ## MIDDLES SECURITY
     limiter = init_limiter(app)
     init_cors(app)
 

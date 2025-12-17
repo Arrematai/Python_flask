@@ -10,7 +10,22 @@ class MarcasController:
   def getMarcas(self):
     try:
       result = self.repository.findMarcas()
+          
+      return result
+          
+    except Exception as e:
+        print(f"Error: {e}")
+        raise Exception("Marcas não encontrados.")
       
+      
+  def getMarca(self, nome: str):
+    try:
+      
+      if not nome:
+        raise Exception("Deve informar um nome.")
+      
+      result = self.repository.findMarca(nome)
+          
       return result
           
     except Exception as e:

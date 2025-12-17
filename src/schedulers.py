@@ -33,8 +33,8 @@ def Schedulers():
     if SchedulerClass:
       instance = SchedulerClass(scheduler["nome"],schedulersLog,lotesRepository)  # Instancia a classe
       instance.exec()
-      
-      nomeJob = f"{scheduler["nome"]}_{scheduler["hora"]}_{scheduler["minuto"]}"
+
+      nomeJob = f"{scheduler['nome']}_{scheduler['hora']}_{scheduler['minuto']}"
       
       # ADD somente se não existe com esse nome
       if not schedulerBackground.get_job(nomeJob):

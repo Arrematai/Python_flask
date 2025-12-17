@@ -32,6 +32,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
             return jsonify({"message": "Erro no processamento da API."}), 200
 
 
+    ## LISTA TODAS AS APIS
     @app.route('/apis', methods=['GET'])
     @limiter.limit("1000/day;100/minute")
     def apis():
@@ -48,6 +49,16 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
             service = MarcasController(database)
             marcas = service.getMarcas()
             return jsonify({"data": { "success": True, "dados": marcas }}), 200
+        except Exception as e:
+            return jsonify({"data": { "success": False, }}), 200
+    
+    @app.route('/fipe/marcas/<marcaNome>', methods=['GET'])
+    @limiter.limit("1000/day;100/minute")
+    def fipeMarca(marcaNome):
+        try:
+            service = MarcasController(database)
+            marca = service.getMarca(marcaNome)
+            return jsonify({"data": { "success": True, "dados": marca }}), 200
         except Exception as e:
             return jsonify({"data": { "success": False, }}), 200
 
@@ -200,6 +211,7 @@ def Routes(app: Flask, limiter: Limiter, database: DataBase):
             print(e)
             return jsonify({"data": { "success": False, }}), 200
 
+    ## Rastreio / compartilhamento de carros
     @app.route('/rastreio/veiculo/<codigo>', methods=['GET'])
     @limiter.limit("1000/day;100/minute")
     def getRastreio(codigo):

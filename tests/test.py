@@ -20,13 +20,14 @@ def init():
   # especifico = "receitafederal"
   # especifico = "palacio"
   # especifico = "copart"
-  especifico = "sodresantoro"
+  # especifico = "sodresantoro"
   # especifico = "mgl"
   # especifico = "pestanaleiloes"
-  # especifico = "eleiloes"
+  especifico = "eleiloes"
   # especifico = "claudiokuss"
-  query = "PORSCHE"
+  # query = "PORSCHE"
   # query = "bmw"
+  query = "fiat"
   resultados = []
   
   try:
@@ -39,6 +40,7 @@ def init():
     if especifico:
       start_time = time.time()
       api = repository.getApi(especifico)
+      print(api)
 
       if api:
         ServiceClass  = dynamic_import(api["path"], api["class"], api["nome"]) 
@@ -66,7 +68,7 @@ def init():
           print(api)
           start_time = time.time()
       
-          ServiceClass  = dynamic_import(api["path"], api["class"]) 
+          ServiceClass  = dynamic_import(api["path"], api["class"], api["nome"]) 
           # Verifica se a classe foi carregada corretamente e instancia um objeto
           if ServiceClass:
             instance = ServiceClass(query, 2000)  # Instancia a classe
