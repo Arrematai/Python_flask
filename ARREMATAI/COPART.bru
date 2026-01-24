@@ -5,17 +5,16 @@ meta {
 }
 
 post {
-  url: https://www.copart.com.br/public/lots/search?page=0&size=1000&freeFormSearch=true&filter[tipovenda]=tipovenda:"Leilão"&filter[upcominglots]=exclude_upcoming_lots:*
+  url: https://www.copart.com.br/public/lots/search?page=0&size=10000&freeFormSearch=true&filter[tipovenda]=tipovenda:"Leilão"
   body: none
   auth: inherit
 }
 
 params:query {
   page: 0
-  size: 1000
+  size: 10000
   freeFormSearch: true
   filter[tipovenda]: tipovenda:"Leilão"
-  filter[upcominglots]: exclude_upcoming_lots:*
 }
 
 settings {

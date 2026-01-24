@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import math
 import os
 # import logging
 from typing import Text
@@ -25,7 +26,7 @@ class SchedulerCopart:
         self.log = Log("")
         
     def initValue(self):
-        self.payload = f"page=0&size=100000&freeFormSearch=true&filter[tipovenda]=tipovenda:Leilão&filter[upcominglots]=exclude_upcoming_lots:*"
+        self.payload = f"page=0&size=100&freeFormSearch=true&filter[tipovenda]=tipovenda:Leilão&filter[upcominglots]=exclude_upcoming_lots:*"
         self.headers= {
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -42,22 +43,8 @@ class SchedulerCopart:
             "X-XSRF-TOKEN": "null"
         }
         
-    def exec (self):
-        print("INICIADO SCHEDULER COPART", datetime.now())
-        response = requests.post(self.url, data=self.payload, headers=self.headers)
-        
-        if response.status_code != 200:
-            self.log.SchedulerError(self.scheduler, response.status_code)
-            self.schedulerLogRepository.insertLog({ 
-                "nome": self.scheduler,
-                'status': 'error',
-                "duration": 0,
-                "results": 0
-                })
-            return
-        
-        data = response.json()
-        
+    
+    def processResultados(self, data):
         for item in data.get('data', {}).get('results', {}).get('content', []):
             
             lote = item.get("lotNumberStr", None)
@@ -105,6 +92,51 @@ class SchedulerCopart:
             }
             # Adiciona o dicionário à lista de resultados
             self.resultados.append(resultado)
+        
+        
+    def exec (self):
+        print("INICIADO SCHEDULER COPART", datetime.now())
+        response = requests.post(self.url, data=self.payload, headers=self.headers)
+        
+        if response.status_code != 200:
+            self.log.SchedulerError(self.scheduler, response.status_code)
+            self.schedulerLogRepository.insertLog({ 
+                "nome": self.scheduler,
+                'status': 'error',
+                "duration": 0,
+                "results": 0
+                })
+            return
+        
+        data = response.json()
+        
+        
+        total_itens = data.get('data', {}).get('results', {}).get('totalElements', 0)
+        paginas = math.ceil(total_itens / 100)
+        
+        
+        # pagina 0
+        print(f"Processando página 0 de {paginas}...")
+        self.processResultados(data)
+        print(f"Total de resultados obtidos: {len(self.resultados)}")
+        
+        
+        
+        for pagina in range(1, paginas):
+            print(f"Processando página {pagina} de {paginas}...")
+            payload_pagina = f"page={pagina}&size=100&freeFormSearch=true&filter[tipovenda]=tipovenda:Leilão&filter[upcominglots]=exclude_upcoming_lots:*"
+            response = requests.post(self.url, data=payload_pagina, headers=self.headers)
+            if response.status_code != 200:
+                self.log.SchedulerError(self.scheduler, response.status_code)
+                continue
+            data = response.json()
+            self.processResultados(data)
+            print(f"Total de resultados obtidos: {len(self.resultados)}")
+                
+                
+        
+        print(f"Total de resultados obtidos: {len(self.resultados)}")
+        
             
         dbLotes = self.lotesRepository.getLotesByApi(self.scheduler)
         inserir,atualizar, remover = sincronizar(dbLotes, self.resultados,0)
