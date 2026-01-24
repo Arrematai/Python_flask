@@ -39,7 +39,10 @@ def is_ativo_por_data_leilao(
     - Se agora > data_leilao E agora > data_leilao_final → inativo
     - Se passou mais de X dias após data_leilao → inativo
     """    
-
+    
+    inicio = parse_data(inicio)
+    fim = parse_data(fim)
+    
     # Sem data de leilão → ativo
     if not inicio:
         return 1
@@ -49,7 +52,7 @@ def is_ativo_por_data_leilao(
         return 0
 
     # Se excedeu o prazo após o leilão → inativo
-    limite = parse_data(inicio) + timedelta(days=dias_remover)
+    limite = inicio + timedelta(days=dias_remover)
     if limite < agora:
         return 0
 
