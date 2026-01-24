@@ -126,11 +126,18 @@ class SchedulerReceitaFederal:
           if '/' in marca_limpo:
             partes = marca_limpo.split('/', 1)
             # return partes[0].strip()
-            return replace_marcas(partes[0].strip())
+            
+            if len(partes) > 0:
+              return replace_marcas(partes[0].strip())
+            
+             
+            
+            
           else:
             partes = marca_limpo.split(None, 1)
             # return partes[0]
-            return replace_marcas(partes[0])
+            if len(partes) > 0:
+              return replace_marcas(partes[0])
     
     def _getAno(self, lote):
       ano_match = re.search(r'\b(19[8-9][0-9]|20[0-2][0-9]|2030)\b', lote)

@@ -212,6 +212,7 @@ class SchedulerPalacio:
         print("Insert: ",len(inserir))
         print("Updates: ",len(atualizar))
         print("Desativados: ", len(remover))
+        
 
         if len(inserir) > 0:
             for lote in inserir:

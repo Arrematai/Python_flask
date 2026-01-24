@@ -1,31 +1,56 @@
 from datetime import datetime, timedelta
+from typing import Optional
 
-def parse_data(valor):
+def parse_data(valor: Optional[str]) -> Optional[datetime]:
+    
+    if isinstance(valor, datetime):
+        return valor
+    
     if not valor:
         return None
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+
+    valor = valor.strip()
+
+    formatos = (
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d",
+        "%d/%m/%Y",
+    )
+
+    for fmt in formatos:
         try:
             return datetime.strptime(valor, fmt)
-        except:
-            pass
+        except ValueError:
+            continue 
+
     return None
 
 
-def checkAtivoByDataLeilao(agora, data_leilao, data_leilao_final, dias_remover):
-    
-    data_leilao = parse_data(data_leilao)
-    data_leilao_final = parse_data(data_leilao_final)
-    
-    # Se não houver data de leilão → não desativa
-    if not data_leilao:
+def is_ativo_por_data_leilao(
+    agora: datetime,
+    inicio: Optional[str],
+    fim: Optional[str],
+    dias_remover: int,
+) -> bool:
+    """
+    Regras:
+    - Sem data de leilão → ativo
+    - Se agora > data_leilao E agora > data_leilao_final → inativo
+    - Se passou mais de X dias após data_leilao → inativo
+    """    
+
+    # Sem data de leilão → ativo
+    if not inicio:
         return 1
 
-    # Se houver data de final e for maior que agora → bloqueia
-    if data_leilao_final and data_leilao_final > agora:
+    # Se ambas as datas existem e agora passou das duas → inativo
+    if fim and agora > inicio and agora > fim:
         return 0
 
-    # Se passaram mais de X dias → inativo
-    if data_leilao + timedelta(days=dias_remover) < agora:
+    # Se excedeu o prazo após o leilão → inativo
+    limite = parse_data(inicio) + timedelta(days=dias_remover)
+    if limite < agora:
         return 0
 
     return 1
@@ -53,7 +78,7 @@ def sincronizar(dados_db, dados_novos, dias_remover=7):
     for chave, novo in novos_map.items():
 
         # recalcular ativo baseado na data
-        novo["ativo"] = checkAtivoByDataLeilao(
+        novo["ativo"] = is_ativo_por_data_leilao(
             agora,
             novo.get("data_leilao"),
             novo.get("data_leilao_final"),
@@ -77,15 +102,37 @@ def sincronizar(dados_db, dados_novos, dias_remover=7):
 
     # --- 2) REMOVER ITENS QUE SUMIRAM NA API ---
     for chave, antigo in antigo_map.items():
+        
+        
+        # if antigo.get("modelo") == "320I M SPORT FLEX":
+        #     print("DEBUG")
+        #     print(agora)
+        #     print(antigo.get("data_leilao"))
+        #     print(antigo.get("data_leilao_final"))
+        #     isAtivo = is_ativo_por_data_leilao(
+        #             agora,
+        #             antigo.get("data_leilao"),
+        #             antigo.get("data_leilao_final"),
+        #             dias_remover
+        #         )
+        #     print("ATIVO: ", isAtivo)
+    
+                
+        #     exit(0)
 
         # Recalcular ativo do antigo também
-        antigo["ativo"] = checkAtivoByDataLeilao(
+        isAtivo = is_ativo_por_data_leilao(
             agora,
             antigo.get("data_leilao"),
             antigo.get("data_leilao_final"),
             dias_remover
         )
-
+        
+        if isAtivo == 0:
+            antigo["ativo"] = 0                
+            remover.append(antigo)
+            continue    
+            
         # Se já não é ativo → ignora
         if antigo["ativo"] == 0:
             continue
